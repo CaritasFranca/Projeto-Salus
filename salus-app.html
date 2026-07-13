@@ -31,7 +31,7 @@ body{background:var(--cream);color:var(--brown);min-height:100vh;}
 .login-ornamento{font-size:1.4rem;color:var(--gold);letter-spacing:0.4em;display:block;margin-bottom:1rem;}
 .login-titulo{font-size:1.5rem;font-weight:600;color:var(--brown);margin-bottom:2px;}
 .login-sub{font-size:0.82rem;color:var(--brown-lt);margin-bottom:24px;font-family:'Raleway',sans-serif;letter-spacing:0.08em;text-transform:uppercase;}
-.login-box select,.login-box input[type=text],.login-box input[type=password]{
+.login-box select,.login-box input[type=text],.login-box input[type=email],.login-box input[type=password]{
   width:100%;padding:11px 14px;border:1.5px solid var(--border-lt);border-radius:var(--r);
   font-size:0.95rem;margin-bottom:11px;outline:none;transition:border 0.2s;
   color:var(--brown);background:var(--cream);font-family:'EB Garamond',Georgia,serif;}
@@ -247,6 +247,7 @@ tr:hover td{background:var(--gold-faint);}
   .horarios-grid{grid-template-columns:1fr 1fr;}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -256,17 +257,9 @@ tr:hover td{background:var(--gold-faint);}
     <span class="login-ornamento">✦ · ✦ · ✦</span>
     <div class="login-titulo">Projeto Salus</div>
     <div class="login-sub">Cáritas Diocesana de Franca</div>
-    <select id="login-perfil" onchange="aoSelecionarPerfil()">
-      <option value="">Selecione seu perfil</option>
-      <option value="admin">▸ Coordenação Cáritas (Admin)</option>
-      <option value="pastoral">Coordenador(a) Pastoral</option>
-      <option value="profissional">Voluntário Profissional</option>
-    </select>
-    <div id="campo-usuario" style="display:none;">
-      <input type="text" id="login-usuario" placeholder="Seu nome" autocomplete="off">
-    </div>
+    <input type="email" id="login-email" placeholder="Seu e-mail" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('login-senha').focus()">
     <div class="senha-wrap">
-      <input type="password" id="login-senha" placeholder="Senha" onkeydown="if(event.key==='Enter')fazerLogin()">
+      <input type="password" id="login-senha" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLogin()">
       <button type="button" class="btn-olho" onclick="toggleSenha()">
         <svg id="icone-olho" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
@@ -274,6 +267,9 @@ tr:hover td{background:var(--gold-faint);}
       </button>
     </div>
     <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+    <div style="text-align:right;margin-top:-6px;">
+      <a href="#" onclick="abrirEsqueciSenha();return false;" style="font-size:0.78rem;color:var(--brown-lt);font-family:'Raleway',sans-serif;">Esqueci minha senha</a>
+    </div>
     <div class="login-erro" id="login-erro"></div>
     <div class="login-verso">"Vai e faze tu o mesmo."
       <div style="font-family:'Raleway',sans-serif;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-top:4px;">Lucas 10, 37</div>
@@ -293,6 +289,7 @@ tr:hover td{background:var(--gold-faint);}
     </div>
     <div class="topbar-dir">
       <span class="badge-perfil" id="topbar-nivel"></span>
+      <button class="btn-sair" onclick="abrirMeuPerfil()">Minha Conta</button>
       <button class="btn-sair" onclick="sair()">Sair</button>
     </div>
   </div>
@@ -529,18 +526,27 @@ tr:hover td{background:var(--gold-faint);}
         </div>
       </div>
 
-      <!-- Senhas -->
+      <!-- Contas de Acesso -->
       <div class="config-box">
-        <h3 style="font-size:1rem;margin-bottom:14px;font-weight:600;color:var(--brown);">Senhas de Acesso</h3>
+        <h3 style="font-size:1rem;margin-bottom:14px;font-weight:600;color:var(--brown);">Contas de Acesso</h3>
+        <div class="aviso aviso-info">Admin e coordenadores(as) pastorais têm e-mail e senha próprios. Cada profissional gerencia a própria senha pelo botão <strong>"Minha Conta"</strong>, no topo do app, após fazer login.</div>
+        <div class="tabela-wrap"><table>
+          <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Ações</th></tr></thead>
+          <tbody id="tabela-contas"></tbody>
+        </table></div>
+        <div style="margin-top:14px;"><button class="btn btn-primario" onclick="abrirModalConta()">+ Nova Conta Pastoral</button></div>
+      </div>
+
+      <!-- EmailJS (recuperação de senha) -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">Envio de E-mail (Esqueci Minha Senha)</h3>
+        <div class="aviso aviso-info">Para o botão "Esqueci minha senha" funcionar, crie uma conta grátis em <strong>emailjs.com</strong>, conecte seu e-mail e crie um template com as variáveis <code>{{to_email}}</code>, <code>{{to_name}}</code>, <code>{{password}}</code> e <code>{{app_name}}</code> — lembre de configurar o campo "To Email" do template como <code>{{to_email}}</code>. Depois cole os 3 dados abaixo.</div>
         <div class="form-grid">
-          <div class="form-grupo"><label>Senha — Admin</label><input type="password" id="senha-admin" placeholder="Nova senha"></div>
-          <div class="form-grupo"><label>Senha — Pastoral</label><input type="password" id="senha-pastoral" placeholder="Nova senha"></div>
-          <div class="form-grupo"><label>Senha — Profissional</label><input type="password" id="senha-profissional" placeholder="Nova senha"></div>
+          <div class="form-grupo"><label>Service ID</label><input type="text" id="ej-service" placeholder="service_xxxxxxx"></div>
+          <div class="form-grupo"><label>Template ID</label><input type="text" id="ej-template" placeholder="template_xxxxxxx"></div>
+          <div class="form-grupo"><label>Public Key</label><input type="text" id="ej-key" placeholder="chave pública"></div>
         </div>
-        <div style="margin-top:14px;"><button class="btn btn-verde" onclick="salvarSenhas()">Salvar Senhas</button></div>
-        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-lt);font-size:0.82rem;color:var(--cinza-txt);">
-          <strong>Senhas padrão:</strong> Admin <code>caritas2026</code> · Pastoral <code>pastoral123</code> · Profissional <code>salus123</code>
-        </div>
+        <div style="margin-top:14px;"><button class="btn btn-verde" onclick="salvarConfigEmailJS()">Salvar Configuração de E-mail</button></div>
       </div>
     </div>
 
@@ -564,7 +570,8 @@ tr:hover td{background:var(--gold-faint);}
           </select></div>
         <div class="form-grupo"><label>Registro</label><input type="text" id="p-registro" placeholder="CRM, CRO, CRP..."></div>
         <div class="form-grupo"><label>Telefone / WhatsApp *</label><input type="tel" id="p-telefone" placeholder="(16) 99000-0000"></div>
-        <div class="form-grupo"><label>E-mail</label><input type="email" id="p-email" placeholder="email@exemplo.com"></div>
+        <div class="form-grupo"><label>E-mail (login do profissional) *</label><input type="email" id="p-email" placeholder="email@exemplo.com"></div>
+        <div class="form-grupo"><label>Senha de Acesso</label><input type="text" id="p-senha" placeholder="salus123"></div>
         <div class="form-grupo"><label>Local de Atendimento</label><input type="text" id="p-local" placeholder="Ex.: Consultório próprio, Online..."></div>
         <div class="form-grupo full"><label>Observações</label><textarea id="p-obs" placeholder="Informações complementares..."></textarea></div>
         <div class="form-grupo"><label>Status</label><select id="p-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div>
@@ -721,40 +728,100 @@ tr:hover td{background:var(--gold-faint);}
   </div>
 </div>
 
+<!-- Modal Conta (admin/pastoral) -->
+<div class="modal-overlay" id="modal-conta">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header"><h2 id="modal-conta-titulo">Nova Conta</h2><button class="modal-fechar" onclick="fecharModal('modal-conta')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Nome *</label><input type="text" id="c-nome" placeholder="Nome do coordenador(a)"></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>E-mail *</label><input type="email" id="c-email" placeholder="email@exemplo.com"></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Perfil</label>
+        <select id="c-perfil"><option value="pastoral">Coordenador(a) Pastoral</option><option value="admin">Coordenação Cáritas (Admin)</option></select>
+      </div>
+      <div class="form-grupo"><label>Senha *</label><input type="text" id="c-senha" placeholder="Senha inicial"></div>
+      <input type="hidden" id="c-id">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-conta')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarConta()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Esqueci Minha Senha -->
+<div class="modal-overlay" id="modal-esqueci-senha">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header"><h2>Esqueci Minha Senha</h2><button class="modal-fechar" onclick="fecharModal('modal-esqueci-senha')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-info">Informe o e-mail cadastrado. Enviaremos sua senha de acesso para ele.</div>
+      <div class="form-grupo"><label>E-mail cadastrado</label><input type="email" id="rec-email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')enviarRecuperacaoSenha()"></div>
+      <div id="rec-msg" style="font-size:0.87rem;margin-top:8px;display:none;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-esqueci-senha')">Cancelar</button>
+      <button class="btn btn-primario" id="btn-rec-enviar" onclick="enviarRecuperacaoSenha()">Enviar Senha por E-mail</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Minha Conta (trocar senha) -->
+<div class="modal-overlay" id="modal-meu-perfil">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header"><h2>Minha Conta</h2><button class="modal-fechar" onclick="fecharModal('modal-meu-perfil')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Nome</label><input type="text" id="mp-nome" disabled></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>E-mail de acesso</label><input type="email" id="mp-email" placeholder="seu@email.com"></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Nova Senha</label><input type="password" id="mp-senha1" placeholder="Deixe em branco para não alterar"></div>
+      <div class="form-grupo"><label>Confirmar Nova Senha</label><input type="password" id="mp-senha2" placeholder="Repita a nova senha"></div>
+      <div id="mp-msg" style="font-size:0.87rem;margin-top:8px;display:none;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-meu-perfil')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarMeuPerfil()">Salvar</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 // ══════════════════════════════════════════════════════
 // ESTADO
 // ══════════════════════════════════════════════════════
-let profissionais=[], beneficiarios=[], horarios=[], agendamentos=[], relatorios=[];
+let profissionais=[], beneficiarios=[], horarios=[], agendamentos=[], relatorios=[], contas=[];
 let usuarioAtual=null;
-let senhas={admin:'caritas2026',pastoral:'pastoral123',profissional:'salus123'};
 let horarioSelecionado=null;
 let agRespondendoId=null;
 let agWhatsId=null;
 
-// ── LOGIN ──
-function aoSelecionarPerfil(){
-  const v=document.getElementById('login-perfil').value;
-  document.getElementById('campo-usuario').style.display=(v&&v!=='admin')?'block':'none';
-}
+// ── LOGIN (por e-mail individual) ──
 function toggleSenha(){
   const i=document.getElementById('login-senha');
   i.type=i.type==='password'?'text':'password';
 }
 function fazerLogin(){
-  const perfil=document.getElementById('login-perfil').value;
+  const email=document.getElementById('login-email').value.trim().toLowerCase();
   const senha=document.getElementById('login-senha').value.trim();
-  const usuario=document.getElementById('login-usuario').value.trim();
-  if(!perfil){erroLogin('Selecione um perfil.');return;}
+  if(!email){erroLogin('Informe seu e-mail.');return;}
   if(!senha){erroLogin('Informe a senha.');return;}
-  const s=JSON.parse(localStorage.getItem('salus_senhas')||'{}');
-  const ok=s[perfil]||senhas[perfil];
-  if(senha!==ok){erroLogin('Senha incorreta.');return;}
-  if(perfil!=='admin'&&!usuario){erroLogin('Informe seu nome.');return;}
-  usuarioAtual={perfil,nome:perfil==='admin'?'Coordenação Cáritas':usuario};
-  entrar();
+
+  // Contas individuais (admin / pastoral)
+  const conta=contas.find(c=>(c.email||'').toLowerCase()===email);
+  if(conta){
+    if(conta.senha!==senha){erroLogin('Senha incorreta.');return;}
+    usuarioAtual={id:conta.id,perfil:conta.perfil,nome:conta.nome,email:conta.email};
+    entrar();return;
+  }
+  // Profissionais (conta individual dentro do próprio cadastro)
+  const prof=profissionais.find(p=>(p.email||'').toLowerCase()===email);
+  if(prof){
+    if(prof.status==='pendente'){erroLogin('Seu cadastro ainda aguarda aprovação da Cáritas.');return;}
+    if(prof.status==='inativo'){erroLogin('Cadastro inativo. Fale com a coordenação da Cáritas.');return;}
+    if((prof.senha||'salus123')!==senha){erroLogin('Senha incorreta.');return;}
+    usuarioAtual={id:prof.id,perfil:'profissional',nome:prof.nome,email:prof.email,profissionalId:prof.id};
+    entrar();return;
+  }
+  erroLogin('E-mail não encontrado. Verifique ou fale com a Cáritas.');
 }
 function erroLogin(m){
   const el=document.getElementById('login-erro');
@@ -790,8 +857,7 @@ function sair(){
   usuarioAtual=null;
   document.getElementById('tela-app').style.display='none';
   document.getElementById('tela-login').style.display='flex';
-  ['login-perfil','login-senha','login-usuario'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('campo-usuario').style.display='none';
+  ['login-email','login-senha'].forEach(id=>document.getElementById(id).value='');
 }
 
 // ── ABAS / MODAL / TOAST ──
@@ -804,7 +870,7 @@ function mudarAba(id){
   if(s)s.classList.add('ativa');
   const fn={painel:renderPainel,profissionais:renderProfissionais,beneficiarios:renderBeneficiarios,
     agendamentos:renderAgendamentos,relatorios:renderRelatorios,'minha-agenda':renderMinhaAgenda,
-    agendar:iniciarAgendar};
+    agendar:iniciarAgendar,config:renderContas};
   if(fn[id])fn[id]();
 }
 function abrirModal(id){document.getElementById(id).classList.add('aberto');}
@@ -822,6 +888,7 @@ function salvarLocal(){
   localStorage.setItem('salus_hor',JSON.stringify(horarios));
   localStorage.setItem('salus_ag',JSON.stringify(agendamentos));
   localStorage.setItem('salus_rel',JSON.stringify(relatorios));
+  localStorage.setItem('salus_contas',JSON.stringify(contas));
 }
 function carregarDados(){
   profissionais=JSON.parse(localStorage.getItem('salus_prof')||'[]');
@@ -829,15 +896,15 @@ function carregarDados(){
   horarios=JSON.parse(localStorage.getItem('salus_hor')||'[]');
   agendamentos=JSON.parse(localStorage.getItem('salus_ag')||'[]');
   relatorios=JSON.parse(localStorage.getItem('salus_rel')||'[]');
-  const s=JSON.parse(localStorage.getItem('salus_senhas')||'{}');
-  if(s.admin)senhas={...senhas,...s};
+  contas=JSON.parse(localStorage.getItem('salus_contas')||'[]');
   if(profissionais.length===0)carregarDemo();
+  if(contas.length===0)seedContas();
 }
 function carregarDemo(){
   profissionais=[
-    {id:'p1',nome:'Dra. Ana Beatriz Costa',especialidade:'Dentista',telefone:'(16) 99111-0001',email:'ana@ex.com',local:'Rua das Flores, 100 — sala 5',obs:'',status:'ativo',atendimentos:3},
-    {id:'p2',nome:'Dr. Marcos Evangelista',especialidade:'Psicólogo(a)',telefone:'(16) 99111-0002',email:'marcos@ex.com',local:'Online via WhatsApp',obs:'',status:'ativo',atendimentos:5},
-    {id:'p3',nome:'Dra. Lúcia Ferreira',especialidade:'Nutricionista',telefone:'(16) 99111-0003',email:'lucia@ex.com',local:'UBS Centro — sala 3',obs:'',status:'ativo',atendimentos:2},
+    {id:'p1',nome:'Dra. Ana Beatriz Costa',especialidade:'Dentista',telefone:'(16) 99111-0001',email:'ana@ex.com',senha:'salus123',local:'Rua das Flores, 100 — sala 5',obs:'',status:'ativo',atendimentos:3},
+    {id:'p2',nome:'Dr. Marcos Evangelista',especialidade:'Psicólogo(a)',telefone:'(16) 99111-0002',email:'marcos@ex.com',senha:'salus123',local:'Online via WhatsApp',obs:'',status:'ativo',atendimentos:5},
+    {id:'p3',nome:'Dra. Lúcia Ferreira',especialidade:'Nutricionista',telefone:'(16) 99111-0003',email:'lucia@ex.com',senha:'salus123',local:'UBS Centro — sala 3',obs:'',status:'ativo',atendimentos:2},
   ];
   beneficiarios=[
     {id:'b1',codigo:'SAL-2025-0001',nome:'Maria S.',pastoral:'Pastoral da Criança — Sé',telefone:'(16) 99222-0001',faixa:'Criança (0–12)',necessidade:'Dentista',descricao:'Avaliação odontológica'},
@@ -856,6 +923,198 @@ function carregarDemo(){
   agendamentos=[];relatorios=[];
   salvarLocal();
 }
+
+// ── CONTAS DE ACESSO (admin / pastoral individuais) ──
+function seedContas(){
+  // Migração: reaproveita senha antiga compartilhada, se já existir salva no navegador
+  const legado=JSON.parse(localStorage.getItem('salus_senhas')||'{}');
+  contas=[
+    {id:'admin-1',nome:'Coordenação Cáritas',email:'',senha:legado.admin||'caritas2026',perfil:'admin'},
+    {id:'pastoral-1',nome:'Coordenação Pastoral',email:'',senha:legado.pastoral||'pastoral123',perfil:'pastoral'},
+  ];
+  salvarLocal();
+  if(usandoFirebase)contas.forEach(c=>salvarFirebase('contas',c.id,c));
+}
+function renderContas(){
+  const tbody=document.getElementById('tabela-contas');
+  if(!tbody)return;
+  tbody.innerHTML=contas.map(c=>`<tr>
+    <td><strong>${esc(c.nome)}</strong></td>
+    <td>${esc(c.email)||'<em style="color:var(--vermelho);">sem e-mail — recuperação de senha não funciona</em>'}</td>
+    <td><span class="badge badge-prof">${c.perfil==='admin'?'Admin':'Pastoral'}</span></td>
+    <td style="display:flex;gap:5px;flex-wrap:wrap;">
+      <button class="btn btn-xs btn-primario" onclick="editarConta('${c.id}')">Editar</button>
+      ${contas.filter(x=>x.perfil==='admin').length>1||c.perfil!=='admin'?`<button class="btn btn-xs btn-perigo" onclick="excluirConta('${c.id}')">✕</button>`:''}
+    </td>
+  </tr>`).join('');
+}
+function abrirModalConta(){
+  document.getElementById('modal-conta-titulo').textContent='Nova Conta';
+  ['c-id','c-nome','c-email','c-senha'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('c-perfil').value='pastoral';
+  abrirModal('modal-conta');
+}
+function editarConta(id){
+  const c=contas.find(x=>x.id===id);if(!c)return;
+  document.getElementById('modal-conta-titulo').textContent='Editar Conta';
+  document.getElementById('c-id').value=c.id;
+  document.getElementById('c-nome').value=c.nome||'';
+  document.getElementById('c-email').value=c.email||'';
+  document.getElementById('c-perfil').value=c.perfil||'pastoral';
+  document.getElementById('c-senha').value=c.senha||'';
+  abrirModal('modal-conta');
+}
+function salvarConta(){
+  const nome=document.getElementById('c-nome').value.trim();
+  const email=document.getElementById('c-email').value.trim().toLowerCase();
+  const senha=document.getElementById('c-senha').value.trim();
+  const perfil=document.getElementById('c-perfil').value;
+  if(!nome||!email||!senha){toast('Preencha nome, e-mail e senha.','erro');return;}
+  if(emailEmUso(email,document.getElementById('c-id').value)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
+  const id=document.getElementById('c-id').value||uid();
+  const idx=contas.findIndex(x=>x.id===id);
+  const obj={id,nome,email,senha,perfil};
+  if(idx>=0)contas[idx]=obj;else contas.push(obj);
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('contas',id,obj);
+  fecharModal('modal-conta');renderContas();
+  toast('Conta salva!','ok');
+}
+function excluirConta(id){
+  contas=contas.filter(x=>x.id!==id);
+  salvarLocal();
+  if(usandoFirebase)excluirFirebase('contas',id);
+  renderContas();
+  toast('Conta removida.','ok');
+}
+function emailEmUso(email,idIgnorar){
+  const e=(email||'').toLowerCase();
+  const naContas=contas.some(c=>c.id!==idIgnorar&&(c.email||'').toLowerCase()===e);
+  const nosProf=profissionais.some(p=>p.id!==idIgnorar&&(p.email||'').toLowerCase()===e);
+  return naContas||nosProf;
+}
+
+// ── MINHA CONTA (usuário logado troca a própria senha/e-mail) ──
+function abrirMeuPerfil(){
+  if(!usuarioAtual)return;
+  document.getElementById('mp-nome').value=usuarioAtual.nome||'';
+  document.getElementById('mp-email').value=usuarioAtual.email||'';
+  document.getElementById('mp-senha1').value='';
+  document.getElementById('mp-senha2').value='';
+  document.getElementById('mp-msg').style.display='none';
+  abrirModal('modal-meu-perfil');
+}
+function salvarMeuPerfil(){
+  if(!usuarioAtual)return;
+  const email=document.getElementById('mp-email').value.trim().toLowerCase();
+  const s1=document.getElementById('mp-senha1').value.trim();
+  const s2=document.getElementById('mp-senha2').value.trim();
+  const msg=document.getElementById('mp-msg');
+  if(!email){mpMsg('Informe um e-mail.','erro');return;}
+  if(emailEmUso(email,usuarioAtual.id)){mpMsg('Esse e-mail já está em uso por outra conta.','erro');return;}
+  if(s1||s2){
+    if(s1!==s2){mpMsg('As senhas não conferem.','erro');return;}
+    if(s1.length<4){mpMsg('A senha deve ter ao menos 4 caracteres.','erro');return;}
+  }
+  if(usuarioAtual.perfil==='profissional'){
+    const p=profissionais.find(x=>x.id===usuarioAtual.id);if(!p)return;
+    p.email=email; if(s1)p.senha=s1;
+    salvarLocal(); if(usandoFirebase)salvarFirebase('profissionais',p.id,p);
+    renderProfissionais();
+  }else{
+    const c=contas.find(x=>x.id===usuarioAtual.id);if(!c)return;
+    c.email=email; if(s1)c.senha=s1;
+    salvarLocal(); if(usandoFirebase)salvarFirebase('contas',c.id,c);
+    renderContas();
+  }
+  usuarioAtual.email=email;
+  mpMsg('Dados atualizados com sucesso!','ok');
+  toast('Conta atualizada!','ok');
+  setTimeout(()=>fecharModal('modal-meu-perfil'),900);
+}
+function mpMsg(t,tipo){
+  const el=document.getElementById('mp-msg');
+  el.textContent=t;el.style.display='block';
+  el.style.color=tipo==='erro'?'var(--vermelho)':'var(--verde)';
+}
+
+// ── ESQUECI MINHA SENHA (envio por e-mail via EmailJS) ──
+function abrirEsqueciSenha(){
+  document.getElementById('rec-email').value=document.getElementById('login-email').value.trim();
+  document.getElementById('rec-msg').style.display='none';
+  abrirModal('modal-esqueci-senha');
+}
+function enviarRecuperacaoSenha(){
+  const email=document.getElementById('rec-email').value.trim().toLowerCase();
+  if(!email){recMsg('Informe um e-mail.','erro');return;}
+  const conta=contas.find(c=>(c.email||'').toLowerCase()===email);
+  const prof=!conta?profissionais.find(p=>(p.email||'').toLowerCase()===email):null;
+  const alvo=conta||prof;
+  if(!alvo){recMsg('E-mail não encontrado.','erro');return;}
+  const nome=alvo.nome, senha=alvo.senha||'salus123';
+  const btn=document.getElementById('btn-rec-enviar');
+  btn.disabled=true;btn.textContent='Enviando...';
+  enviarEmailComSenha(email,nome,senha)
+    .then(()=>{
+      recMsg('Senha enviada! Verifique sua caixa de entrada (e o spam).','ok');
+      btn.disabled=false;btn.textContent='Enviar Senha por E-mail';
+    })
+    .catch(e=>{
+      recMsg('Não foi possível enviar o e-mail: '+e.message+'. Configure o EmailJS na aba Config.','erro');
+      btn.disabled=false;btn.textContent='Enviar Senha por E-mail';
+    });
+}
+function recMsg(t,tipo){
+  const el=document.getElementById('rec-msg');
+  el.textContent=t;el.style.display='block';
+  el.style.color=tipo==='erro'?'var(--vermelho)':'var(--verde)';
+}
+
+// ── EMAILJS (envio de e-mail sem servidor próprio) ──
+let emailjsConfigurado=false;
+function carregarConfigEmailJS(){
+  const cfg=JSON.parse(localStorage.getItem('salus_emailjs_cfg')||'null');
+  if(cfg&&cfg.publicKey){
+    const campo1=document.getElementById('ej-service');
+    if(campo1){
+      document.getElementById('ej-service').value=cfg.serviceId||'';
+      document.getElementById('ej-template').value=cfg.templateId||'';
+      document.getElementById('ej-key').value=cfg.publicKey||'';
+    }
+    inicializarEmailJS(cfg);
+  }
+}
+function salvarConfigEmailJS(){
+  const cfg={
+    serviceId:document.getElementById('ej-service').value.trim(),
+    templateId:document.getElementById('ej-template').value.trim(),
+    publicKey:document.getElementById('ej-key').value.trim(),
+  };
+  if(!cfg.serviceId||!cfg.templateId||!cfg.publicKey){toast('Preencha os 3 campos do EmailJS.','erro');return;}
+  localStorage.setItem('salus_emailjs_cfg',JSON.stringify(cfg));
+  inicializarEmailJS(cfg);
+  toast('Configuração de e-mail salva!','ok');
+}
+function inicializarEmailJS(cfg){
+  window._salusEmailCfg=cfg;
+  function tentar(){
+    if(window.emailjs){emailjs.init({publicKey:cfg.publicKey});emailjsConfigurado=true;}
+    else setTimeout(tentar,300);
+  }
+  tentar();
+}
+function enviarEmailComSenha(destEmail,nome,senha){
+  return new Promise((resolve,reject)=>{
+    if(!window.emailjs||!window._salusEmailCfg){reject(new Error('EmailJS não configurado'));return;}
+    const cfg=window._salusEmailCfg;
+    emailjs.send(cfg.serviceId,cfg.templateId,{
+      to_email:destEmail, to_name:nome, password:senha, app_name:'Projeto Salus'
+    }).then(()=>resolve()).catch(err=>reject(new Error(err?.text||err?.message||'falha no envio')));
+  });
+}
+carregarConfigEmailJS();
+
+
 
 // ── UTILITÁRIOS ──
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
@@ -885,7 +1144,7 @@ function atualizarBadges(){
 
   const bMinhaAg=document.getElementById('badge-minha-agenda');
   if(bMinhaAg&&usuarioAtual?.perfil==='profissional'){
-    const profId=profissionais.find(p=>p.nome===usuarioAtual.nome)?.id;
+    const profId=usuarioAtual?.profissionalId||profissionais.find(p=>p.nome===usuarioAtual.nome)?.id;
     const minhaSol=profId?agendamentos.filter(a=>a.status==='solicitado'&&a.profissionalId===profId).length:solicit;
     bMinhaAg.textContent=minhaSol||'';
     bMinhaAg.style.display=minhaSol?'inline':'none';
@@ -935,7 +1194,7 @@ function renderPainel(){
 // MINHA AGENDA (profissional)
 // ══════════════════════════════════════════════════════
 function renderMinhaAgenda(){
-  const profId=profissionais.find(p=>p.nome===usuarioAtual?.nome)?.id;
+  const profId=usuarioAtual?.profissionalId||profissionais.find(p=>p.nome===usuarioAtual?.nome)?.id;
 
   // Solicitações pendentes para este profissional
   const solicit=profId
@@ -1271,6 +1530,7 @@ function abrirModalProfissional(){
   ['p-id','p-nome','p-registro','p-telefone','p-email','p-local','p-obs'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('p-especialidade').value='';
   document.getElementById('p-status').value='ativo';
+  document.getElementById('p-senha').value='salus123';
   abrirModal('modal-profissional');
 }
 function editarProfissional(id){
@@ -1285,25 +1545,33 @@ function editarProfissional(id){
   document.getElementById('p-local').value=p.local||'';
   document.getElementById('p-obs').value=p.obs||'';
   document.getElementById('p-status').value=p.status||'ativo';
+  document.getElementById('p-senha').value=p.senha||'salus123';
   abrirModal('modal-profissional');
 }
 function salvarProfissional(){
   const nome=document.getElementById('p-nome').value.trim();
   const tel=document.getElementById('p-telefone').value.trim();
   const esp=document.getElementById('p-especialidade').value;
+  const email=document.getElementById('p-email').value.trim().toLowerCase();
+  const senha=document.getElementById('p-senha').value.trim()||'salus123';
   if(!nome||!tel||!esp){toast('Preencha nome, especialidade e telefone.','erro');return;}
+  if(!email){toast('Informe o e-mail — é o login do profissional no app.','erro');return;}
   const id=document.getElementById('p-id').value||uid();
+  if(emailEmUso(email,id)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
   const idx=profissionais.findIndex(x=>x.id===id);
   const obj={id,nome,especialidade:esp,registro:document.getElementById('p-registro').value.trim(),
-    telefone:tel,email:document.getElementById('p-email').value.trim(),
+    telefone:tel,email,senha,
     local:document.getElementById('p-local').value.trim(),
     obs:document.getElementById('p-obs').value.trim(),
     status:document.getElementById('p-status').value,
     atendimentos:idx>=0?(profissionais[idx].atendimentos||0):0};
   if(idx>=0)profissionais[idx]=obj;else profissionais.push(obj);
-  salvarLocal();fecharModal('modal-profissional');renderProfissionais();
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('profissionais',id,obj);
+  fecharModal('modal-profissional');renderProfissionais();
   toast('Profissional salvo!','ok');
 }
+
 
 // ── HORÁRIOS ──
 function abrirModalHorario(){
@@ -1312,7 +1580,7 @@ function abrirModalHorario(){
   document.getElementById('h-local').value='';
   document.getElementById('h-obs').value='';
   // Pré-preencher local do profissional logado
-  const p=profissionais.find(x=>x.nome===usuarioAtual?.nome);
+  const p=profissionais.find(x=>x.id===usuarioAtual?.profissionalId)||profissionais.find(x=>x.nome===usuarioAtual?.nome);
   if(p?.local)document.getElementById('h-local').value=p.local;
   abrirModal('modal-horario');
 }
@@ -1322,7 +1590,7 @@ function salvarHorario(){
   const local=document.getElementById('h-local').value.trim();
   if(!data||!hora||!local){toast('Preencha data, horário e local.','erro');return;}
   // Encontrar profissional logado
-  const p=profissionais.find(x=>x.nome===usuarioAtual?.nome)||profissionais[0];
+  const p=profissionais.find(x=>x.id===usuarioAtual?.profissionalId)||profissionais.find(x=>x.nome===usuarioAtual?.nome)||profissionais[0];
   if(!p){toast('Nenhum profissional cadastrado com este nome.','erro');return;}
   horarios.push({id:uid(),profissionalId:p.id,data,hora,local,obs:document.getElementById('h-obs').value.trim(),ocupado:false});
   salvarLocal();fecharModal('modal-horario');renderMinhaAgenda();
@@ -1448,10 +1716,16 @@ function abrirModalRelatorio(profId,benefId,agId){
   document.getElementById('r-retorno').value='nao';
   document.getElementById('grupo-r-data').style.display='none';
   document.querySelectorAll('#estrelas-rel .estrela').forEach(e=>e.classList.remove('on'));
+
+  // Profissional logado só pode registrar atendimento em seu próprio nome
+  const souProfissional=usuarioAtual?.perfil==='profissional';
+  if(souProfissional)profId=usuarioAtual.profissionalId;
+
   // Popular selects
   const sel=document.getElementById('r-profissional');
   sel.innerHTML='<option value="">Selecione</option>'+
-    profissionais.filter(p=>p.status==='ativo').map(p=>`<option value="${p.id}" ${p.id===profId?'selected':''}>${esc(p.nome)} — ${esc(p.especialidade)}</option>`).join('');
+    profissionais.filter(p=>p.status==='ativo'&&(!souProfissional||p.id===profId)).map(p=>`<option value="${p.id}" ${p.id===profId?'selected':''}>${esc(p.nome)} — ${esc(p.especialidade)}</option>`).join('');
+  sel.disabled=souProfissional;
   const selb=document.getElementById('r-beneficiario');
   selb.innerHTML='<option value="">Selecione</option>'+
     beneficiarios.map(b=>`<option value="${b.id}" ${b.id===benefId?'selected':''}>${esc(b.codigo)} — ${esc(b.nome)}</option>`).join('');
@@ -1462,7 +1736,7 @@ function abrirRelPorAg(agId){
   abrirModalRelatorio(a.profissionalId,a.beneficiarioId,agId);
 }
 function salvarRelatorio(){
-  const profId=document.getElementById('r-profissional').value;
+  const profId=(usuarioAtual?.perfil==='profissional')?usuarioAtual.profissionalId:document.getElementById('r-profissional').value;
   const data=document.getElementById('r-data').value;
   if(!profId||!data){toast('Preencha profissional e data.','erro');return;}
   const id=document.getElementById('r-id').value||uid();
@@ -1477,7 +1751,9 @@ function salvarRelatorio(){
   if(idx>=0)relatorios[idx]=obj;else relatorios.push(obj);
   const p=profissionais.find(x=>x.id===profId);
   if(p&&idx<0)p.atendimentos=(p.atendimentos||0)+1;
-  salvarLocal();fecharModal('modal-relatorio');renderRelatorios();
+  salvarLocal();
+  if(usandoFirebase){salvarFirebase('relatorios',id,obj);if(p)salvarFirebase('profissionais',p.id,p);}
+  fecharModal('modal-relatorio');renderRelatorios();
   toast('Relatório salvo!','ok');
 }
 function renderRelatorios(){
@@ -1532,15 +1808,6 @@ function excluir(tipo,id){
   }
   salvarLocal();render();atualizarBadges();
   toast('Registro excluído.','ok');
-}
-function salvarSenhas(){
-  const nova={};
-  ['admin','pastoral','profissional'].forEach(k=>{const v=document.getElementById('senha-'+k)?.value?.trim();if(v)nova[k]=v;});
-  if(!Object.keys(nova).length){toast('Nenhuma senha preenchida.','erro');return;}
-  const atual=JSON.parse(localStorage.getItem('salus_senhas')||'{}');
-  localStorage.setItem('salus_senhas',JSON.stringify({...atual,...nova}));
-  toast('Senhas atualizadas!','ok');
-  ['admin','pastoral','profissional'].forEach(k=>{const el=document.getElementById('senha-'+k);if(el)el.value='';});
 }
 function exportarCSV(){
   const linhas=[['Protocolo','Data','Profissional','Especialidade','Código Beneficiário','Retorno','Nota']];
@@ -1633,11 +1900,17 @@ function sincronizarDoFirebase() {
     horarios:      (d) => { horarios = d ? Object.values(d) : []; },
     agendamentos:  (d) => { agendamentos = d ? Object.values(d) : []; renderPainel(); atualizarBadges(); },
     relatorios:    (d) => { relatorios = d ? Object.values(d) : []; },
+    contas:        (d) => {
+      if (d) { contas = Object.values(d); }
+      else if (!contasSeedFirebaseFeito) { contasSeedFirebaseFeito = true; seedContas(); }
+      renderContas();
+    },
   };
   Object.entries(colecoes).forEach(([col, fn]) => {
     db.ref(col).on('value', snap => fn(snap.val()));
   });
 }
+let contasSeedFirebaseFeito = false;
 
 // ── ESCUTAR NOVOS PROFISSIONAIS DO FORMS (status: pendente) ──
 function escutarNovosDoForms() {
@@ -1693,6 +1966,10 @@ function aprovarProfissional(id) {
 }
 
 // ── TENTAR RECONECTAR FIREBASE SALVO ──
+// Carrega dados locais/demo de imediato — permite validar login por e-mail
+// mesmo antes do Firebase responder (ou no modo somente local).
+carregarDados();
+
 // Config Firebase real do projeto Salus
 const FIREBASE_CFG_SALUS = {
   apiKey: "AIzaSyDogE0n1-nnNo-FO_XYl7iqf2nSpYQyupI",
