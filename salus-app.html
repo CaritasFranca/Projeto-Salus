@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projeto Salus — Cáritas Diocesana de Franca</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#b8860b;--gold-lt:#d4a520;--gold-pale:#f5edcf;--gold-faint:#faf5e4;
+  --cream:#faf7f0;--parchment:#f0e8d0;
+  --dark:#0f0f0f;--dark2:#1a1a1a;
+  --brown:#2c1a0e;--brown-mid:#5c3d1e;--brown-lt:#8b6340;
+  --border:#c8a96e;--border-lt:#e0cfa0;
+  --verde:#1a6b3c;--verde-lt:#d4edda;
+  --azul:#1a4a6b;--azul-lt:#d1e8f5;
+  --vermelho:#8b1a1a;--vermelho-lt:#f8d7da;
+  --cinza:#f4f0e8;--cinza-med:#d5cdb8;--cinza-txt:#6b5c40;
+  --sombra:0 2px 10px rgba(44,26,14,0.10);--sombra-forte:0 4px 24px rgba(44,26,14,0.15);
+  --r:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'EB Garamond',Georgia,serif;}
+body{background:var(--cream);color:var(--brown);min-height:100vh;}
+
+/* LOGIN */
+#tela-login{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg,var(--dark) 0%,var(--dark2) 60%,#1a1200 100%);}
+.login-box{background:white;border-radius:14px;padding:44px 36px 36px;width:100%;max-width:400px;
+  box-shadow:var(--sombra-forte);text-align:center;border-top:3px solid var(--gold);}
+.login-ornamento{font-size:1.4rem;color:var(--gold);letter-spacing:0.4em;display:block;margin-bottom:1rem;}
+.login-titulo{font-size:1.5rem;font-weight:600;color:var(--brown);margin-bottom:2px;}
+.login-sub{font-size:0.82rem;color:var(--brown-lt);margin-bottom:24px;font-family:'Raleway',sans-serif;letter-spacing:0.08em;text-transform:uppercase;}
+.login-box select,.login-box input[type=text],.login-box input[type=password]{
+  width:100%;padding:11px 14px;border:1.5px solid var(--border-lt);border-radius:var(--r);
+  font-size:0.95rem;margin-bottom:11px;outline:none;transition:border 0.2s;
+  color:var(--brown);background:var(--cream);font-family:'EB Garamond',Georgia,serif;}
+.login-box select:focus,.login-box input:focus{border-color:var(--gold);background:white;}
+.senha-wrap{position:relative;margin-bottom:14px;}
+.senha-wrap input{width:100%;padding:11px 42px 11px 14px;border:1.5px solid var(--border-lt);border-radius:var(--r);
+  font-size:0.95rem;outline:none;transition:border 0.2s;color:var(--brown);background:var(--cream);}
+.senha-wrap input:focus{border-color:var(--gold);background:white;}
+.btn-olho{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--brown-lt);padding:4px;}
+.btn-login{width:100%;padding:12px;background:var(--brown);color:var(--gold-pale);border:none;border-radius:var(--r);
+  font-size:0.85rem;font-weight:600;cursor:pointer;transition:background 0.2s;font-family:'Raleway',sans-serif;letter-spacing:0.15em;text-transform:uppercase;}
+.btn-login:hover{background:var(--gold);color:var(--brown);}
+.login-erro{color:var(--vermelho);font-size:0.84rem;margin-top:10px;display:none;}
+.login-verso{margin-top:20px;font-style:italic;font-size:0.9rem;color:var(--brown-lt);line-height:1.6;border-top:1px solid var(--border-lt);padding-top:16px;}
+
+/* APP */
+#tela-app{display:none;min-height:100vh;flex-direction:column;}
+.topbar{background:linear-gradient(90deg,var(--dark) 0%,var(--dark2) 100%);color:var(--gold-pale);
+  padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:54px;
+  box-shadow:var(--sombra);position:sticky;top:0;z-index:100;}
+.topbar-esq{display:flex;align-items:center;gap:12px;}
+.topbar-ornamento{font-size:1.1rem;color:var(--gold);}
+.topbar-titulo{font-size:1rem;font-weight:600;}
+.topbar-perfil{font-size:0.76rem;color:var(--gold);opacity:0.85;font-family:'Raleway',sans-serif;letter-spacing:0.08em;}
+.topbar-dir{display:flex;align-items:center;gap:10px;}
+.badge-perfil{background:rgba(184,134,11,0.2);border:1px solid var(--gold);border-radius:20px;
+  padding:3px 10px;font-size:0.73rem;font-weight:600;color:var(--gold);font-family:'Raleway',sans-serif;}
+.btn-sair{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:var(--gold-pale);
+  padding:5px 14px;border-radius:20px;cursor:pointer;font-size:0.8rem;font-family:'Raleway',sans-serif;}
+.btn-sair:hover{background:rgba(255,255,255,0.18);}
+
+/* NOTIF BADGE */
+.notif-badge{background:#c0392b;color:white;border-radius:10px;font-size:0.68rem;
+  padding:1px 6px;margin-left:4px;display:none;font-family:'Raleway',sans-serif;font-weight:700;}
+
+/* ABAS */
+.abas{background:white;border-bottom:2px solid var(--border-lt);display:flex;padding:0 16px;overflow-x:auto;gap:2px;scrollbar-width:none;}
+.abas::-webkit-scrollbar{display:none;}
+.aba{padding:13px 14px;font-size:0.84rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;
+  color:var(--cinza-txt);transition:all 0.2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;
+  font-family:'Raleway',sans-serif;letter-spacing:0.04em;position:relative;}
+.aba:hover{color:var(--gold);}
+.aba.ativa{color:var(--brown);border-bottom-color:var(--gold);}
+
+/* CONTEÚDO */
+.conteudo{flex:1;padding:24px;max-width:1100px;margin:0 auto;width:100%;}
+.secao{display:none;}.secao.ativa{display:block;}
+.secao-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.secao-titulo{font-size:1.2rem;font-weight:600;color:var(--brown);}
+
+/* CARDS */
+.cards-resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.card-resumo{background:white;border-radius:var(--r);padding:18px 16px;box-shadow:var(--sombra);border-left:3px solid var(--gold);}
+.card-resumo .numero{font-size:2rem;font-weight:700;color:var(--brown);line-height:1;}
+.card-resumo .label{font-size:0.73rem;color:var(--cinza-txt);margin-top:4px;font-family:'Raleway',sans-serif;letter-spacing:0.06em;text-transform:uppercase;}
+.card-resumo.destaque{border-left-color:var(--vermelho);}
+.card-resumo.destaque .numero{color:var(--vermelho);}
+
+/* TABELA */
+.tabela-wrap{background:white;border-radius:var(--r);box-shadow:var(--sombra);overflow:hidden;margin-bottom:20px;width:100%;}
+.tabela-header{padding:14px 20px;border-bottom:1px solid var(--border-lt);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.tabela-header h3{font-size:1rem;font-weight:600;color:var(--brown);}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--gold-faint);padding:10px 14px;text-align:left;font-size:0.72rem;font-weight:700;
+  color:var(--brown-lt);text-transform:uppercase;letter-spacing:0.08em;font-family:'Raleway',sans-serif;border-bottom:1px solid var(--border-lt);}
+td{padding:11px 14px;border-bottom:1px solid var(--cinza);font-size:0.92rem;color:var(--brown);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--gold-faint);}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
+.form-grupo{display:flex;flex-direction:column;gap:5px;}
+.form-grupo.full{grid-column:1/-1;}
+.form-grupo label{font-size:0.73rem;font-weight:600;color:var(--brown-lt);font-family:'Raleway',sans-serif;letter-spacing:0.08em;text-transform:uppercase;}
+.form-grupo input,.form-grupo select,.form-grupo textarea{
+  padding:9px 12px;border:1.5px solid var(--border-lt);border-radius:var(--r);
+  font-size:0.95rem;outline:none;transition:border 0.2s;color:var(--brown);
+  background:var(--cream);font-family:'EB Garamond',Georgia,serif;}
+.form-grupo input:focus,.form-grupo select:focus,.form-grupo textarea:focus{border-color:var(--gold);background:white;}
+.form-grupo textarea{resize:vertical;min-height:80px;}
+
+/* BUSCA */
+.busca-wrap{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;}
+.busca-input{padding:8px 14px;border:1.5px solid var(--border-lt);border-radius:var(--r);
+  font-size:0.92rem;outline:none;min-width:220px;background:var(--cream);color:var(--brown);font-family:'EB Garamond',Georgia,serif;}
+.busca-input:focus{border-color:var(--gold);background:white;}
+.filtro-linha{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.filtro-linha select,.filtro-linha input{
+  padding:7px 10px;border:1.5px solid var(--border-lt);border-radius:var(--r);
+  font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);font-family:'EB Garamond',Georgia,serif;}
+
+/* BOTÕES */
+.btn{padding:9px 18px;border-radius:var(--r);border:none;font-size:0.82rem;font-weight:600;cursor:pointer;
+  transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;font-family:'Raleway',sans-serif;letter-spacing:0.06em;}
+.btn-primario{background:var(--brown);color:var(--gold-pale);}
+.btn-primario:hover{background:var(--gold);color:var(--brown);}
+.btn-secundario{background:var(--cinza);color:var(--brown);border:1.5px solid var(--border-lt);}
+.btn-secundario:hover{background:var(--parchment);}
+.btn-verde{background:var(--verde);color:white;}
+.btn-verde:hover{background:#145530;}
+.btn-perigo{background:var(--vermelho);color:white;}
+.btn-perigo:hover{background:#6b1212;}
+.btn-whats{background:#25D366;color:white;}
+.btn-whats:hover{background:#1da851;}
+.btn-sm{padding:5px 12px;font-size:0.78rem;}
+.btn-xs{padding:3px 8px;font-size:0.74rem;}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:0.73rem;font-weight:700;font-family:'Raleway',sans-serif;}
+.badge-ativo{background:var(--verde-lt);color:var(--verde);}
+.badge-pendente{background:#fff3cd;color:#856404;}
+.badge-confirmado{background:var(--azul-lt);color:var(--azul);}
+.badge-realizado{background:var(--verde-lt);color:var(--verde);}
+.badge-cancelado{background:var(--vermelho-lt);color:var(--vermelho);}
+.badge-solicitado{background:#ffe8cc;color:#8b4500;}
+.badge-recusado{background:var(--vermelho-lt);color:var(--vermelho);}
+.badge-prof{background:var(--gold-pale);color:var(--brown-mid);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.aberto{display:flex;}
+.modal{background:white;border-radius:12px;width:100%;max-width:620px;max-height:92vh;overflow-y:auto;box-shadow:var(--sombra-forte);border-top:3px solid var(--gold);}
+.modal-header{padding:18px 22px 14px;border-bottom:1px solid var(--border-lt);display:flex;align-items:center;justify-content:space-between;}
+.modal-header h2{font-size:1.1rem;font-weight:600;color:var(--brown);}
+.modal-fechar{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--brown-lt);line-height:1;padding:0 4px;}
+.modal-body{padding:20px 22px;}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--border-lt);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--brown);color:var(--gold-pale);
+  padding:12px 20px;border-radius:var(--r);font-size:0.88rem;box-shadow:var(--sombra-forte);z-index:999;display:none;font-family:'Raleway',sans-serif;}
+.toast.ok{background:var(--verde);}
+.toast.erro{background:var(--vermelho);}
+
+/* AVISOS */
+.aviso{padding:11px 15px;border-radius:var(--r);font-size:0.87rem;margin-bottom:14px;}
+.aviso-info{background:var(--azul-lt);color:var(--azul);border-left:3px solid var(--azul);}
+.aviso-ok{background:var(--verde-lt);color:var(--verde);border-left:3px solid var(--verde);}
+.aviso-alerta{background:var(--gold-pale);color:var(--brown-mid);border-left:3px solid var(--gold);}
+.aviso-erro{background:var(--vermelho-lt);color:var(--vermelho);border-left:3px solid var(--vermelho);}
+
+/* VAZIO */
+.vazio{text-align:center;padding:44px 20px;color:var(--cinza-txt);}
+.vazio-icone{font-size:2.5rem;margin-bottom:10px;}
+.vazio p{font-size:0.92rem;font-style:italic;}
+
+/* ESTRELAS */
+.estrelas{display:flex;gap:4px;}
+.estrela{font-size:1.1rem;cursor:pointer;color:var(--cinza-med);transition:color 0.15s;}
+.estrela.on{color:var(--gold);}
+
+/* VERSO */
+.verso-inline{font-style:italic;color:var(--brown-mid);border-left:3px solid var(--gold);
+  padding:8px 14px;background:var(--gold-pale);border-radius:0 var(--r) var(--r) 0;margin:16px 0;font-size:0.93rem;line-height:1.7;}
+.verso-ref{display:block;font-style:normal;font-family:'Raleway',sans-serif;font-size:0.69rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-top:4px;}
+
+/* HORÁRIOS GRID */
+.horarios-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:10px;}
+.horario-card{border:1.5px solid var(--border-lt);border-radius:var(--r);padding:12px 14px;cursor:pointer;transition:all 0.2s;background:white;}
+.horario-card:hover{border-color:var(--gold);background:var(--gold-faint);}
+.horario-card.selecionado{border-color:var(--gold);background:var(--gold-pale);box-shadow:0 0 0 2px rgba(184,134,11,0.2);}
+.horario-card.ocupado{opacity:0.45;cursor:not-allowed;background:var(--cinza);}
+.horario-card .hc-dia{font-family:'Raleway',sans-serif;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown-lt);margin-bottom:3px;}
+.horario-card .hc-hora{font-size:1.05rem;font-weight:600;color:var(--brown);}
+.horario-card .hc-vaga{font-size:0.78rem;color:var(--verde);margin-top:2px;}
+.horario-card.ocupado .hc-vaga{color:var(--cinza-txt);}
+
+/* PAINEL SECAO */
+.painel-secao{margin-bottom:28px;}
+.painel-secao-titulo{font-size:0.88rem;font-weight:700;color:var(--brown);margin-bottom:12px;
+  padding-bottom:8px;border-bottom:2px solid var(--border-lt);font-family:'Raleway',sans-serif;letter-spacing:0.05em;text-transform:uppercase;}
+
+/* DETALHE */
+.detalhe-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.detalhe-item label{font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:2px;}
+.detalhe-item span{font-size:0.95rem;color:var(--brown);}
+
+/* CONFIG */
+.config-box{background:white;border-radius:var(--r);padding:24px;box-shadow:var(--sombra);max-width:620px;margin-bottom:20px;}
+.config-box textarea{width:100%;height:140px;font-family:monospace;font-size:0.82rem;resize:vertical;padding:10px;border:1.5px solid var(--border-lt);border-radius:var(--r);background:var(--cream);color:var(--brown);}
+
+/* MOBILE */
+@media(max-width:640px){
+  .topbar{padding:0 12px;height:50px;}
+  .topbar-titulo{font-size:0.88rem;}
+  .topbar-perfil,.badge-perfil{display:none;}
+  .abas{padding:0 6px;}
+  .aba{padding:10px 10px;font-size:0.78rem;}
+  .conteudo{padding:12px 10px;}
+  .cards-resumo{grid-template-columns:1fr 1fr;gap:10px;}
+  .card-resumo{padding:13px 12px;}
+  .card-resumo .numero{font-size:1.6rem;}
+  .form-grid,.form-grid.cols3{grid-template-columns:1fr;}
+  .form-grupo input,.form-grupo select,.form-grupo textarea{font-size:1rem;padding:11px 12px;}
+  .busca-wrap{flex-direction:column;align-items:stretch;}
+  .busca-input{min-width:unset;width:100%;font-size:1rem;}
+  .filtro-linha{flex-direction:column;align-items:stretch;}
+  .tabela-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:500px;}
+  .modal-overlay{padding:0;align-items:flex-end;}
+  .modal{border-radius:18px 18px 0 0;max-width:100%;max-height:92vh;margin:0;}
+  .modal-footer{flex-direction:column;gap:8px;padding:12px 18px 20px;}
+  .modal-footer .btn{width:100%;justify-content:center;padding:12px;}
+  .btn{min-height:42px;}
+  .btn-sm{min-height:36px;}
+  .toast{bottom:12px;right:10px;left:10px;text-align:center;}
+  .detalhe-grid{grid-template-columns:1fr;}
+  .secao-header{flex-direction:column;align-items:stretch;}
+  .secao-header .btn{width:100%;justify-content:center;padding:12px;}
+  #tela-login{padding:16px;align-items:flex-start;padding-top:36px;}
+  .login-box{padding:28px 18px 22px;}
+  .horarios-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="tela-login">
+  <div class="login-box">
+    <span class="login-ornamento">✦ · ✦ · ✦</span>
+    <div class="login-titulo">Projeto Salus</div>
+    <div class="login-sub">Cáritas Diocesana de Franca</div>
+    <select id="login-perfil" onchange="aoSelecionarPerfil()">
+      <option value="">Selecione seu perfil</option>
+      <option value="admin">▸ Coordenação Cáritas (Admin)</option>
+      <option value="pastoral">Coordenador(a) Pastoral</option>
+      <option value="profissional">Voluntário Profissional</option>
+    </select>
+    <div id="campo-usuario" style="display:none;">
+      <input type="text" id="login-usuario" placeholder="Seu nome" autocomplete="off">
+    </div>
+    <div class="senha-wrap">
+      <input type="password" id="login-senha" placeholder="Senha" onkeydown="if(event.key==='Enter')fazerLogin()">
+      <button type="button" class="btn-olho" onclick="toggleSenha()">
+        <svg id="icone-olho" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
+    <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+    <div class="login-erro" id="login-erro"></div>
+    <div class="login-verso">"Vai e faze tu o mesmo."
+      <div style="font-family:'Raleway',sans-serif;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-top:4px;">Lucas 10, 37</div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="tela-app">
+  <div class="topbar">
+    <div class="topbar-esq">
+      <span class="topbar-ornamento">✦</span>
+      <div>
+        <div class="topbar-titulo">Projeto Salus</div>
+        <div class="topbar-perfil" id="topbar-perfil-nome"></div>
+      </div>
+    </div>
+    <div class="topbar-dir">
+      <span class="badge-perfil" id="topbar-nivel"></span>
+      <button class="btn-sair" onclick="sair()">Sair</button>
+    </div>
+  </div>
+
+  <div class="abas" id="abas-container">
+    <button class="aba ativa" onclick="mudarAba('painel')" id="aba-painel">📊 Painel</button>
+    <button class="aba" onclick="mudarAba('minha-agenda')" id="aba-minha-agenda">🗓️ Minha Agenda<span class="notif-badge" id="badge-minha-agenda"></span></button>
+    <button class="aba" onclick="mudarAba('agendar')" id="aba-agendar">📅 Solicitar Consulta</button>
+    <button class="aba" onclick="mudarAba('profissionais')" id="aba-profissionais">🩺 Profissionais</button>
+    <button class="aba" onclick="mudarAba('beneficiarios')" id="aba-beneficiarios">🙏 Beneficiários</button>
+    <button class="aba" onclick="mudarAba('agendamentos')" id="aba-agendamentos">📋 Todos os Agendamentos<span class="notif-badge" id="badge-agendamentos"></span></button>
+    <button class="aba" onclick="mudarAba('relatorios')" id="aba-relatorios">📝 Relatórios</button>
+    <button class="aba" onclick="mudarAba('config')" id="aba-config">⚙️ Config</button>
+  </div>
+
+  <div class="conteudo">
+
+    <!-- PAINEL -->
+    <div class="secao ativa" id="secao-painel">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Visão Geral</h2>
+        <button class="btn btn-secundario btn-sm" onclick="exportarCSV()">⬇ Exportar CSV</button>
+      </div>
+      <div class="cards-resumo">
+        <div class="card-resumo"><div class="numero" id="cnt-prof">—</div><div class="label">Profissionais</div></div>
+        <div class="card-resumo"><div class="numero" id="cnt-benef">—</div><div class="label">Beneficiários</div></div>
+        <div class="card-resumo destaque"><div class="numero" id="cnt-aguardando">—</div><div class="label">Aguardando confirmação</div></div>
+        <div class="card-resumo"><div class="numero" id="cnt-confirmados">—</div><div class="label">Confirmados</div></div>
+        <div class="card-resumo"><div class="numero" id="cnt-realizados">—</div><div class="label">Realizados</div></div>
+      </div>
+      <div class="painel-secao">
+        <div class="painel-secao-titulo">⏳ Solicitações aguardando confirmação do profissional</div>
+        <div class="tabela-wrap"><table>
+          <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Especialidade</th><th>Profissional</th><th>Solicitado por</th><th>Ações</th></tr></thead>
+          <tbody id="painel-solicitacoes"></tbody>
+        </table></div>
+      </div>
+      <div class="painel-secao">
+        <div class="painel-secao-titulo">✅ Confirmados aguardando ciência da pastoral</div>
+        <div class="tabela-wrap"><table>
+          <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Profissional</th><th>Local</th><th>Status pastoral</th><th>Ações</th></tr></thead>
+          <tbody id="painel-confirmados"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- MINHA AGENDA (profissional) -->
+    <div class="secao" id="secao-minha-agenda">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Minha Agenda</h2>
+        <button class="btn btn-primario" onclick="abrirModalHorario()">+ Oferecer Horário</button>
+      </div>
+
+      <!-- Solicitações pendentes -->
+      <div id="bloco-solicitacoes-prof" style="display:none;">
+        <div class="aviso aviso-alerta" style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:1.2rem;">🔔</span>
+          <span>Você tem solicitações aguardando sua confirmação.</span>
+        </div>
+        <div class="painel-secao-titulo" style="margin-top:16px;">Solicitações de Consulta</div>
+        <div id="lista-solicitacoes-prof"></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:8px;">Meus Horários Disponíveis</div>
+      <div id="lista-horarios-prof">
+        <div class="vazio"><div class="vazio-icone">🗓️</div><p>Nenhum horário cadastrado ainda.</p></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:24px;">Meus Agendamentos</div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Local</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-meus-agendamentos"></tbody>
+      </table></div>
+    </div>
+
+    <!-- SOLICITAR CONSULTA (pastoral) -->
+    <div class="secao" id="secao-agendar">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Solicitar Consulta</h2>
+      </div>
+      <div class="aviso aviso-info">
+        Escolha a especialidade e o beneficiário, depois selecione um dos horários disponíveis oferecidos pelos voluntários.
+      </div>
+
+      <!-- Passo 1 -->
+      <div class="painel-secao">
+        <div class="painel-secao-titulo">Passo 1 — Beneficiário e Especialidade</div>
+        <div class="tabela-wrap" style="padding:18px 20px;">
+          <div class="form-grid">
+            <div class="form-grupo">
+              <label>Beneficiário *</label>
+              <select id="sol-beneficiario" onchange="atualizarEspecialidadeSugerida()">
+                <option value="">Selecione</option>
+              </select>
+            </div>
+            <div class="form-grupo">
+              <label>Especialidade desejada *</label>
+              <select id="sol-especialidade" onchange="carregarHorariosDisponiveis()">
+                <option value="">Selecione</option>
+                <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
+                <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
+                <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+              </select>
+            </div>
+            <div class="form-grupo full">
+              <label>Observações para o profissional (opcional)</label>
+              <textarea id="sol-obs" placeholder="Contexto relevante para o atendimento..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 2 -->
+      <div class="painel-secao" id="bloco-horarios-disponiveis" style="display:none;">
+        <div class="painel-secao-titulo">Passo 2 — Escolha um Horário</div>
+        <div id="grade-horarios-disponiveis" class="horarios-grid"></div>
+      </div>
+
+      <!-- Passo 3 -->
+      <div id="bloco-confirmar-solicitacao" style="display:none;">
+        <div class="painel-secao-titulo">Passo 3 — Confirmar Solicitação</div>
+        <div class="tabela-wrap" style="padding:18px 20px;">
+          <div id="resumo-solicitacao"></div>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primario" onclick="enviarSolicitacao()">Enviar Solicitação ao Profissional</button>
+            <button class="btn btn-secundario" onclick="cancelarSelecaoHorario()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFISSIONAIS -->
+    <div class="secao" id="secao-profissionais">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Profissionais Voluntários</h2>
+        <button class="btn btn-primario" onclick="abrirModalProfissional()">+ Novo Profissional</button>
+      </div>
+      <div class="busca-wrap">
+        <input class="busca-input" type="text" id="busca-prof" placeholder="Buscar por nome ou especialidade..." oninput="renderProfissionais()">
+        <select id="filtro-prof-area" onchange="renderProfissionais()" style="padding:8px 12px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="">Todas as áreas</option>
+          <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
+          <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
+          <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+        </select>
+        <select id="filtro-prof-status" onchange="renderProfissionais()" style="padding:8px 12px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="">Todos os status</option>
+          <option value="ativo">Ativos</option>
+          <option value="pendente">⏳ Pendentes do Forms <span id="badge-forms-pendentes" class="notif-badge"></span></option>
+          <option value="inativo">Inativos</option>
+        </select>
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Nome</th><th>Especialidade</th><th>Telefone</th><th>Horários ofertados</th><th>Atendimentos</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-profissionais"></tbody>
+      </table></div>
+    </div>
+
+    <!-- BENEFICIÁRIOS -->
+    <div class="secao" id="secao-beneficiarios">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Beneficiários</h2>
+        <button class="btn btn-primario" id="btn-novo-benef" onclick="abrirModalBeneficiario()">+ Novo Beneficiário</button>
+      </div>
+      <div class="busca-wrap">
+        <input class="busca-input" type="text" id="busca-benef" placeholder="Buscar por nome ou código..." oninput="renderBeneficiarios()">
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Código</th><th>Nome</th><th>Pastoral</th><th>Necessidade</th><th>Consultas</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-beneficiarios"></tbody>
+      </table></div>
+    </div>
+
+    <!-- TODOS OS AGENDAMENTOS -->
+    <div class="secao" id="secao-agendamentos">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Todos os Agendamentos</h2>
+      </div>
+      <div class="filtro-linha">
+        <input type="month" id="filtro-ag-mes" onchange="renderAgendamentos()">
+        <select id="filtro-ag-status" onchange="renderAgendamentos()" style="padding:7px 10px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="">Todos os status</option>
+          <option value="solicitado">Solicitado</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="pastoral_ciente">Pastoral ciente</option>
+          <option value="realizado">Realizado</option>
+          <option value="recusado">Recusado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+        <input class="busca-input" type="text" id="busca-ag" placeholder="Buscar..." oninput="renderAgendamentos()" style="min-width:180px;">
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Especialidade</th><th>Profissional</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-agendamentos"></tbody>
+      </table></div>
+    </div>
+
+    <!-- RELATÓRIOS -->
+    <div class="secao" id="secao-relatorios">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Relatórios de Atendimento</h2>
+        <button class="btn btn-primario" onclick="abrirModalRelatorio()">+ Registrar Atendimento</button>
+      </div>
+      <div class="filtro-linha">
+        <input type="month" id="filtro-rel-mes" onchange="renderRelatorios()">
+        <input class="busca-input" type="text" id="busca-rel" placeholder="Buscar..." oninput="renderRelatorios()" style="min-width:180px;">
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Protocolo</th><th>Data</th><th>Beneficiário</th><th>Profissional</th><th>Especialidade</th><th>Retorno?</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-relatorios"></tbody>
+      </table></div>
+    </div>
+
+    <!-- CONFIG -->
+    <div class="secao" id="secao-config">
+      <h2 class="secao-titulo" style="margin-bottom:18px;">Configurações</h2>
+
+      <!-- Firebase -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">Conexão Firebase</h3>
+        <div id="status-firebase" class="aviso aviso-info" style="margin:12px 0;">Modo local — dados salvos neste navegador.</div>
+        <div class="form-grupo" style="margin-bottom:14px;">
+          <label>JSON de configuração do Firebase</label>
+          <textarea id="firebase-json" style="height:130px;font-family:monospace;font-size:0.82rem;resize:vertical;padding:10px;border:1.5px solid var(--border-lt);border-radius:var(--r);background:var(--cream);color:var(--brown);width:100%);" placeholder='{"apiKey":"..."}' value='{"apiKey":"AIzaSyDogE0n1-nnNo-FO_XYl7iqf2nSpYQyupI","authDomain":"projeto-salus-87d5b.firebaseapp.com","databaseURL":"https://projeto-salus-87d5b-default-rtdb.firebaseio.com","projectId":"projeto-salus-87d5b","storageBucket":"projeto-salus-87d5b.firebasestorage.app","messagingSenderId":"275581893939","appId":"1:275581893939:web:31b544fabde803ca955246"}'></textarea>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primario" onclick="conectarFirebase()">Conectar ao Firebase</button>
+          <button class="btn btn-secundario" onclick="atualizarStatusFirebase(false)">Usar apenas local</button>
+        </div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-lt);font-size:0.82rem;color:var(--cinza-txt);line-height:1.8;">
+          <strong>Integração com Google Forms:</strong><br>
+          Os voluntários que se cadastrarem pelo Forms entram no Firebase com <code>status: "pendente"</code>.<br>
+          Acesse a aba <strong>Profissionais</strong> e use o filtro "Pendentes do Forms" para aprovar cada um.
+        </div>
+      </div>
+
+      <!-- Senhas -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:14px;font-weight:600;color:var(--brown);">Senhas de Acesso</h3>
+        <div class="form-grid">
+          <div class="form-grupo"><label>Senha — Admin</label><input type="password" id="senha-admin" placeholder="Nova senha"></div>
+          <div class="form-grupo"><label>Senha — Pastoral</label><input type="password" id="senha-pastoral" placeholder="Nova senha"></div>
+          <div class="form-grupo"><label>Senha — Profissional</label><input type="password" id="senha-profissional" placeholder="Nova senha"></div>
+        </div>
+        <div style="margin-top:14px;"><button class="btn btn-verde" onclick="salvarSenhas()">Salvar Senhas</button></div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-lt);font-size:0.82rem;color:var(--cinza-txt);">
+          <strong>Senhas padrão:</strong> Admin <code>caritas2026</code> · Pastoral <code>pastoral123</code> · Profissional <code>salus123</code>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /conteudo -->
+</div><!-- /tela-app -->
+
+<!-- MODAIS -->
+
+<!-- Modal Profissional -->
+<div class="modal-overlay" id="modal-profissional">
+  <div class="modal">
+    <div class="modal-header"><h2 id="modal-prof-titulo">Novo Profissional</h2><button class="modal-fechar" onclick="fecharModal('modal-profissional')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-grupo full"><label>Nome Completo *</label><input type="text" id="p-nome" placeholder="Nome do voluntário"></div>
+        <div class="form-grupo"><label>Especialidade *</label>
+          <select id="p-especialidade"><option value="">Selecione</option>
+            <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
+            <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
+            <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+          </select></div>
+        <div class="form-grupo"><label>Registro</label><input type="text" id="p-registro" placeholder="CRM, CRO, CRP..."></div>
+        <div class="form-grupo"><label>Telefone / WhatsApp *</label><input type="tel" id="p-telefone" placeholder="(16) 99000-0000"></div>
+        <div class="form-grupo"><label>E-mail</label><input type="email" id="p-email" placeholder="email@exemplo.com"></div>
+        <div class="form-grupo"><label>Local de Atendimento</label><input type="text" id="p-local" placeholder="Ex.: Consultório próprio, Online..."></div>
+        <div class="form-grupo full"><label>Observações</label><textarea id="p-obs" placeholder="Informações complementares..."></textarea></div>
+        <div class="form-grupo"><label>Status</label><select id="p-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div>
+      </div>
+      <input type="hidden" id="p-id">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-profissional')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarProfissional()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Oferecer Horário -->
+<div class="modal-overlay" id="modal-horario">
+  <div class="modal">
+    <div class="modal-header"><h2>Oferecer Horário Disponível</h2><button class="modal-fechar" onclick="fecharModal('modal-horario')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-info">Cadastre os horários em que você estará disponível para atender. A pastoral escolherá um deles para o beneficiário.</div>
+      <div class="form-grid">
+        <div class="form-grupo"><label>Data *</label><input type="date" id="h-data"></div>
+        <div class="form-grupo"><label>Horário *</label><input type="time" id="h-hora"></div>
+        <div class="form-grupo full"><label>Local do Atendimento *</label><input type="text" id="h-local" placeholder="Endereço completo, online, etc."></div>
+        <div class="form-grupo full"><label>Observações (opcional)</label><input type="text" id="h-obs" placeholder="Duração estimada, documentos necessários..."></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-horario')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarHorario()">Oferecer Horário</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Beneficiário -->
+<div class="modal-overlay" id="modal-beneficiario">
+  <div class="modal">
+    <div class="modal-header"><h2 id="modal-benef-titulo">Novo Beneficiário</h2><button class="modal-fechar" onclick="fecharModal('modal-beneficiario')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-alerta">⚠️ <strong>Sigilo:</strong> Use apenas nome parcial. O código protege a identidade.</div>
+      <div class="form-grid">
+        <div class="form-grupo"><label>Código</label><input type="text" id="b-codigo" readonly style="background:var(--parchment);font-family:'Raleway',sans-serif;letter-spacing:0.1em;"></div>
+        <div class="form-grupo"><label>Nome (parcial) *</label><input type="text" id="b-nome" placeholder="Ex.: Maria S."></div>
+        <div class="form-grupo"><label>Pastoral / Paróquia *</label><input type="text" id="b-pastoral" placeholder="Pastoral da Criança — Paróquia X"></div>
+        <div class="form-grupo"><label>Telefone de contato</label><input type="tel" id="b-telefone" placeholder="(00) 00000-0000"></div>
+        <div class="form-grupo"><label>Faixa etária</label>
+          <select id="b-faixa"><option value="">Selecione</option>
+            <option>Criança (0–12)</option><option>Adolescente (13–17)</option><option>Adulto (18–59)</option><option>Idoso (60+)</option>
+          </select></div>
+        <div class="form-grupo"><label>Necessidade principal *</label>
+          <select id="b-necessidade"><option value="">Selecione</option>
+            <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
+            <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
+            <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+          </select></div>
+        <div class="form-grupo full"><label>Descrição da Necessidade</label><textarea id="b-descricao" placeholder="Descreva resumidamente..."></textarea></div>
+      </div>
+      <input type="hidden" id="b-id">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-beneficiario')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarBeneficiario()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar/Recusar (profissional) -->
+<div class="modal-overlay" id="modal-responder">
+  <div class="modal">
+    <div class="modal-header"><h2>Responder Solicitação</h2><button class="modal-fechar" onclick="fecharModal('modal-responder')">×</button></div>
+    <div class="modal-body">
+      <div id="responder-resumo"></div>
+      <div class="form-grupo" style="margin-top:16px;">
+        <label>Mensagem para a pastoral (opcional)</label>
+        <textarea id="responder-msg" placeholder="Ex.: Confirmo. Solicito que o paciente traga documentos de identidade."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-responder')">Cancelar</button>
+      <button class="btn btn-perigo" onclick="responderSolicitacao('recusado')">✕ Recusar</button>
+      <button class="btn btn-verde" onclick="responderSolicitacao('confirmado')">✓ Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal WhatsApp (pastoral confirmar ciência) -->
+<div class="modal-overlay" id="modal-whats">
+  <div class="modal">
+    <div class="modal-header"><h2>✅ Consulta Confirmada!</h2><button class="modal-fechar" onclick="fecharModal('modal-whats')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-ok">O profissional confirmou a consulta. Avise a família pelo WhatsApp.</div>
+      <div id="whats-resumo" style="margin:14px 0;"></div>
+      <div class="form-grupo">
+        <label>Mensagem pronta para WhatsApp</label>
+        <textarea id="whats-msg" style="min-height:130px;font-size:0.88rem;" readonly></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-whats')">Fechar</button>
+      <button class="btn btn-whats" id="btn-whats-link" onclick="abrirWhats()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Abrir WhatsApp
+      </button>
+      <button class="btn btn-verde" onclick="marcarPastoralCiente()">Marcar como: Pastoral ciente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Relatório -->
+<div class="modal-overlay" id="modal-relatorio">
+  <div class="modal">
+    <div class="modal-header"><h2>Relatório de Atendimento</h2><button class="modal-fechar" onclick="fecharModal('modal-relatorio')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-grupo"><label>Protocolo</label><input type="text" id="r-protocolo" readonly style="background:var(--parchment);font-family:'Raleway',sans-serif;letter-spacing:0.08em;"></div>
+        <div class="form-grupo"><label>Data *</label><input type="date" id="r-data"></div>
+        <div class="form-grupo full"><label>Profissional *</label><select id="r-profissional"><option value="">Selecione</option></select></div>
+        <div class="form-grupo full"><label>Beneficiário</label><select id="r-beneficiario"><option value="">Selecione</option></select></div>
+        <div class="form-grupo"><label>Tipo</label>
+          <select id="r-tipo"><option>Consulta</option><option>Retorno</option><option>Orientação</option><option>Encaminhamento</option><option>Procedimento</option></select></div>
+        <div class="form-grupo"><label>Retorno necessário?</label>
+          <select id="r-retorno" onchange="document.getElementById('grupo-r-data').style.display=this.value!=='nao'?'block':'none'">
+            <option value="nao">Não</option><option value="sim">Sim</option><option value="encaminhado">Sim — encaminhado</option>
+          </select></div>
+        <div class="form-grupo full" id="grupo-r-data" style="display:none;"><label>Data do Retorno</label><input type="date" id="r-retorno-data"></div>
+        <div class="form-grupo full"><label>Observações clínicas (sem dados identificatórios)</label><textarea id="r-obs" placeholder="Descreva o atendimento..."></textarea></div>
+        <div class="form-grupo full">
+          <label>Avaliação da organização Cáritas</label>
+          <div class="estrelas" id="estrelas-rel" style="margin-top:6px;">
+            <span class="estrela" onclick="setEstrela(1)">★</span><span class="estrela" onclick="setEstrela(2)">★</span>
+            <span class="estrela" onclick="setEstrela(3)">★</span><span class="estrela" onclick="setEstrela(4)">★</span>
+            <span class="estrela" onclick="setEstrela(5)">★</span>
+          </div>
+          <input type="hidden" id="r-nota" value="0">
+        </div>
+      </div>
+      <input type="hidden" id="r-id">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-relatorio')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarRelatorio()">Salvar Relatório</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar Genérico -->
+<div class="modal-overlay" id="modal-confirmar">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header"><h2 id="modal-conf-titulo">Confirmar</h2><button class="modal-fechar" onclick="fecharModal('modal-confirmar')">×</button></div>
+    <div class="modal-body"><p id="modal-conf-msg" style="line-height:1.7;"></p></div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-confirmar')">Cancelar</button>
+      <button class="btn btn-perigo" id="modal-conf-btn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════════════
+let profissionais=[], beneficiarios=[], horarios=[], agendamentos=[], relatorios=[];
+let usuarioAtual=null;
+let senhas={admin:'caritas2026',pastoral:'pastoral123',profissional:'salus123'};
+let horarioSelecionado=null;
+let agRespondendoId=null;
+let agWhatsId=null;
+
+// ── LOGIN ──
+function aoSelecionarPerfil(){
+  const v=document.getElementById('login-perfil').value;
+  document.getElementById('campo-usuario').style.display=(v&&v!=='admin')?'block':'none';
+}
+function toggleSenha(){
+  const i=document.getElementById('login-senha');
+  i.type=i.type==='password'?'text':'password';
+}
+function fazerLogin(){
+  const perfil=document.getElementById('login-perfil').value;
+  const senha=document.getElementById('login-senha').value.trim();
+  const usuario=document.getElementById('login-usuario').value.trim();
+  if(!perfil){erroLogin('Selecione um perfil.');return;}
+  if(!senha){erroLogin('Informe a senha.');return;}
+  const s=JSON.parse(localStorage.getItem('salus_senhas')||'{}');
+  const ok=s[perfil]||senhas[perfil];
+  if(senha!==ok){erroLogin('Senha incorreta.');return;}
+  if(perfil!=='admin'&&!usuario){erroLogin('Informe seu nome.');return;}
+  usuarioAtual={perfil,nome:perfil==='admin'?'Coordenação Cáritas':usuario};
+  entrar();
+}
+function erroLogin(m){
+  const el=document.getElementById('login-erro');
+  el.textContent=m;el.style.display='block';
+  setTimeout(()=>el.style.display='none',3000);
+}
+function entrar(){
+  carregarDados();
+  document.getElementById('tela-login').style.display='none';
+  document.getElementById('tela-app').style.display='flex';
+  document.getElementById('topbar-perfil-nome').textContent=usuarioAtual.nome;
+  const niveis={admin:'Administrador',pastoral:'Pastoral',profissional:'Voluntário'};
+  document.getElementById('topbar-nivel').textContent=niveis[usuarioAtual.perfil]||'';
+
+  // Visibilidade das abas por perfil
+  const perm={
+    admin:['painel','profissionais','beneficiarios','agendamentos','relatorios','config'],
+    pastoral:['painel','agendar','beneficiarios','agendamentos','relatorios'],
+    profissional:['minha-agenda','relatorios']
+  };
+  const p=perm[usuarioAtual.perfil]||[];
+  document.querySelectorAll('.aba').forEach(a=>{
+    const id=a.id.replace('aba-','');
+    a.style.display=p.includes(id)?'':'none';
+  });
+  if(usuarioAtual.perfil==='profissional'){
+    document.getElementById('btn-novo-benef').style.display='none';
+  }
+  mudarAba(p[0]||'painel');
+  atualizarBadges();
+}
+function sair(){
+  usuarioAtual=null;
+  document.getElementById('tela-app').style.display='none';
+  document.getElementById('tela-login').style.display='flex';
+  ['login-perfil','login-senha','login-usuario'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('campo-usuario').style.display='none';
+}
+
+// ── ABAS / MODAL / TOAST ──
+function mudarAba(id){
+  document.querySelectorAll('.aba').forEach(a=>a.classList.remove('ativa'));
+  document.querySelectorAll('.secao').forEach(s=>s.classList.remove('ativa'));
+  const a=document.getElementById('aba-'+id);
+  const s=document.getElementById('secao-'+id);
+  if(a)a.classList.add('ativa');
+  if(s)s.classList.add('ativa');
+  const fn={painel:renderPainel,profissionais:renderProfissionais,beneficiarios:renderBeneficiarios,
+    agendamentos:renderAgendamentos,relatorios:renderRelatorios,'minha-agenda':renderMinhaAgenda,
+    agendar:iniciarAgendar};
+  if(fn[id])fn[id]();
+}
+function abrirModal(id){document.getElementById(id).classList.add('aberto');}
+function fecharModal(id){document.getElementById(id).classList.remove('aberto');}
+function toast(msg,tipo=''){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast '+tipo;el.style.display='block';
+  setTimeout(()=>el.style.display='none',3400);
+}
+
+// ── DADOS ──
+function salvarLocal(){
+  localStorage.setItem('salus_prof',JSON.stringify(profissionais));
+  localStorage.setItem('salus_benef',JSON.stringify(beneficiarios));
+  localStorage.setItem('salus_hor',JSON.stringify(horarios));
+  localStorage.setItem('salus_ag',JSON.stringify(agendamentos));
+  localStorage.setItem('salus_rel',JSON.stringify(relatorios));
+}
+function carregarDados(){
+  profissionais=JSON.parse(localStorage.getItem('salus_prof')||'[]');
+  beneficiarios=JSON.parse(localStorage.getItem('salus_benef')||'[]');
+  horarios=JSON.parse(localStorage.getItem('salus_hor')||'[]');
+  agendamentos=JSON.parse(localStorage.getItem('salus_ag')||'[]');
+  relatorios=JSON.parse(localStorage.getItem('salus_rel')||'[]');
+  const s=JSON.parse(localStorage.getItem('salus_senhas')||'{}');
+  if(s.admin)senhas={...senhas,...s};
+  if(profissionais.length===0)carregarDemo();
+}
+function carregarDemo(){
+  profissionais=[
+    {id:'p1',nome:'Dra. Ana Beatriz Costa',especialidade:'Dentista',telefone:'(16) 99111-0001',email:'ana@ex.com',local:'Rua das Flores, 100 — sala 5',obs:'',status:'ativo',atendimentos:3},
+    {id:'p2',nome:'Dr. Marcos Evangelista',especialidade:'Psicólogo(a)',telefone:'(16) 99111-0002',email:'marcos@ex.com',local:'Online via WhatsApp',obs:'',status:'ativo',atendimentos:5},
+    {id:'p3',nome:'Dra. Lúcia Ferreira',especialidade:'Nutricionista',telefone:'(16) 99111-0003',email:'lucia@ex.com',local:'UBS Centro — sala 3',obs:'',status:'ativo',atendimentos:2},
+  ];
+  beneficiarios=[
+    {id:'b1',codigo:'SAL-2025-0001',nome:'Maria S.',pastoral:'Pastoral da Criança — Sé',telefone:'(16) 99222-0001',faixa:'Criança (0–12)',necessidade:'Dentista',descricao:'Avaliação odontológica'},
+    {id:'b2',codigo:'SAL-2025-0002',nome:'João R.',pastoral:'SVP — São Pedro',telefone:'(16) 99222-0002',faixa:'Idoso (60+)',necessidade:'Psicólogo(a)',descricao:'Acompanhamento após luto'},
+  ];
+  const hoje=new Date();
+  const d1=new Date(hoje); d1.setDate(d1.getDate()+5);
+  const d2=new Date(hoje); d2.setDate(d2.getDate()+7);
+  const d3=new Date(hoje); d3.setDate(d3.getDate()+9);
+  horarios=[
+    {id:'h1',profissionalId:'p1',data:d1.toISOString().slice(0,10),hora:'10:00',local:'Rua das Flores, 100 — sala 5',obs:'',ocupado:false},
+    {id:'h2',profissionalId:'p1',data:d2.toISOString().slice(0,10),hora:'14:00',local:'Rua das Flores, 100 — sala 5',obs:'',ocupado:false},
+    {id:'h3',profissionalId:'p2',data:d1.toISOString().slice(0,10),hora:'09:00',local:'Online via WhatsApp',obs:'',ocupado:false},
+    {id:'h4',profissionalId:'p3',data:d3.toISOString().slice(0,10),hora:'15:30',local:'UBS Centro — sala 3',obs:'',ocupado:false},
+  ];
+  agendamentos=[];relatorios=[];
+  salvarLocal();
+}
+
+// ── UTILITÁRIOS ──
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function gerarCodigo(){return `SAL-${new Date().getFullYear()}-${String(beneficiarios.length+1).padStart(4,'0')}`;}
+function gerarProtocolo(){
+  const d=new Date();
+  return `REL-${d.getFullYear().toString().slice(2)}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
+}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtData(iso){if(!iso)return'—';const[y,m,d]=iso.split('-');return`${d}/${m}/${y}`;}
+function profNome(id){const p=profissionais.find(x=>x.id===id);return p?p.nome:'—';}
+function benefNome(id){const b=beneficiarios.find(x=>x.id===id);return b?`${b.codigo} — ${b.nome}`:'—';}
+function badgeStatus(s){
+  const m={solicitado:'badge-solicitado',confirmado:'badge-confirmado',pastoral_ciente:'badge-realizado',realizado:'badge-realizado',recusado:'badge-recusado',cancelado:'badge-cancelado'};
+  const t={solicitado:'Solicitado',confirmado:'Confirmado ✓',pastoral_ciente:'Pastoral ciente',realizado:'Realizado',recusado:'Recusado',cancelado:'Cancelado'};
+  return `<span class="badge ${m[s]||''}">${t[s]||s}</span>`;
+}
+
+// ── BADGES DE NOTIFICAÇÃO ──
+function atualizarBadges(){
+  const solicit=agendamentos.filter(a=>a.status==='solicitado').length;
+  const confirmados=agendamentos.filter(a=>a.status==='confirmado').length;
+  const total=solicit+confirmados;
+
+  const bAg=document.getElementById('badge-agendamentos');
+  if(bAg){bAg.textContent=total||'';bAg.style.display=total?'inline':'none';}
+
+  const bMinhaAg=document.getElementById('badge-minha-agenda');
+  if(bMinhaAg&&usuarioAtual?.perfil==='profissional'){
+    const profId=profissionais.find(p=>p.nome===usuarioAtual.nome)?.id;
+    const minhaSol=profId?agendamentos.filter(a=>a.status==='solicitado'&&a.profissionalId===profId).length:solicit;
+    bMinhaAg.textContent=minhaSol||'';
+    bMinhaAg.style.display=minhaSol?'inline':'none';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// PAINEL
+// ══════════════════════════════════════════════════════
+function renderPainel(){
+  document.getElementById('cnt-prof').textContent=profissionais.filter(p=>p.status==='ativo').length;
+  document.getElementById('cnt-benef').textContent=beneficiarios.length;
+  document.getElementById('cnt-aguardando').textContent=agendamentos.filter(a=>a.status==='solicitado').length;
+  document.getElementById('cnt-confirmados').textContent=agendamentos.filter(a=>a.status==='confirmado'||a.status==='pastoral_ciente').length;
+  document.getElementById('cnt-realizados').textContent=agendamentos.filter(a=>a.status==='realizado').length;
+
+  // Solicitações pendentes
+  const solicit=agendamentos.filter(a=>a.status==='solicitado');
+  const tbs=document.getElementById('painel-solicitacoes');
+  tbs.innerHTML=solicit.length===0
+    ?`<tr><td colspan="6"><div class="vazio" style="padding:20px;"><p>Nenhuma solicitação pendente.</p></div></td></tr>`
+    :solicit.map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(benefNome(a.beneficiarioId))}</td>
+        <td><span class="badge badge-prof">${esc(a.especialidade)}</span></td>
+        <td>${esc(profNome(a.profissionalId))}</td>
+        <td style="font-size:0.82rem;">${esc(a.solicitadoPor||'—')}</td>
+        <td><button class="btn btn-xs btn-primario" onclick="abrirResponder('${a.id}')">Responder</button></td>
+      </tr>`).join('');
+
+  // Confirmados aguardando pastoral
+  const conf=agendamentos.filter(a=>a.status==='confirmado');
+  const tbc=document.getElementById('painel-confirmados');
+  tbc.innerHTML=conf.length===0
+    ?`<tr><td colspan="6"><div class="vazio" style="padding:20px;"><p>Nenhum agendamento aguardando ciência.</p></div></td></tr>`
+    :conf.map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(benefNome(a.beneficiarioId))}</td>
+        <td>${esc(profNome(a.profissionalId))}</td>
+        <td style="font-size:0.84rem;">${esc(a.local||'—')}</td>
+        <td>${badgeStatus(a.status)}</td>
+        <td><button class="btn btn-xs btn-whats" onclick="abrirWhatsModal('${a.id}')">📱 Avisar</button></td>
+      </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// MINHA AGENDA (profissional)
+// ══════════════════════════════════════════════════════
+function renderMinhaAgenda(){
+  const profId=profissionais.find(p=>p.nome===usuarioAtual?.nome)?.id;
+
+  // Solicitações pendentes para este profissional
+  const solicit=profId
+    ? agendamentos.filter(a=>a.status==='solicitado'&&a.profissionalId===profId)
+    : agendamentos.filter(a=>a.status==='solicitado');
+
+  const bloco=document.getElementById('bloco-solicitacoes-prof');
+  const lista=document.getElementById('lista-solicitacoes-prof');
+  if(solicit.length>0){
+    bloco.style.display='block';
+    lista.innerHTML=solicit.map(a=>{
+      const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
+      return `<div style="background:white;border:1.5px solid var(--border);border-left:4px solid var(--gold);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
+          <div>
+            <div style="font-weight:600;font-size:1rem;color:var(--brown);">${fmtData(a.data)} às ${a.hora||'—'}</div>
+            <div style="font-size:0.85rem;color:var(--brown-lt);margin-top:3px;">Beneficiário: <strong>${esc(b?.codigo||'—')}</strong> · ${esc(b?.faixa||'')} · ${esc(b?.pastoral||'')}</div>
+            ${a.obs?`<div style="font-size:0.84rem;color:var(--cinza-txt);margin-top:4px;font-style:italic;">"${esc(a.obs)}"</div>`:''}
+            <div style="font-size:0.82rem;color:var(--cinza-txt);margin-top:3px;">Local: ${esc(a.local||'—')} · Solicitado por: ${esc(a.solicitadoPor||'—')}</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-sm btn-perigo" onclick="resposta('${a.id}','recusado')">✕ Recusar</button>
+            <button class="btn btn-sm btn-verde" onclick="abrirResponder('${a.id}')">✓ Confirmar</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    bloco.style.display='none';
+  }
+
+  // Horários disponíveis
+  const meusHorarios=profId
+    ? horarios.filter(h=>h.profissionalId===profId)
+    : horarios;
+  const lh=document.getElementById('lista-horarios-prof');
+  if(meusHorarios.length===0){
+    lh.innerHTML=`<div class="vazio"><div class="vazio-icone">🗓️</div><p>Nenhum horário cadastrado. Clique em "+ Oferecer Horário" para começar.</p></div>`;
+  } else {
+    lh.innerHTML=`<div class="horarios-grid">${meusHorarios.map(h=>`
+      <div class="horario-card ${h.ocupado?'ocupado':''}" style="cursor:default;">
+        <div class="hc-dia">${fmtData(h.data)}</div>
+        <div class="hc-hora">⏰ ${h.hora||'—'}</div>
+        <div style="font-size:0.78rem;color:var(--cinza-txt);margin-top:3px;">${esc(h.local||'')}</div>
+        <div class="hc-vaga">${h.ocupado?'🔒 Ocupado':'✓ Disponível'}</div>
+        ${!h.ocupado?`<button class="btn btn-xs btn-perigo" style="margin-top:8px;" onclick="excluirHorario('${h.id}')">Remover</button>`:''}
+      </div>`).join('')}</div>`;
+  }
+
+  // Meus agendamentos
+  const meusAg=profId
+    ? agendamentos.filter(a=>a.profissionalId===profId)
+    : agendamentos;
+  const tbody=document.getElementById('tabela-meus-agendamentos');
+  tbody.innerHTML=meusAg.length===0
+    ?`<tr><td colspan="5"><div class="vazio" style="padding:20px;"><p>Nenhum agendamento ainda.</p></div></td></tr>`
+    :meusAg.sort((a,b)=>(a.data||'').localeCompare(b.data||'')).map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(benefNome(a.beneficiarioId))}</td>
+        <td style="font-size:0.84rem;">${esc(a.local||'—')}</td>
+        <td>${badgeStatus(a.status)}</td>
+        <td><button class="btn btn-xs btn-verde" onclick="abrirRelPorAg('${a.id}')">📝 Relatório</button></td>
+      </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// SOLICITAR CONSULTA (pastoral / admin)
+// ══════════════════════════════════════════════════════
+function iniciarAgendar(){
+  horarioSelecionado=null;
+  document.getElementById('bloco-horarios-disponiveis').style.display='none';
+  document.getElementById('bloco-confirmar-solicitacao').style.display='none';
+  // Popular select beneficiários
+  const sel=document.getElementById('sol-beneficiario');
+  sel.innerHTML='<option value="">Selecione</option>'+
+    beneficiarios.map(b=>`<option value="${b.id}">${esc(b.codigo)} — ${esc(b.nome)}</option>`).join('');
+  document.getElementById('sol-especialidade').value='';
+  document.getElementById('sol-obs').value='';
+}
+
+function atualizarEspecialidadeSugerida(){
+  const bId=document.getElementById('sol-beneficiario').value;
+  if(!bId)return;
+  const b=beneficiarios.find(x=>x.id===bId);
+  if(b?.necessidade){
+    document.getElementById('sol-especialidade').value=b.necessidade;
+    carregarHorariosDisponiveis();
+  }
+}
+
+function carregarHorariosDisponiveis(){
+  const esp=document.getElementById('sol-especialidade').value;
+  if(!esp){document.getElementById('bloco-horarios-disponiveis').style.display='none';return;}
+
+  const hoje=new Date().toISOString().slice(0,10);
+  const profEsp=profissionais.filter(p=>p.especialidade===esp&&p.status==='ativo').map(p=>p.id);
+  const disponíveis=horarios.filter(h=>profEsp.includes(h.profissionalId)&&!h.ocupado&&h.data>=hoje);
+
+  const bloco=document.getElementById('bloco-horarios-disponiveis');
+  const grade=document.getElementById('grade-horarios-disponiveis');
+  bloco.style.display='block';
+  horarioSelecionado=null;
+  document.getElementById('bloco-confirmar-solicitacao').style.display='none';
+
+  if(disponíveis.length===0){
+    grade.innerHTML=`<div class="vazio" style="grid-column:1/-1;padding:30px;"><div class="vazio-icone">🗓️</div><p>Nenhum horário disponível para <strong>${esc(esp)}</strong> no momento.<br>Aguarde o profissional ofertar novos horários.</p></div>`;
+    return;
+  }
+
+  grade.innerHTML=disponíveis.sort((a,b)=>a.data.localeCompare(b.data)).map(h=>{
+    const p=profissionais.find(x=>x.id===h.profissionalId);
+    return `<div class="horario-card" id="hcard-${h.id}" onclick="selecionarHorario('${h.id}')">
+      <div class="hc-dia">${fmtData(h.data)}</div>
+      <div class="hc-hora">⏰ ${h.hora||'—'}</div>
+      <div style="font-size:0.84rem;font-weight:600;color:var(--brown);margin-top:4px;">${esc(p?.nome||'—')}</div>
+      <div style="font-size:0.78rem;color:var(--cinza-txt);margin-top:2px;">${esc(h.local||'')}</div>
+      ${h.obs?`<div style="font-size:0.75rem;color:var(--brown-lt);margin-top:2px;font-style:italic;">${esc(h.obs)}</div>`:''}
+      <div class="hc-vaga">✓ Disponível</div>
+    </div>`;
+  }).join('');
+}
+
+function selecionarHorario(hId){
+  document.querySelectorAll('.horario-card').forEach(c=>c.classList.remove('selecionado'));
+  const card=document.getElementById('hcard-'+hId);
+  if(card)card.classList.add('selecionado');
+  horarioSelecionado=hId;
+
+  const h=horarios.find(x=>x.id===hId);
+  const p=profissionais.find(x=>x.id===h?.profissionalId);
+  const bId=document.getElementById('sol-beneficiario').value;
+  const b=beneficiarios.find(x=>x.id===bId);
+
+  document.getElementById('resumo-solicitacao').innerHTML=`
+    <div style="background:var(--gold-faint);border:1px solid var(--border-lt);border-radius:var(--r);padding:16px 18px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Data e Hora</div>
+          <div style="font-size:1.05rem;font-weight:600;color:var(--brown);">${fmtData(h?.data)} às ${h?.hora||'—'}</div></div>
+        <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Profissional</div>
+          <div style="font-size:1.05rem;color:var(--brown);">${esc(p?.nome||'—')}</div></div>
+        <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Beneficiário</div>
+          <div style="font-size:1.05rem;color:var(--brown);">${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</div></div>
+        <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Local</div>
+          <div style="font-size:1rem;color:var(--brown);">${esc(h?.local||'—')}</div></div>
+      </div>
+    </div>`;
+  document.getElementById('bloco-confirmar-solicitacao').style.display='block';
+  document.getElementById('bloco-confirmar-solicitacao').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function cancelarSelecaoHorario(){
+  horarioSelecionado=null;
+  document.querySelectorAll('.horario-card').forEach(c=>c.classList.remove('selecionado'));
+  document.getElementById('bloco-confirmar-solicitacao').style.display='none';
+}
+
+function enviarSolicitacao(){
+  if(!horarioSelecionado){toast('Selecione um horário.','erro');return;}
+  const bId=document.getElementById('sol-beneficiario').value;
+  if(!bId){toast('Selecione o beneficiário.','erro');return;}
+  const h=horarios.find(x=>x.id===horarioSelecionado);
+  if(!h){toast('Horário não encontrado.','erro');return;}
+
+  const ag={
+    id:uid(), horarioId:h.id,
+    data:h.data, hora:h.hora, local:h.local,
+    beneficiarioId:bId,
+    profissionalId:h.profissionalId,
+    especialidade:profissionais.find(p=>p.id===h.profissionalId)?.especialidade||'',
+    obs:document.getElementById('sol-obs').value.trim(),
+    status:'solicitado',
+    solicitadoPor:usuarioAtual.nome,
+    dataSolicitacao:new Date().toISOString(),
+    msgProfissional:'',msgPastoral:''
+  };
+  agendamentos.push(ag);
+  // Marcar horário como ocupado
+  h.ocupado=true;
+  salvarLocal();
+  atualizarBadges();
+  toast('Solicitação enviada! O profissional será notificado ao entrar no sistema.','ok');
+  // Resetar
+  horarioSelecionado=null;
+  document.getElementById('sol-beneficiario').value='';
+  document.getElementById('sol-especialidade').value='';
+  document.getElementById('sol-obs').value='';
+  document.getElementById('bloco-horarios-disponiveis').style.display='none';
+  document.getElementById('bloco-confirmar-solicitacao').style.display='none';
+  mudarAba('agendamentos');
+}
+
+// ══════════════════════════════════════════════════════
+// RESPONDER SOLICITAÇÃO (profissional)
+// ══════════════════════════════════════════════════════
+function abrirResponder(agId){
+  agRespondendoId=agId;
+  const a=agendamentos.find(x=>x.id===agId); if(!a)return;
+  const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
+  const p=profissionais.find(x=>x.id===a.profissionalId);
+  document.getElementById('responder-resumo').innerHTML=`
+    <div style="background:var(--gold-faint);border:1px solid var(--border-lt);border-radius:var(--r);padding:14px 16px;margin-bottom:4px;">
+      <div style="font-weight:600;font-size:1.05rem;color:var(--brown);margin-bottom:8px;">Solicitação de consulta</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.9rem;">
+        <div><span style="color:var(--brown-lt);">Data:</span> <strong>${fmtData(a.data)} às ${a.hora||'—'}</strong></div>
+        <div><span style="color:var(--brown-lt);">Beneficiário:</span> <strong>${esc(b?.codigo||'—')}</strong></div>
+        <div><span style="color:var(--brown-lt);">Faixa:</span> ${esc(b?.faixa||'—')}</div>
+        <div><span style="color:var(--brown-lt);">Pastoral:</span> ${esc(b?.pastoral||'—')}</div>
+        <div style="grid-column:1/-1;"><span style="color:var(--brown-lt);">Local:</span> ${esc(a.local||'—')}</div>
+        ${a.obs?`<div style="grid-column:1/-1;font-style:italic;color:var(--cinza-txt);">"${esc(a.obs)}"</div>`:''}
+      </div>
+    </div>`;
+  document.getElementById('responder-msg').value='';
+  abrirModal('modal-responder');
+}
+
+function resposta(agId, novoStatus){
+  agRespondendoId=agId;
+  responderSolicitacao(novoStatus);
+}
+
+function responderSolicitacao(novoStatus){
+  const a=agendamentos.find(x=>x.id===agRespondendoId); if(!a)return;
+  a.status=novoStatus;
+  a.msgProfissional=document.getElementById('responder-msg')?.value?.trim()||'';
+  a.dataResposta=new Date().toISOString();
+  // Se recusado, liberar o horário
+  if(novoStatus==='recusado'){
+    const h=horarios.find(x=>x.id===a.horarioId);
+    if(h)h.ocupado=false;
+  }
+  salvarLocal(); fecharModal('modal-responder'); atualizarBadges();
+
+  if(novoStatus==='confirmado'){
+    toast('Consulta confirmada! A pastoral será avisada.','ok');
+    setTimeout(()=>abrirWhatsModal(agRespondendoId),600);
+  } else {
+    toast('Solicitação recusada. O horário ficou disponível novamente.','');
+  }
+  renderPainel(); renderMinhaAgenda();
+}
+
+// ══════════════════════════════════════════════════════
+// WHATSAPP — avisar pastoral
+// ══════════════════════════════════════════════════════
+function abrirWhatsModal(agId){
+  agWhatsId=agId;
+  const a=agendamentos.find(x=>x.id===agId); if(!a)return;
+  const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
+  const p=profissionais.find(x=>x.id===a.profissionalId);
+
+  document.getElementById('whats-resumo').innerHTML=`
+    <div style="font-size:0.9rem;line-height:1.7;color:var(--brown);">
+      <strong>${fmtData(a.data)} às ${a.hora||'—'}</strong> · ${esc(p?.nome||'—')} (${esc(a.especialidade||'')})<br>
+      Beneficiário: <strong>${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</strong><br>
+      Local: ${esc(a.local||'—')}<br>
+      ${a.msgProfissional?`Mensagem do profissional: <em>"${esc(a.msgProfissional)}"</em>`:''}
+    </div>`;
+
+  const msg=`✦ *Projeto Salus — Cáritas Diocesana de Franca*
+
+Olá! Temos uma boa notícia: a consulta foi *confirmada* pelo(a) voluntário(a).
+
+📅 *Data:* ${fmtData(a.data)}
+⏰ *Horário:* ${a.hora||'—'}
+👨‍⚕️ *Profissional:* ${p?.nome||'—'} (${a.especialidade||''})
+📍 *Local:* ${a.local||'—'}
+🔖 *Código:* ${b?.codigo||'—'}
+${a.msgProfissional?`\n💬 *Mensagem do profissional:*\n"${a.msgProfissional}"`:''}
+
+Por favor, confirme o recebimento desta mensagem. 🙏
+_Cáritas Diocesana de Franca_`;
+
+  document.getElementById('whats-msg').value=msg;
+  abrirModal('modal-whats');
+}
+
+function abrirWhats(){
+  const b=beneficiarios.find(x=>x.id===agendamentos.find(a=>a.id===agWhatsId)?.beneficiarioId);
+  const tel=(b?.telefone||'').replace(/\D/g,'');
+  const msg=encodeURIComponent(document.getElementById('whats-msg').value);
+  const url=tel?`https://wa.me/55${tel}?text=${msg}`:`https://wa.me/?text=${msg}`;
+  window.open(url,'_blank');
+}
+
+function marcarPastoralCiente(){
+  const a=agendamentos.find(x=>x.id===agWhatsId); if(!a)return;
+  a.status='pastoral_ciente';
+  salvarLocal(); fecharModal('modal-whats'); atualizarBadges();
+  renderPainel(); renderAgendamentos();
+  toast('Pastoral marcada como ciente.','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// PROFISSIONAIS
+// ══════════════════════════════════════════════════════
+function renderProfissionais(){
+  const q=(document.getElementById('busca-prof')?.value||'').toLowerCase();
+  const area=document.getElementById('filtro-prof-area')?.value||'';
+  const statusFiltro=document.getElementById('filtro-prof-status')?.value||'';
+  const lista=profissionais.filter(p=>{
+    if(area&&p.especialidade!==area)return false;
+    if(statusFiltro&&p.status!==statusFiltro)return false;
+    if(!statusFiltro&&p.status==='inativo')return false; // ocultar inativos por padrão
+    if(q&&!p.nome.toLowerCase().includes(q)&&!(p.especialidade||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+  atualizarBadgeFormsAdmin();
+  const tbody=document.getElementById('tabela-profissionais');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="7"><div class="vazio"><div class="vazio-icone">🩺</div><p>Nenhum profissional encontrado.</p></div></td></tr>`
+    :lista.map(p=>{
+      const nh=horarios.filter(h=>h.profissionalId===p.id&&!h.ocupado).length;
+      const rels=relatorios.filter(r=>r.profissionalId===p.id).length;
+      const isPendente=p.status==='pendente';
+      return `<tr ${isPendente?'style="background:var(--gold-faint);"':''}>
+        <td><strong>${esc(p.nome)}</strong>${isPendente?` <span class="badge badge-pendente" style="font-size:0.68rem;">Forms</span>`:''}${p.origem==='google_forms'&&!isPendente?` <span style="font-size:0.72rem;color:var(--brown-lt);">via Forms</span>`:''}</td>
+        <td><span class="badge badge-prof">${esc(p.especialidade)}</span></td>
+        <td><a href="tel:${esc(p.telefone)}" style="color:var(--brown);text-decoration:none;">${esc(p.telefone)}</a></td>
+        <td style="text-align:center;">${nh}</td>
+        <td style="text-align:center;">${rels}</td>
+        <td><span class="badge ${p.status==='ativo'?'badge-ativo':isPendente?'badge-pendente':'badge-cancelado'}">${p.status==='ativo'?'Ativo':isPendente?'Pendente':'Inativo'}</span></td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap;">
+          ${isPendente?`<button class="btn btn-xs btn-verde" onclick="aprovarProfissional('${p.id}')">✓ Aprovar</button>`:''}
+          <button class="btn btn-xs btn-primario" onclick="editarProfissional('${p.id}')">Editar</button>
+          <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('profissional','${p.id}')">✕</button>
+        </td>
+      </tr>`;
+    }).join('');
+}
+
+function abrirModalProfissional(){
+  document.getElementById('modal-prof-titulo').textContent='Novo Profissional';
+  ['p-id','p-nome','p-registro','p-telefone','p-email','p-local','p-obs'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-especialidade').value='';
+  document.getElementById('p-status').value='ativo';
+  abrirModal('modal-profissional');
+}
+function editarProfissional(id){
+  const p=profissionais.find(x=>x.id===id);if(!p)return;
+  document.getElementById('modal-prof-titulo').textContent='Editar Profissional';
+  document.getElementById('p-id').value=p.id;
+  document.getElementById('p-nome').value=p.nome||'';
+  document.getElementById('p-especialidade').value=p.especialidade||'';
+  document.getElementById('p-registro').value=p.registro||'';
+  document.getElementById('p-telefone').value=p.telefone||'';
+  document.getElementById('p-email').value=p.email||'';
+  document.getElementById('p-local').value=p.local||'';
+  document.getElementById('p-obs').value=p.obs||'';
+  document.getElementById('p-status').value=p.status||'ativo';
+  abrirModal('modal-profissional');
+}
+function salvarProfissional(){
+  const nome=document.getElementById('p-nome').value.trim();
+  const tel=document.getElementById('p-telefone').value.trim();
+  const esp=document.getElementById('p-especialidade').value;
+  if(!nome||!tel||!esp){toast('Preencha nome, especialidade e telefone.','erro');return;}
+  const id=document.getElementById('p-id').value||uid();
+  const idx=profissionais.findIndex(x=>x.id===id);
+  const obj={id,nome,especialidade:esp,registro:document.getElementById('p-registro').value.trim(),
+    telefone:tel,email:document.getElementById('p-email').value.trim(),
+    local:document.getElementById('p-local').value.trim(),
+    obs:document.getElementById('p-obs').value.trim(),
+    status:document.getElementById('p-status').value,
+    atendimentos:idx>=0?(profissionais[idx].atendimentos||0):0};
+  if(idx>=0)profissionais[idx]=obj;else profissionais.push(obj);
+  salvarLocal();fecharModal('modal-profissional');renderProfissionais();
+  toast('Profissional salvo!','ok');
+}
+
+// ── HORÁRIOS ──
+function abrirModalHorario(){
+  document.getElementById('h-data').value=new Date().toISOString().slice(0,10);
+  document.getElementById('h-hora').value='';
+  document.getElementById('h-local').value='';
+  document.getElementById('h-obs').value='';
+  // Pré-preencher local do profissional logado
+  const p=profissionais.find(x=>x.nome===usuarioAtual?.nome);
+  if(p?.local)document.getElementById('h-local').value=p.local;
+  abrirModal('modal-horario');
+}
+function salvarHorario(){
+  const data=document.getElementById('h-data').value;
+  const hora=document.getElementById('h-hora').value;
+  const local=document.getElementById('h-local').value.trim();
+  if(!data||!hora||!local){toast('Preencha data, horário e local.','erro');return;}
+  // Encontrar profissional logado
+  const p=profissionais.find(x=>x.nome===usuarioAtual?.nome)||profissionais[0];
+  if(!p){toast('Nenhum profissional cadastrado com este nome.','erro');return;}
+  horarios.push({id:uid(),profissionalId:p.id,data,hora,local,obs:document.getElementById('h-obs').value.trim(),ocupado:false});
+  salvarLocal();fecharModal('modal-horario');renderMinhaAgenda();
+  toast('Horário oferecido!','ok');
+}
+function excluirHorario(hId){
+  const h=horarios.find(x=>x.id===hId);
+  if(h?.ocupado){toast('Este horário já tem uma consulta solicitada.','erro');return;}
+  horarios=horarios.filter(x=>x.id!==hId);
+  salvarLocal();renderMinhaAgenda();toast('Horário removido.','');
+}
+
+// ══════════════════════════════════════════════════════
+// BENEFICIÁRIOS
+// ══════════════════════════════════════════════════════
+function renderBeneficiarios(){
+  const q=(document.getElementById('busca-benef')?.value||'').toLowerCase();
+  const lista=beneficiarios.filter(b=>!q||b.nome.toLowerCase().includes(q)||b.codigo.toLowerCase().includes(q));
+  const tbody=document.getElementById('tabela-beneficiarios');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="6"><div class="vazio"><div class="vazio-icone">🙏</div><p>Nenhum beneficiário encontrado.</p></div></td></tr>`
+    :lista.map(b=>{
+      const n=agendamentos.filter(a=>a.beneficiarioId===b.id).length;
+      return `<tr>
+        <td style="font-family:'Raleway',sans-serif;font-size:0.82rem;letter-spacing:0.06em;color:var(--gold);">${esc(b.codigo)}</td>
+        <td><strong>${esc(b.nome)}</strong> <span style="font-size:0.78rem;color:var(--cinza-txt);">${esc(b.faixa||'')}</span></td>
+        <td style="font-size:0.84rem;">${esc(b.pastoral||'—')}</td>
+        <td><span class="badge badge-prof">${esc(b.necessidade)}</span></td>
+        <td style="text-align:center;">${n}</td>
+        <td style="display:flex;gap:5px;">
+          ${usuarioAtual?.perfil!=='profissional'?`<button class="btn btn-xs btn-primario" onclick="editarBeneficiario('${b.id}')">Editar</button>
+          <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('beneficiario','${b.id}')">✕</button>`:''}
+        </td>
+      </tr>`;
+    }).join('');
+}
+function abrirModalBeneficiario(){
+  document.getElementById('modal-benef-titulo').textContent='Novo Beneficiário';
+  ['b-id','b-nome','b-pastoral','b-telefone','b-descricao'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('b-codigo').value=gerarCodigo();
+  document.getElementById('b-faixa').value='';
+  document.getElementById('b-necessidade').value='';
+  abrirModal('modal-beneficiario');
+}
+function editarBeneficiario(id){
+  const b=beneficiarios.find(x=>x.id===id);if(!b)return;
+  document.getElementById('modal-benef-titulo').textContent='Editar Beneficiário';
+  document.getElementById('b-id').value=b.id;
+  document.getElementById('b-codigo').value=b.codigo;
+  document.getElementById('b-nome').value=b.nome||'';
+  document.getElementById('b-pastoral').value=b.pastoral||'';
+  document.getElementById('b-telefone').value=b.telefone||'';
+  document.getElementById('b-faixa').value=b.faixa||'';
+  document.getElementById('b-necessidade').value=b.necessidade||'';
+  document.getElementById('b-descricao').value=b.descricao||'';
+  abrirModal('modal-beneficiario');
+}
+function salvarBeneficiario(){
+  const nome=document.getElementById('b-nome').value.trim();
+  const pastoral=document.getElementById('b-pastoral').value.trim();
+  const nec=document.getElementById('b-necessidade').value;
+  if(!nome||!pastoral||!nec){toast('Preencha nome, pastoral e necessidade.','erro');return;}
+  const id=document.getElementById('b-id').value||uid();
+  const idx=beneficiarios.findIndex(x=>x.id===id);
+  const obj={id,codigo:document.getElementById('b-codigo').value,nome,pastoral,
+    telefone:document.getElementById('b-telefone').value.trim(),
+    faixa:document.getElementById('b-faixa').value,necessidade:nec,
+    descricao:document.getElementById('b-descricao').value.trim()};
+  if(idx>=0)beneficiarios[idx]=obj;else beneficiarios.push(obj);
+  salvarLocal();fecharModal('modal-beneficiario');renderBeneficiarios();
+  toast('Beneficiário salvo!','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// TODOS OS AGENDAMENTOS
+// ══════════════════════════════════════════════════════
+function renderAgendamentos(){
+  const mes=document.getElementById('filtro-ag-mes')?.value||'';
+  const status=document.getElementById('filtro-ag-status')?.value||'';
+  const q=(document.getElementById('busca-ag')?.value||'').toLowerCase();
+  const lista=agendamentos.filter(a=>{
+    if(mes&&!(a.data||'').startsWith(mes))return false;
+    if(status&&a.status!==status)return false;
+    if(q){
+      const bn=(beneficiarios.find(b=>b.id===a.beneficiarioId)?.nome||'').toLowerCase();
+      const pn=profNome(a.profissionalId).toLowerCase();
+      if(!bn.includes(q)&&!pn.includes(q))return false;
+    }
+    return true;
+  }).sort((a,b)=>(a.data||'').localeCompare(b.data||''));
+  const tbody=document.getElementById('tabela-agendamentos');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="6"><div class="vazio"><div class="vazio-icone">📅</div><p>Nenhum agendamento encontrado.</p></div></td></tr>`
+    :lista.map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(benefNome(a.beneficiarioId))}</td>
+        <td><span class="badge badge-prof">${esc(a.especialidade)}</span></td>
+        <td>${esc(profNome(a.profissionalId))}</td>
+        <td>${badgeStatus(a.status)}</td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap;">
+          ${a.status==='solicitado'?`<button class="btn btn-xs btn-primario" onclick="abrirResponder('${a.id}')">Responder</button>`:''}
+          ${a.status==='confirmado'?`<button class="btn btn-xs btn-whats" onclick="abrirWhatsModal('${a.id}')">📱 Avisar</button>`:''}
+          <button class="btn btn-xs btn-verde" onclick="abrirRelPorAg('${a.id}')">📝</button>
+          <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('agendamento','${a.id}')">✕</button>
+        </td>
+      </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// RELATÓRIOS
+// ══════════════════════════════════════════════════════
+function setEstrela(n){
+  document.getElementById('r-nota').value=n;
+  document.querySelectorAll('#estrelas-rel .estrela').forEach((e,i)=>e.classList.toggle('on',i<n));
+}
+function abrirModalRelatorio(profId,benefId,agId){
+  document.getElementById('r-protocolo').value=gerarProtocolo();
+  document.getElementById('r-data').value=new Date().toISOString().slice(0,10);
+  document.getElementById('r-obs').value='';
+  document.getElementById('r-nota').value=0;
+  document.getElementById('r-id').value='';
+  document.getElementById('r-tipo').value='Consulta';
+  document.getElementById('r-retorno').value='nao';
+  document.getElementById('grupo-r-data').style.display='none';
+  document.querySelectorAll('#estrelas-rel .estrela').forEach(e=>e.classList.remove('on'));
+  // Popular selects
+  const sel=document.getElementById('r-profissional');
+  sel.innerHTML='<option value="">Selecione</option>'+
+    profissionais.filter(p=>p.status==='ativo').map(p=>`<option value="${p.id}" ${p.id===profId?'selected':''}>${esc(p.nome)} — ${esc(p.especialidade)}</option>`).join('');
+  const selb=document.getElementById('r-beneficiario');
+  selb.innerHTML='<option value="">Selecione</option>'+
+    beneficiarios.map(b=>`<option value="${b.id}" ${b.id===benefId?'selected':''}>${esc(b.codigo)} — ${esc(b.nome)}</option>`).join('');
+  abrirModal('modal-relatorio');
+}
+function abrirRelPorAg(agId){
+  const a=agendamentos.find(x=>x.id===agId);if(!a)return;
+  abrirModalRelatorio(a.profissionalId,a.beneficiarioId,agId);
+}
+function salvarRelatorio(){
+  const profId=document.getElementById('r-profissional').value;
+  const data=document.getElementById('r-data').value;
+  if(!profId||!data){toast('Preencha profissional e data.','erro');return;}
+  const id=document.getElementById('r-id').value||uid();
+  const idx=relatorios.findIndex(x=>x.id===id);
+  const obj={id,protocolo:document.getElementById('r-protocolo').value,data,
+    profissionalId:profId,beneficiarioId:document.getElementById('r-beneficiario').value,
+    tipo:document.getElementById('r-tipo').value,
+    obs:document.getElementById('r-obs').value.trim(),
+    retorno:document.getElementById('r-retorno').value,
+    retornoData:document.getElementById('r-retorno-data')?.value||'',
+    nota:parseInt(document.getElementById('r-nota').value)||0};
+  if(idx>=0)relatorios[idx]=obj;else relatorios.push(obj);
+  const p=profissionais.find(x=>x.id===profId);
+  if(p&&idx<0)p.atendimentos=(p.atendimentos||0)+1;
+  salvarLocal();fecharModal('modal-relatorio');renderRelatorios();
+  toast('Relatório salvo!','ok');
+}
+function renderRelatorios(){
+  const mes=document.getElementById('filtro-rel-mes')?.value||'';
+  const q=(document.getElementById('busca-rel')?.value||'').toLowerCase();
+  const lista=relatorios.filter(r=>{
+    if(mes&&!(r.data||'').startsWith(mes))return false;
+    if(q&&!r.protocolo.toLowerCase().includes(q)){
+      const bn=(beneficiarios.find(b=>b.id===r.beneficiarioId)?.nome||'').toLowerCase();
+      if(!bn.includes(q))return false;
+    }
+    return true;
+  }).sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+  const tbody=document.getElementById('tabela-relatorios');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="7"><div class="vazio"><div class="vazio-icone">📝</div><p>Nenhum relatório encontrado.</p></div></td></tr>`
+    :lista.map(r=>{
+      const p=profissionais.find(x=>x.id===r.profissionalId);
+      return `<tr>
+        <td style="font-family:'Raleway',sans-serif;font-size:0.78rem;letter-spacing:0.06em;color:var(--gold);">${esc(r.protocolo)}</td>
+        <td>${fmtData(r.data)}</td>
+        <td>${esc(benefNome(r.beneficiarioId))}</td>
+        <td>${esc(p?.nome||'—')}</td>
+        <td><span class="badge badge-prof">${esc(p?.especialidade||'—')}</span></td>
+        <td><span class="badge ${r.retorno==='nao'?'badge-cancelado':r.retorno==='encaminhado'?'badge-realizado':'badge-pendente'}">${r.retorno==='nao'?'Não':r.retorno==='encaminhado'?'Encaminhado':'Sim'}</span></td>
+        <td><button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('relatorio','${r.id}')">✕</button></td>
+      </tr>`;
+    }).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// EXCLUIR / CONFIG / EXPORT
+// ══════════════════════════════════════════════════════
+function confirmarExcluir(tipo,id){
+  const msgs={profissional:'Excluir este profissional?',beneficiario:'Excluir este beneficiário?',agendamento:'Excluir este agendamento?',relatorio:'Excluir este relatório?'};
+  document.getElementById('modal-conf-titulo').textContent='Confirmar exclusão';
+  document.getElementById('modal-conf-msg').textContent=msgs[tipo]||'Confirmar?';
+  document.getElementById('modal-conf-btn').onclick=()=>{excluir(tipo,id);fecharModal('modal-confirmar');};
+  abrirModal('modal-confirmar');
+}
+function excluir(tipo,id){
+  const mapas={profissional:[profissionais,renderProfissionais],beneficiario:[beneficiarios,renderBeneficiarios],
+    agendamento:[agendamentos,renderAgendamentos],relatorio:[relatorios,renderRelatorios]};
+  const [arr,render]=mapas[tipo];
+  const idx=arr.findIndex(x=>x.id===id);
+  if(idx>=0)arr.splice(idx,1);
+  // Se agendamento excluído, liberar horário
+  if(tipo==='agendamento'){
+    const ag=agendamentos.find(x=>x.id===id)||{};
+    const h=horarios.find(x=>x.id===ag.horarioId);
+    if(h)h.ocupado=false;
+  }
+  salvarLocal();render();atualizarBadges();
+  toast('Registro excluído.','ok');
+}
+function salvarSenhas(){
+  const nova={};
+  ['admin','pastoral','profissional'].forEach(k=>{const v=document.getElementById('senha-'+k)?.value?.trim();if(v)nova[k]=v;});
+  if(!Object.keys(nova).length){toast('Nenhuma senha preenchida.','erro');return;}
+  const atual=JSON.parse(localStorage.getItem('salus_senhas')||'{}');
+  localStorage.setItem('salus_senhas',JSON.stringify({...atual,...nova}));
+  toast('Senhas atualizadas!','ok');
+  ['admin','pastoral','profissional'].forEach(k=>{const el=document.getElementById('senha-'+k);if(el)el.value='';});
+}
+function exportarCSV(){
+  const linhas=[['Protocolo','Data','Profissional','Especialidade','Código Beneficiário','Retorno','Nota']];
+  relatorios.forEach(r=>{
+    const p=profissionais.find(x=>x.id===r.profissionalId);
+    const b=beneficiarios.find(x=>x.id===r.beneficiarioId);
+    linhas.push([r.protocolo,r.data,p?.nome||'',p?.especialidade||'',b?.codigo||'',r.retorno,r.nota||'']);
+  });
+  const csv=linhas.map(l=>l.map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='salus-relatorios.csv';a.click();
+  URL.revokeObjectURL(url);toast('CSV exportado!','ok');
+}
+
+// INIT
+document.getElementById('filtro-ag-mes').value=new Date().toISOString().slice(0,7);
+document.getElementById('filtro-rel-mes').value=new Date().toISOString().slice(0,7);
+
+// ══════════════════════════════════════════════════════
+// INTEGRAÇÃO FIREBASE
+// ══════════════════════════════════════════════════════
+let db = null;
+let usandoFirebase = false;
+
+function conectarFirebase() {
+  const json = document.getElementById('firebase-json').value.trim();
+  if (!json) { toast('Cole a configuração do Firebase primeiro.', 'erro'); return; }
+
+  let cfg;
+  try { cfg = JSON.parse(json); }
+  catch(e) { toast('JSON inválido. Verifique o formato.', 'erro'); return; }
+
+  // Carregar SDK Firebase dinamicamente
+  if (!window.firebase) {
+    const scripts = [
+      'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js',
+      'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js'
+    ];
+    let carregados = 0;
+    scripts.forEach(src => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = () => {
+        carregados++;
+        if (carregados === scripts.length) inicializarFirebase(cfg);
+      };
+      document.head.appendChild(s);
+    });
+  } else {
+    inicializarFirebase(cfg);
+  }
+}
+
+function inicializarFirebase(cfg) {
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(cfg);
+    db = firebase.database();
+    usandoFirebase = true;
+    localStorage.setItem('salus_firebase_cfg', JSON.stringify(cfg));
+    atualizarStatusFirebase(true);
+    toast('Firebase conectado!', 'ok');
+    // Sincronizar dados do Firebase para o app
+    sincronizarDoFirebase();
+    // Escutar novos profissionais vindos do Forms em tempo real
+    escutarNovosDoForms();
+  } catch(e) {
+    toast('Erro ao conectar: ' + e.message, 'erro');
+  }
+}
+
+function atualizarStatusFirebase(conectado) {
+  const el = document.getElementById('status-firebase');
+  if (!el) return;
+  if (conectado) {
+    el.className = 'aviso aviso-ok';
+    el.textContent = '✓ Firebase conectado. Dados sincronizados em tempo real.';
+  } else {
+    el.className = 'aviso aviso-info';
+    el.textContent = 'Modo local — dados salvos neste navegador.';
+  }
+}
+
+// ── LEITURA DO FIREBASE ──
+function sincronizarDoFirebase() {
+  if (!db) return;
+  const colecoes = {
+    profissionais: (d) => { profissionais = d ? Object.values(d) : []; renderProfissionais(); atualizarBadges(); },
+    beneficiarios: (d) => { beneficiarios = d ? Object.values(d) : []; renderBeneficiarios(); },
+    horarios:      (d) => { horarios = d ? Object.values(d) : []; },
+    agendamentos:  (d) => { agendamentos = d ? Object.values(d) : []; renderPainel(); atualizarBadges(); },
+    relatorios:    (d) => { relatorios = d ? Object.values(d) : []; },
+  };
+  Object.entries(colecoes).forEach(([col, fn]) => {
+    db.ref(col).on('value', snap => fn(snap.val()));
+  });
+}
+
+// ── ESCUTAR NOVOS PROFISSIONAIS DO FORMS (status: pendente) ──
+function escutarNovosDoForms() {
+  if (!db) return;
+  db.ref('profissionais').orderByChild('origem').equalTo('google_forms').on('child_added', snap => {
+    const p = snap.val();
+    if (p && p.status === 'pendente') {
+      // Mostrar notificação para o admin
+      const jaExiste = profissionais.find(x => x.id === p.id);
+      if (!jaExiste) {
+        toast(`Novo voluntário via Forms: ${p.nome}`, 'ok');
+        atualizarBadgeFormsAdmin();
+      }
+    }
+  });
+}
+
+function atualizarBadgeFormsAdmin() {
+  const pendentes = profissionais.filter(p => p.status === 'pendente' && p.origem === 'google_forms').length;
+  const badge = document.getElementById('badge-forms-pendentes');
+  if (badge) {
+    badge.textContent = pendentes || '';
+    badge.style.display = pendentes ? 'inline' : 'none';
+  }
+}
+
+// ── ESCRITA NO FIREBASE (substitui salvarLocal para dados principais) ──
+function salvarFirebase(colecao, id, obj) {
+  if (!db) { salvarLocal(); return; }
+  db.ref(colecao + '/' + id).set(obj)
+    .catch(e => { toast('Erro ao salvar: ' + e.message, 'erro'); salvarLocal(); });
+}
+
+function excluirFirebase(colecao, id) {
+  if (!db) { salvarLocal(); return; }
+  db.ref(colecao + '/' + id).remove()
+    .catch(e => toast('Erro ao excluir: ' + e.message, 'erro'));
+}
+
+// ── APROVAR PROFISSIONAL VINDO DO FORMS ──
+function aprovarProfissional(id) {
+  const p = profissionais.find(x => x.id === id);
+  if (!p) return;
+  p.status = 'ativo';
+  if (usandoFirebase) {
+    salvarFirebase('profissionais', id, p);
+  } else {
+    salvarLocal();
+  }
+  renderProfissionais();
+  atualizarBadgeFormsAdmin();
+  toast(`${p.nome} aprovado como voluntário ativo!`, 'ok');
+}
+
+// ── TENTAR RECONECTAR FIREBASE SALVO ──
+// Config Firebase real do projeto Salus
+const FIREBASE_CFG_SALUS = {
+  apiKey: "AIzaSyDogE0n1-nnNo-FO_XYl7iqf2nSpYQyupI",
+  authDomain: "projeto-salus-87d5b.firebaseapp.com",
+  databaseURL: "https://projeto-salus-87d5b-default-rtdb.firebaseio.com",
+  projectId: "projeto-salus-87d5b",
+  storageBucket: "projeto-salus-87d5b.firebasestorage.app",
+  messagingSenderId: "275581893939",
+  appId: "1:275581893939:web:31b544fabde803ca955246",
+  measurementId: "G-3GV5K6D3G9"
+};
+
+// Carregar SDK e conectar automaticamente ao abrir o app
+(function autoConectar() {
+  const scripts = [
+    'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js',
+    'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js'
+  ];
+  let n = 0;
+  scripts.forEach(src => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = () => { if(++n === scripts.length) inicializarFirebase(FIREBASE_CFG_SALUS); };
+    document.head.appendChild(s);
+  });
+})();
+</script>
+</body>
+</html>
