@@ -216,11 +216,9 @@ tr:hover td{background:var(--gold-faint);}
 
 /* MOBILE */
 @media(max-width:640px){
-  .topbar{padding:0 10px;height:50px;}
-  .topbar-titulo{font-size:0.82rem;}
-  .topbar-perfil{display:block;font-size:0.64rem;max-width:34vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .badge-perfil{display:none;}
-  .btn-sair{padding:5px 9px;font-size:0.72rem;}
+  .topbar{padding:0 12px;height:50px;}
+  .topbar-titulo{font-size:0.88rem;}
+  .topbar-perfil,.badge-perfil{display:none;}
   .abas{padding:0 6px;}
   .aba{padding:10px 10px;font-size:0.78rem;}
   .conteudo{padding:12px 10px;}
@@ -301,12 +299,10 @@ tr:hover td{background:var(--gold-faint);}
     <button class="aba" onclick="mudarAba('minha-agenda')" id="aba-minha-agenda">🗓️ Minha Agenda<span class="notif-badge" id="badge-minha-agenda"></span></button>
     <button class="aba" onclick="mudarAba('agendar')" id="aba-agendar">📅 Solicitar Consulta</button>
     <button class="aba" onclick="mudarAba('profissionais')" id="aba-profissionais">🩺 Profissionais</button>
-    <button class="aba" onclick="mudarAba('horarios')" id="aba-horarios">🗓️ Horários</button>
     <button class="aba" onclick="mudarAba('beneficiarios')" id="aba-beneficiarios">🙏 Beneficiários</button>
     <button class="aba" onclick="mudarAba('necessidades')" id="aba-necessidades">🔎 Necessidades<span class="notif-badge" id="badge-necessidades"></span></button>
     <button class="aba" onclick="mudarAba('agendamentos')" id="aba-agendamentos">📋 Todos os Agendamentos<span class="notif-badge" id="badge-agendamentos"></span></button>
     <button class="aba" onclick="mudarAba('relatorios')" id="aba-relatorios">📝 Relatórios</button>
-    <button class="aba" onclick="mudarAba('usuarios')" id="aba-usuarios">🔑 Usuários</button>
     <button class="aba" onclick="mudarAba('config')" id="aba-config">⚙️ Config</button>
   </div>
 
@@ -333,9 +329,9 @@ tr:hover td{background:var(--gold-faint);}
         </table></div>
       </div>
       <div class="painel-secao">
-        <div class="painel-secao-titulo">✅ Confirmados pelo profissional — aguardando confirmação do agente</div>
+        <div class="painel-secao-titulo">✅ Confirmados aguardando ciência da pastoral</div>
         <div class="tabela-wrap"><table>
-          <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Profissional</th><th>Local</th><th>Status</th><th>Ações</th></tr></thead>
+          <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Profissional</th><th>Local</th><th>Status pastoral</th><th>Ações</th></tr></thead>
           <tbody id="painel-confirmados"></tbody>
         </table></div>
       </div>
@@ -344,10 +340,7 @@ tr:hover td{background:var(--gold-faint);}
     <!-- MINHA AGENDA (profissional) -->
     <div class="secao" id="secao-minha-agenda">
       <div class="secao-header">
-        <div>
-          <h2 class="secao-titulo">Minha Agenda</h2>
-          <div id="minha-agenda-especialidade" style="font-size:0.85rem;color:var(--brown-lt);font-family:'Raleway',sans-serif;letter-spacing:0.04em;margin-top:2px;"></div>
-        </div>
+        <h2 class="secao-titulo">Minha Agenda</h2>
         <button class="btn btn-primario" onclick="abrirModalHorario()">+ Oferecer Horário</button>
       </div>
 
@@ -456,37 +449,6 @@ tr:hover td{background:var(--gold-faint);}
       </table></div>
     </div>
 
-    <!-- HORÁRIOS (visão do admin: todos os horários ofertados, livres e reservados) -->
-    <div class="secao" id="secao-horarios">
-      <div class="secao-header">
-        <h2 class="secao-titulo">Horários Disponibilizados</h2>
-      </div>
-      <div class="cards-resumo">
-        <div class="card-resumo"><div class="numero" id="hor-cnt-total">—</div><div class="label">Total de horários</div></div>
-        <div class="card-resumo"><div class="numero" id="hor-cnt-livres">—</div><div class="label">Livres</div></div>
-        <div class="card-resumo destaque"><div class="numero" id="hor-cnt-reservados">—</div><div class="label">Reservados</div></div>
-      </div>
-      <div class="filtro-linha">
-        <input type="month" id="filtro-hor-mes" onchange="renderHorariosAdmin()">
-        <select id="filtro-hor-status" onchange="renderHorariosAdmin()" style="padding:7px 10px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
-          <option value="">Todos os status</option>
-          <option value="livre">Livres</option>
-          <option value="reservado">Reservados</option>
-        </select>
-        <select id="filtro-hor-area" onchange="renderHorariosAdmin()" style="padding:7px 10px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
-          <option value="">Todas as especialidades</option>
-          <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
-          <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
-          <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
-        </select>
-        <input class="busca-input" type="text" id="busca-hor" placeholder="Buscar por profissional..." oninput="renderHorariosAdmin()" style="min-width:180px;">
-      </div>
-      <div class="tabela-wrap"><table>
-        <thead><tr><th>Data/Hora</th><th>Profissional</th><th>Especialidade</th><th>Tipo</th><th>Local</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="tabela-horarios"></tbody>
-      </table></div>
-    </div>
-
     <!-- BENEFICIÁRIOS -->
     <div class="secao" id="secao-beneficiarios">
       <div class="secao-header">
@@ -497,7 +459,7 @@ tr:hover td{background:var(--gold-faint);}
         <input class="busca-input" type="text" id="busca-benef" placeholder="Buscar por nome ou código..." oninput="renderBeneficiarios()">
       </div>
       <div class="tabela-wrap"><table>
-        <thead><tr><th>Código</th><th>Nome</th><th>Paróquia</th><th>Pastoral</th><th>Necessidade</th><th>Consultas</th><th>Ações</th></tr></thead>
+        <thead><tr><th>Código</th><th>Nome</th><th>Pastoral</th><th>Necessidade</th><th>Consultas</th><th>Ações</th></tr></thead>
         <tbody id="tabela-beneficiarios"></tbody>
       </table></div>
     </div>
@@ -510,13 +472,13 @@ tr:hover td{background:var(--gold-faint);}
       <div class="aviso aviso-alerta">Aqui aparecem beneficiários que precisam de uma especialidade sem nenhum profissional ativo com horário livre no momento — seja no cadastro, seja na hora de tentar marcar a consulta. Use pra saber qual especialidade recrutar com prioridade.</div>
       <div class="cards-resumo">
         <div class="card-resumo destaque"><div class="numero" id="nec-cnt-abertas">—</div><div class="label">Necessidades em aberto</div></div>
-        <div class="card-resumo"><div class="numero" id="nec-cnt-beneficiarios">—</div><div class="label">Beneficiários afetados</div></div>
+        <div class="card-resumo"><div class="numero" id="nec-cnt-benef">—</div><div class="label">Beneficiários afetados</div></div>
       </div>
-      <div class="painel-secao-titulo">Por especialidade</div>
-      <div id="nec-resumo-especialidade" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;"></div>
+      <div class="painel-secao-titulo">Por Especialidade</div>
+      <div id="nec-por-especialidade" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;"></div>
       <div class="filtro-linha">
         <select id="filtro-nec-status" onchange="renderNecessidades()" style="padding:7px 10px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
-          <option value="aberta" selected>Em aberto</option>
+          <option value="aberta">Em aberto</option>
           <option value="resolvida">Resolvidas</option>
           <option value="">Todas</option>
         </select>
@@ -532,20 +494,13 @@ tr:hover td{background:var(--gold-faint);}
       <div class="secao-header">
         <h2 class="secao-titulo">Todos os Agendamentos</h2>
       </div>
-      <div id="bloco-confirmados-agente" style="display:none;">
-        <div class="aviso aviso-ok" style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:1.2rem;">🔔</span>
-          <span>O(a) profissional confirmou horário(s) — falta você confirmar o agendamento.</span>
-        </div>
-        <div id="lista-confirmados-agente" style="margin-bottom:20px;"></div>
-      </div>
       <div class="filtro-linha">
         <input type="month" id="filtro-ag-mes" onchange="renderAgendamentos()">
         <select id="filtro-ag-status" onchange="renderAgendamentos()" style="padding:7px 10px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
           <option value="">Todos os status</option>
           <option value="solicitado">Solicitado</option>
-          <option value="confirmado">Confirmado pelo profissional</option>
-          <option value="pastoral_ciente">Confirmado pelo agente</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="pastoral_ciente">Pastoral ciente</option>
           <option value="realizado">Realizado</option>
           <option value="recusado">Recusado</option>
           <option value="cancelado">Cancelado</option>
@@ -574,29 +529,6 @@ tr:hover td{background:var(--gold-faint);}
       </table></div>
     </div>
 
-    <!-- USUÁRIOS (acessos ao sistema) -->
-    <div class="secao" id="secao-usuarios">
-      <div class="secao-header">
-        <h2 class="secao-titulo">Usuários do Sistema</h2>
-      </div>
-      <div class="aviso aviso-info">Aqui ficam todos que têm acesso ao Salus: agentes da pastoral, responsáveis por paróquia e profissionais voluntários. Cada um pode trocar a própria senha em <strong>"Minha Conta"</strong>, no topo do app, depois de logar.</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
-        <button class="btn btn-primario" onclick="abrirModalConta('pastoral')">+ Agente da Pastoral</button>
-        <button class="btn btn-primario" onclick="abrirModalConta('paroquia')">+ Responsável pela Paróquia</button>
-        <button class="btn btn-verde" onclick="abrirModalProfissional()">+ Novo Profissional</button>
-      </div>
-      <div class="tabela-wrap"><table>
-        <thead><tr><th>Nome</th><th>Perfil</th><th>E-mail (login)</th><th>Senha</th><th>Status</th><th>Ações</th></tr></thead>
-        <tbody id="tabela-usuarios"></tbody>
-      </table></div>
-
-      <div class="config-box" style="border:1.5px solid var(--vermelho);margin-top:24px;">
-        <h3 style="font-size:0.95rem;margin-bottom:8px;font-weight:600;color:var(--vermelho);">⚠️ Zona de risco</h3>
-        <p style="font-size:0.87rem;color:var(--cinza-txt);margin-bottom:12px;">Apaga permanentemente todas as contas (admin, pastoral, paróquia) e todos os profissionais cadastrados, e cria uma única conta admin nova: login <code>admin</code>, senha <code>caritas2026</code>. Não apaga beneficiários, agendamentos ou relatórios.</p>
-        <button class="btn btn-perigo" onclick="confirmarResetUsuarios()">🗑️ Apagar todos os usuários e recriar admin</button>
-      </div>
-    </div>
-
     <!-- CONFIG -->
     <div class="secao" id="secao-config">
       <h2 class="secao-titulo" style="margin-bottom:18px;">Configurações</h2>
@@ -616,8 +548,19 @@ tr:hover td{background:var(--gold-faint);}
         <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-lt);font-size:0.82rem;color:var(--cinza-txt);line-height:1.8;">
           <strong>Integração com Google Forms:</strong><br>
           Os voluntários que se cadastrarem pelo Forms entram no Firebase com <code>status: "pendente"</code>.<br>
-          Acesse a aba <strong>🔑 Usuários</strong> (ou <strong>Profissionais</strong>) e use o filtro "Pendentes do Forms" para aprovar cada um.
+          Acesse a aba <strong>Profissionais</strong> e use o filtro "Pendentes do Forms" para aprovar cada um.
         </div>
+      </div>
+
+      <!-- Contas de Acesso -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:14px;font-weight:600;color:var(--brown);">Contas de Acesso</h3>
+        <div class="aviso aviso-info">Admin e coordenadores(as) pastorais têm e-mail e senha próprios. Cada profissional gerencia a própria senha pelo botão <strong>"Minha Conta"</strong>, no topo do app, após fazer login.</div>
+        <div class="tabela-wrap"><table>
+          <thead><tr><th>Nome</th><th>E-mail</th><th>Nome da Conta</th><th>Perfil</th><th>Ações</th></tr></thead>
+          <tbody id="tabela-contas"></tbody>
+        </table></div>
+        <div style="margin-top:14px;"><button class="btn btn-primario" onclick="abrirModalConta()">+ Nova Conta Pastoral</button></div>
       </div>
 
       <!-- EmailJS (recuperação de senha) -->
@@ -654,21 +597,9 @@ tr:hover td{background:var(--gold-faint);}
         <div class="form-grupo"><label>Registro</label><input type="text" id="p-registro" placeholder="CRM, CRO, CRP..."></div>
         <div class="form-grupo"><label>Telefone / WhatsApp *</label><input type="tel" id="p-telefone" placeholder="(16) 99000-0000"></div>
         <div class="form-grupo"><label>E-mail (login do profissional) *</label><input type="email" id="p-email" placeholder="email@exemplo.com"></div>
+        <div class="form-grupo"><label>Nome da Conta (opcional)</label><input type="text" id="p-nome-conta" placeholder="Alternativa ao e-mail para login"></div>
         <div class="form-grupo"><label>Senha de Acesso</label><input type="text" id="p-senha" placeholder="salus123"></div>
-        <div class="form-grupo full"><label>Nome da Conta (opcional)</label><input type="text" id="p-nome-conta" placeholder="Ex.: dra.ana — também pode ser usado pra entrar, além do e-mail"></div>
         <div class="form-grupo"><label>Local de Atendimento</label><input type="text" id="p-local" placeholder="Ex.: Consultório próprio, Online..."></div>
-        <div class="form-grupo full">
-          <label>Aceita conversa direta por WhatsApp?</label>
-          <p style="font-size:0.8rem;color:var(--brown-lt);font-style:italic;margin:2px 0 6px;">Se autorizar, a pastoral e a família do beneficiário poderão chamar você diretamente no WhatsApp. Se preferir, os contatos continuam passando pela Cáritas.</p>
-          <select id="p-whats-aceita" onchange="aoMudarWhatsProfissional()">
-            <option value="nao">Não — prefiro que os contatos passem pela Cáritas</option>
-            <option value="sim">Sim — podem me chamar direto no WhatsApp</option>
-          </select>
-        </div>
-        <div class="form-grupo full" id="grupo-p-whats-numero" style="display:none;">
-          <label>Número de WhatsApp para esse contato *</label>
-          <input type="tel" id="p-whats-numero" placeholder="(16) 99000-0000">
-        </div>
         <div class="form-grupo full"><label>Observações</label><textarea id="p-obs" placeholder="Informações complementares..."></textarea></div>
         <div class="form-grupo"><label>Status</label><select id="p-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div>
       </div>
@@ -690,21 +621,8 @@ tr:hover td{background:var(--gold-faint);}
       <div class="form-grid">
         <div class="form-grupo"><label>Data *</label><input type="date" id="h-data"></div>
         <div class="form-grupo"><label>Horário *</label><input type="time" id="h-hora"></div>
-        <div class="form-grupo full"><label>Tipo de Atendimento *</label><select id="h-tipo"><option value="">Selecione</option></select></div>
         <div class="form-grupo full"><label>Local do Atendimento *</label><input type="text" id="h-local" placeholder="Endereço completo, online, etc."></div>
         <div class="form-grupo full"><label>Observações (opcional)</label><input type="text" id="h-obs" placeholder="Duração estimada, documentos necessários..."></div>
-        <div class="form-grupo full" style="border-top:1px solid var(--border-lt);padding-top:14px;margin-top:4px;">
-          <label>Aceita conversa direta por WhatsApp?</label>
-          <p style="font-size:0.8rem;color:var(--brown-lt);font-style:italic;margin:2px 0 6px;">Vale pra todos os seus horários, não só este. Se autorizar, a pastoral e a família do beneficiário podem te chamar direto no WhatsApp.</p>
-          <select id="h-whats-aceita" onchange="aoMudarWhatsHorario()">
-            <option value="nao">Não — prefiro que os contatos passem pela Cáritas</option>
-            <option value="sim">Sim — podem me chamar direto no WhatsApp</option>
-          </select>
-        </div>
-        <div class="form-grupo full" id="grupo-h-whats-numero" style="display:none;">
-          <label>Número de WhatsApp para esse contato *</label>
-          <input type="tel" id="h-whats-numero" placeholder="(16) 99000-0000">
-        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -723,23 +641,7 @@ tr:hover td{background:var(--gold-faint);}
       <div class="form-grid">
         <div class="form-grupo"><label>Código</label><input type="text" id="b-codigo" readonly style="background:var(--parchment);font-family:'Raleway',sans-serif;letter-spacing:0.1em;"></div>
         <div class="form-grupo"><label>Nome (parcial) *</label><input type="text" id="b-nome" placeholder="Ex.: Maria S."></div>
-        <div class="form-grupo"><label>Paróquia *</label><select id="b-paroquia"><option value="">Selecione</option></select></div>
-        <div class="form-grupo"><label>Pastoral / Grupo</label>
-          <select id="b-pastoral" onchange="aoMudarPastoralBeneficiario()">
-            <option value="">Selecione</option>
-            <option>Pastoral da Saúde</option>
-            <option>Pastoral do Idoso</option>
-            <option>Pastoral do Menor</option>
-            <option>Pastoral da Criança</option>
-            <option>Vicentinos (SSVP)</option>
-            <option>Pastoral Carcerária</option>
-            <option value="Outra">Outra</option>
-          </select>
-        </div>
-        <div class="form-grupo full" id="grupo-b-pastoral-outra" style="display:none;">
-          <label>Qual?</label>
-          <input type="text" id="b-pastoral-outra" placeholder="Nome da pastoral ou grupo">
-        </div>
+        <div class="form-grupo"><label>Pastoral / Paróquia *</label><input type="text" id="b-pastoral" placeholder="Pastoral da Criança — Paróquia X"></div>
         <div class="form-grupo"><label>Telefone de contato</label><input type="tel" id="b-telefone" placeholder="(00) 00000-0000"></div>
         <div class="form-grupo"><label>Faixa etária</label>
           <select id="b-faixa"><option value="">Selecione</option>
@@ -758,6 +660,36 @@ tr:hover td{background:var(--gold-faint);}
     <div class="modal-footer">
       <button class="btn btn-secundario" onclick="fecharModal('modal-beneficiario')">Cancelar</button>
       <button class="btn btn-primario" onclick="salvarBeneficiario()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ver Beneficiário (somente leitura) -->
+<div class="modal-overlay" id="modal-ver-beneficiario">
+  <div class="modal">
+    <div class="modal-header"><h2 id="ver-benef-titulo">Beneficiário</h2><button class="modal-fechar" onclick="fecharModal('modal-ver-beneficiario')">×</button></div>
+    <div class="modal-body">
+      <div class="detalhe-grid">
+        <div class="detalhe-item"><label>Código</label><span id="vb-codigo">—</span></div>
+        <div class="detalhe-item"><label>Nome</label><span id="vb-nome">—</span></div>
+        <div class="detalhe-item"><label>Pastoral / Paróquia</label><span id="vb-pastoral">—</span></div>
+        <div class="detalhe-item"><label>Telefone</label><span id="vb-telefone">—</span></div>
+        <div class="detalhe-item"><label>Faixa Etária</label><span id="vb-faixa">—</span></div>
+        <div class="detalhe-item"><label>Necessidade Principal</label><span id="vb-necessidade">—</span></div>
+      </div>
+      <div class="form-grupo" style="margin-top:6px;">
+        <label>Descrição da Necessidade</label>
+        <div id="vb-descricao" style="font-size:0.95rem;color:var(--brown);line-height:1.6;padding:10px 12px;background:var(--gold-faint);border-radius:var(--r);border:1px solid var(--border-lt);min-height:40px;margin-top:5px;">—</div>
+      </div>
+      <div class="painel-secao-titulo" style="margin-top:20px;">Histórico de Consultas</div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Data/Hora</th><th>Profissional</th><th>Especialidade</th><th>Status</th></tr></thead>
+        <tbody id="vb-agendamentos"></tbody>
+      </table></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-ver-beneficiario')">Fechar</button>
+      <button class="btn btn-primario" id="vb-btn-editar" onclick="editarBeneficiarioDeVer()">Editar</button>
     </div>
   </div>
 </div>
@@ -784,12 +716,12 @@ tr:hover td{background:var(--gold-faint);}
 <!-- Modal WhatsApp (pastoral confirmar ciência) -->
 <div class="modal-overlay" id="modal-whats">
   <div class="modal">
-    <div class="modal-header"><h2>✅ Profissional Confirmou!</h2><button class="modal-fechar" onclick="fecharModal('modal-whats')">×</button></div>
+    <div class="modal-header"><h2>✅ Consulta Confirmada!</h2><button class="modal-fechar" onclick="fecharModal('modal-whats')">×</button></div>
     <div class="modal-body">
-      <div class="aviso aviso-ok">O profissional confirmou o horário. Confirme o agendamento e, se quiser, avise a família pelo WhatsApp.</div>
+      <div class="aviso aviso-ok">O profissional confirmou a consulta. Avise a família pelo WhatsApp.</div>
       <div id="whats-resumo" style="margin:14px 0;"></div>
       <div class="form-grupo">
-        <label>Mensagem pronta para WhatsApp (opcional)</label>
+        <label>Mensagem pronta para WhatsApp</label>
         <textarea id="whats-msg" style="min-height:130px;font-size:0.88rem;" readonly></textarea>
       </div>
     </div>
@@ -799,7 +731,7 @@ tr:hover td{background:var(--gold-faint);}
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Abrir WhatsApp
       </button>
-      <button class="btn btn-verde" onclick="marcarPastoralCiente()">✓ Confirmar Agendamento</button>
+      <button class="btn btn-verde" onclick="marcarPastoralCiente()">Marcar como: Pastoral ciente</button>
     </div>
   </div>
 </div>
@@ -853,42 +785,20 @@ tr:hover td{background:var(--gold-faint);}
   </div>
 </div>
 
-<!-- Modal Conta (admin/pastoral/paróquia) -->
+<!-- Modal Conta (admin/pastoral) -->
 <div class="modal-overlay" id="modal-conta">
   <div class="modal" style="max-width:420px;">
     <div class="modal-header"><h2 id="modal-conta-titulo">Nova Conta</h2><button class="modal-fechar" onclick="fecharModal('modal-conta')">×</button></div>
     <div class="modal-body">
-      <div class="form-grupo" style="margin-bottom:10px;"><label>Nome *</label><input type="text" id="c-nome" placeholder="Nome do coordenador(a) ou responsável"></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Nome *</label><input type="text" id="c-nome" placeholder="Nome do coordenador(a)"></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>E-mail *</label><input type="email" id="c-email" placeholder="email@exemplo.com"></div>
       <div class="form-grupo" style="margin-bottom:10px;">
         <label>Nome da Conta (opcional)</label>
         <input type="text" id="c-nome-conta" placeholder="Ex.: admin, coordenador...">
-        <p style="font-size:0.78rem;color:var(--brown-lt);font-style:italic;margin-top:4px;">Serve como nome de exibição no topo do app <strong>e também pode ser usado para entrar no sistema</strong>, no lugar do e-mail — a senha continua a mesma. Deixe em branco pra manter só o login por e-mail.</p>
-      </div>
-      <div class="form-grupo" style="margin-bottom:10px;"><label>E-mail *</label><input type="email" id="c-email" placeholder="email@exemplo.com"></div>
-      <div class="form-grupo" style="margin-bottom:10px;">
-        <label>Telefone / WhatsApp (opcional)</label>
-        <input type="tel" id="c-telefone" placeholder="(16) 99000-0000">
-        <p style="font-size:0.78rem;color:var(--brown-lt);font-style:italic;margin-top:4px;">Usado para enviar a confirmação de consultas por WhatsApp quando essa pessoa cadastrar um beneficiário.</p>
+        <p style="font-size:0.78rem;color:var(--brown-lt);font-style:italic;margin-top:4px;">Pode ser usado para entrar no lugar do e-mail — a senha continua a mesma. Deixe em branco pra manter só o login por e-mail.</p>
       </div>
       <div class="form-grupo" style="margin-bottom:10px;"><label>Perfil</label>
-        <select id="c-perfil" onchange="aoMudarPerfilConta()">
-          <option value="pastoral">Agente da Pastoral (vê tudo)</option>
-          <option value="paroquia">Responsável pela Paróquia (vê só a própria paróquia)</option>
-          <option value="admin">Coordenação Cáritas (Admin)</option>
-        </select>
-      </div>
-      <div class="form-grupo" id="grupo-c-paroquia" style="margin-bottom:10px;display:none;">
-        <label>Nome da Paróquia *</label>
-        <select id="c-paroquia" onchange="aoMudarParoquiaConta()"></select>
-      </div>
-      <div class="form-grupo" id="grupo-c-paroquia-outra" style="margin-bottom:10px;display:none;">
-        <label>Qual paróquia/capela?</label>
-        <input type="text" id="c-paroquia-outra" placeholder="Digite o nome">
-      </div>
-      <div class="form-grupo" style="margin-bottom:10px;">
-        <label>Cargo / Título exibido (opcional)</label>
-        <input type="text" id="c-cargo" placeholder="Ex.: Coordenador de Pastoral">
-        <p style="font-size:0.78rem;color:var(--brown-lt);font-style:italic;margin-top:4px;">Deixe em branco para usar o rótulo padrão do perfil (Administrador, Pastoral, etc.). O acesso no sistema continua sendo o do perfil escolhido acima.</p>
+        <select id="c-perfil"><option value="pastoral">Coordenador(a) Pastoral</option><option value="admin">Coordenação Cáritas (Admin)</option></select>
       </div>
       <div class="form-grupo"><label>Senha *</label><input type="text" id="c-senha" placeholder="Senha inicial"></div>
       <input type="hidden" id="c-id">
@@ -921,14 +831,13 @@ tr:hover td{background:var(--gold-faint);}
   <div class="modal" style="max-width:420px;">
     <div class="modal-header"><h2>Minha Conta</h2><button class="modal-fechar" onclick="fecharModal('modal-meu-perfil')">×</button></div>
     <div class="modal-body">
-      <div class="form-grupo" style="margin-bottom:10px;"><label>Nome (cadastro)</label><input type="text" id="mp-nome" disabled></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Nome</label><input type="text" id="mp-nome" disabled></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>E-mail de acesso</label><input type="email" id="mp-email" placeholder="seu@email.com"></div>
       <div class="form-grupo" style="margin-bottom:10px;">
         <label>Nome da Conta (opcional)</label>
-        <input type="text" id="mp-nome-conta" placeholder="Ex.: admin, coordenador...">
-        <p style="font-size:0.78rem;color:var(--brown-lt);font-style:italic;margin-top:4px;">Aparece no topo do app e <strong>também pode ser usado pra entrar no sistema</strong>, no lugar do e-mail — a senha continua a mesma. Não muda seu nome no cadastro oficial.</p>
+        <input type="text" id="mp-nome-conta" placeholder="Ex.: seu.nome">
+        <p style="font-size:0.78rem;color:var(--brown-lt);font-style:italic;margin-top:4px;">Pode ser usado para entrar no lugar do e-mail — a senha continua a mesma.</p>
       </div>
-      <div class="form-grupo" style="margin-bottom:10px;"><label>E-mail de acesso</label><input type="email" id="mp-email" placeholder="seu@email.com"></div>
-      <div class="form-grupo" style="margin-bottom:10px;"><label>Telefone / WhatsApp (opcional)</label><input type="tel" id="mp-telefone" placeholder="(16) 99000-0000"></div>
       <div class="form-grupo" style="margin-bottom:10px;"><label>Nova Senha</label><input type="password" id="mp-senha1" placeholder="Deixe em branco para não alterar"></div>
       <div class="form-grupo"><label>Confirmar Nova Senha</label><input type="password" id="mp-senha2" placeholder="Repita a nova senha"></div>
       <div id="mp-msg" style="font-size:0.87rem;margin-top:8px;display:none;"></div>
@@ -952,110 +861,35 @@ let horarioSelecionado=null;
 let agRespondendoId=null;
 let agWhatsId=null;
 
-// Tipos de atendimento possíveis, de acordo com a especialidade do profissional
-const TIPOS_ATENDIMENTO={
-  'Dentista':['Consulta / Avaliação','Limpeza e Profilaxia','Tratamento de Cáries','Extração','Tratamento de Canal','Prótese / Implante','Urgência Odontológica','Outro'],
-  'Psicólogo(a)':['Consulta / Avaliação','Terapia Individual','Orientação Familiar','Acompanhamento de Luto','Encaminhamento','Outro'],
-  'Médico(a)':['Consulta Clínica','Avaliação Geral','Acompanhamento de Doença Crônica','Emissão de Receita','Encaminhamento','Outro'],
-  'Nutricionista':['Consulta / Avaliação Nutricional','Orientação Alimentar','Acompanhamento de Peso','Outro'],
-  'Fisioterapeuta':['Avaliação','Sessão de Fisioterapia','Reabilitação Motora','Outro'],
-  'Enfermeiro(a)':['Consulta de Enfermagem','Curativo','Vacinação','Aferição de Pressão / Glicemia','Outro'],
-  'Psicopedagogo(a)':['Avaliação Psicopedagógica','Acompanhamento Escolar','Orientação aos Pais','Outro'],
-  'Assistente Social':['Atendimento Social','Orientação sobre Benefícios','Visita Domiciliar','Outro'],
-  'Advogado(a)':['Consulta Jurídica','Orientação sobre Documentos','Encaminhamento Jurídico','Outro'],
-  'Outro':['Consulta','Atendimento','Outro'],
-};
-
-// Lista oficial de paróquias e capelas da Diocese de Franca
-const PAROQUIAS_FRANCA=[
-  {forania:'Beata Rita Amada de Jesus',paroquias:[
-    {paroquia:'Paróquia Santo Antônio (Aramina-SP)',capelas:['Capela Nossa Senhora Aparecida','Comunidade Brejão','Comunidade dos Três Reis']},
-    {paroquia:'Paróquia Nossa Senhora do Patrocínio (Buritizal-SP)',capelas:[]},
-    {paroquia:'Paróquia Santa Rita de Cássia (Igarapava-SP)',capelas:['Capela Nossa Senhora da Abadia','Capela Santa Cruz','Capela Santo Antônio','Capela São Geraldo','Comunidade Nossa Senhora das Graças','Comunidade Santo Ezequiel Moreno','Comunidade Santo Frei Galvão','Comunidade São Bento']},
-    {paroquia:'Paróquia Nossa Senhora do Carmo (Ituverava-SP)',capelas:['Capela Nossa Senhora Aparecida','Capela Nossa Senhora do Rosário','Capela São Benedito','Capela São Pedro e São Paulo','Comunidade Aparecida do Salto','Comunidade Capivari da Mata']},
-    {paroquia:'Paróquia São João Batista (Ituverava-SP)',capelas:['Capela Imaculada Conceição','Capela Sagrado Coração de Jesus']},
-    {paroquia:'Paróquia São Sebastião (Jeriquara-SP)',capelas:[]},
-    {paroquia:'Paróquia Nossa Senhora do Patrocínio (Patrocínio Paulista-SP)',capelas:['Capela Santa Cruz','Capela São Sebastião','Comunidade da Cachoeira','Comunidade do Lambari','Comunidade do Palmital']},
-    {paroquia:'Paróquia Nossa Senhora Aparecida (Pedregulho-SP)',capelas:['Capela Nossa Senhora das Graças','Capela Sagrada Família','Capela São Benedito','Capela São Francisco de Assis','Capela São Pedro','Capela São Sebastião']},
-    {paroquia:'Paróquia Santo Antônio (Rifaina-SP)',capelas:[]},
-  ]},
-  {forania:'Nossa Senhora Aparecida',paroquias:[
-    {paroquia:'Paróquia Nossa Senhora Aparecida - Capelinha (Franca-SP)',capelas:['Capela Divino Pai Eterno','Capela Nossa Senhora da Penha','Capela Nossa Senhora das Dores','Capela Santa Marta','Capela São Francisco Xavier','Capela São José','Capela São Mateus','Capela São Roque','Capela Senhora de Fátima']},
-    {paroquia:'Paróquia Nossa Senhora da Guia (Franca-SP)',capelas:[]},
-    {paroquia:'Paróquia Sagrada Família (Franca-SP)',capelas:['Capela Nossa Senhora de Guadalupe','Capela Santa Clara','Capela Santa Maria dos Anjos']},
-    {paroquia:'Paróquia Sagrado Coração de Jesus (Franca-SP)',capelas:['Capela Divino Espírito Santo','Capela São Francisco de Assis','Capela São Geraldo Magela','Capela São Lucas','Capela São Paulo']},
-    {paroquia:'Paróquia Santa Rita de Cássia (Franca-SP)',capelas:['Capela Nossa Senhora de Lourdes','Capela São José Operário']},
-    {paroquia:'Paróquia Sant\'Ana (Franca-SP)',capelas:[]},
-    {paroquia:'Paróquia São Francisco de Assis (Franca-SP)',capelas:['Capela Sagrado Coração de Jesus']},
-    {paroquia:'Paróquia São João Batista (Franca-SP)',capelas:['Capela Nossa Senhora do Carmo','Capela Santa Dorothea','Capela São Cristóvão']},
-    {paroquia:'Paróquia São Pedro (Franca-SP)',capelas:['Capela Santa Teresinha do Menino Jesus','Capela São João Paulo II']},
-    {paroquia:'Paróquia Nossa Senhora Aparecida (Itirapuã-SP)',capelas:['Capela São Sebastião','Lar São Francisco (Asilo)']},
-  ]},
-  {forania:'Nossa Senhora da Conceição',paroquias:[
-    {paroquia:'Paróquia Menino Jesus de Praga e Santa Ifigênia (Franca-SP)',capelas:['Capela Divino Pai Eterno']},
-    {paroquia:'Paróquia Nossa Senhora das Graças (Franca-SP)',capelas:[]},
-    {paroquia:'Paróquia Santa Luzia (Franca-SP)',capelas:['Capela Nossa Senhora Aparecida','Capela São Rafael']},
-    {paroquia:'Paróquia São Sebastião (Franca-SP)',capelas:[]},
-    {paroquia:'Santuário Diocesano Santo Antônio (Franca-SP)',capelas:[]},
-    {paroquia:'Sé Catedral Nossa Senhora da Conceição (Franca-SP)',capelas:['Capela Nossa Senhora de Lourdes','Capela São Francisco de Assis']},
-    {paroquia:'Paróquia Nossa Senhora Aparecida (Restinga-SP)',capelas:[]},
-  ]},
-  {forania:'Santa Gianna',paroquias:[
-    {paroquia:'Paróquia Nossa Senhora da Abadia (Cristais Paulista-SP)',capelas:['Capela Nossa Senhora Aparecida','Capela Sagrada Família','Capela Santa Rita','Capela São José']},
-    {paroquia:'Paróquia Nossa Senhora Rosa Mística (Franca-SP)',capelas:['Capela Santo Antônio de Santana Galvão (Frei Galvão)']},
-    {paroquia:'Paróquia Santa Edwiges (Franca-SP)',capelas:['Capela Santa Paulina','Comunidade Jesus Misericordioso']},
-    {paroquia:'Paróquia Santa Gianna (Franca-SP)',capelas:['Capela Nossa Senhora Auxiliadora','Capela Nossa Senhora de Fátima','Capela Nossa Senhora do Carmo','Capela Nossa Senhora do Rosário']},
-    {paroquia:'Paróquia Santa Mônica (Franca-SP)',capelas:[]},
-    {paroquia:'Paróquia Santa Teresinha (Franca-SP)',capelas:['Capela Santo Tomás de Aquino']},
-    {paroquia:'Paróquia São Benedito (Franca-SP)',capelas:['Capela Nossa Senhora do Sagrado Coração']},
-    {paroquia:'Paróquia São Crispim (Franca-SP)',capelas:['Capela São Miguel']},
-    {paroquia:'Paróquia São Judas Tadeu (Franca-SP)',capelas:[]},
-    {paroquia:'Paróquia São Vicente de Paulo (Franca-SP)',capelas:['Capela Santo Expedito']},
-    {paroquia:'Paróquia Santa Cruz (Ribeirão Corrente-SP)',capelas:['Capela Nossa Senhora das Graças']},
-  ]},
-  {forania:'São Joaquim',paroquias:[
-    {paroquia:'Paróquia São Sebastião e Santo Antônio (Guará-SP)',capelas:['Capela Nossa Senhora Aparecida','Capela São Pedro','Capela Senhor Bom Jesus da Lapa','Centro Catequético Santa Rita']},
-    {paroquia:'Paróquia Divino Espírito Santo (Nuporanga-SP)',capelas:['Capela Nossa Senhora Aparecida']},
-    {paroquia:'Paróquia Nosso Senhor Jesus Cristo Rei do Universo (Orlândia-SP)',capelas:['Comunidade Santa Zita e Santo Antônio','Igreja Santa Rita']},
-    {paroquia:'Paróquia São José (Orlândia-SP)',capelas:['Capela do Cemitério','Capela do Hospital Beneficente Santo Antônio','Capela Mãe Rainha','Capela Nossa Senhora Aparecida','Capela Sagrada Família','Capela Santa Genoveva','Capela São Francisco de Assis','Capela São João Batista']},
-    {paroquia:'Paróquia Santa Rita de Cássia (Sales Oliveira-SP)',capelas:['Capela São José']},
-    {paroquia:'Paróquia Nossa Senhora Aparecida (São Joaquim da Barra-SP)',capelas:['Capela São José','Comunidade Santa Terezinha','Comunidade São João Batista']},
-    {paroquia:'Paróquia São Joaquim (São Joaquim da Barra-SP)',capelas:['Capela Santo Hilário (Rural)']},
-    {paroquia:'Paróquia São José (São José da Bela Vista-SP)',capelas:['Capela Nossa Senhora de Fátima']},
-  ]},
-];
-
 // ── LOGIN (por e-mail individual) ──
 function toggleSenha(){
   const i=document.getElementById('login-senha');
   i.type=i.type==='password'?'text':'password';
 }
 function fazerLogin(){
-  const identificador=document.getElementById('login-email').value.trim();
-  const email=identificador.toLowerCase();
+  const identificador=document.getElementById('login-email').value.trim().toLowerCase();
   const senha=document.getElementById('login-senha').value.trim();
   if(!senha){erroLogin('Informe a senha.');return;}
 
-  // Contas individuais (admin / pastoral / paróquia) — busca por e-mail OU nome da conta
-  let conta=email?contas.find(c=>(c.email||'').toLowerCase()===email||(c.nomeConta||'').toLowerCase()===email):null;
+  // Contas individuais (admin / pastoral) — busca por e-mail OU nome da conta
+  let conta=identificador?contas.find(c=>(c.email||'').toLowerCase()===identificador||(c.nomeConta||'').toLowerCase()===identificador):null;
   // Bootstrap: conta recém-criada, ainda sem e-mail nem nome da conta cadastrados — permite entrar só com a senha
   let contaBootstrap=false;
-  if(!conta){conta=contas.find(c=>!c.email&&!c.nomeConta&&c.senha===senha&&c.status!=='inativo');if(conta)contaBootstrap=true;}
+  if(!conta){conta=contas.find(c=>!c.email&&!c.nomeConta&&c.senha===senha);if(conta)contaBootstrap=true;}
   if(conta){
-    if(conta.status==='inativo'){erroLogin('Conta inativa. Fale com a coordenação da Cáritas.');return;}
     if(!contaBootstrap&&conta.senha!==senha){erroLogin('Senha incorreta.');return;}
-    usuarioAtual={id:conta.id,perfil:conta.perfil,nome:conta.nome,nomeConta:conta.nomeConta||'',nomeExibicao:conta.nomeConta||conta.nome,email:conta.email,paroquia:conta.paroquia||null,cargo:conta.cargo||null};
+    usuarioAtual={id:conta.id,perfil:conta.perfil,nome:conta.nome,nomeConta:conta.nomeConta||'',email:conta.email};
     entrar();
     if(contaBootstrap)setTimeout(()=>{toast('Cadastre seu e-mail em "Minha Conta" para poder recuperar a senha no futuro.','erro');abrirMeuPerfil();},500);
     return;
   }
   // Profissionais — busca por e-mail OU nome da conta
-  let prof=email?profissionais.find(p=>(p.email||'').toLowerCase()===email||(p.nomeConta||'').toLowerCase()===email):null;
-  // ...ou pelo nome exato cadastrado, caso não tenha digitado o e-mail
+  let prof=identificador?profissionais.find(p=>(p.email||'').toLowerCase()===identificador||(p.nomeConta||'').toLowerCase()===identificador):null;
+  // ...ou pelo nome exato cadastrado, caso não tenha digitado e-mail nem nome da conta
   if(!prof&&identificador){
-    const candidatos=profissionais.filter(p=>(p.nome||'').trim().toLowerCase()===email);
+    const candidatos=profissionais.filter(p=>(p.nome||'').trim().toLowerCase()===identificador);
     if(candidatos.length===1)prof=candidatos[0];
-    else if(candidatos.length>1){erroLogin('Há mais de um cadastro com esse nome. Entre com seu e-mail.');return;}
+    else if(candidatos.length>1){erroLogin('Há mais de um cadastro com esse nome. Entre com seu e-mail ou nome da conta.');return;}
   }
   let profBootstrap=false;
   if(!prof){prof=profissionais.find(p=>!p.email&&!p.nomeConta&&(p.senha||'salus123')===senha);if(prof)profBootstrap=true;}
@@ -1063,12 +897,12 @@ function fazerLogin(){
     if(prof.status==='pendente'){erroLogin('Seu cadastro ainda aguarda aprovação da Cáritas.');return;}
     if(prof.status==='inativo'){erroLogin('Cadastro inativo. Fale com a coordenação da Cáritas.');return;}
     if(!profBootstrap&&(prof.senha||'salus123')!==senha){erroLogin('Senha incorreta.');return;}
-    usuarioAtual={id:prof.id,perfil:'profissional',nome:prof.nome,nomeConta:prof.nomeConta||'',nomeExibicao:prof.nomeConta||prof.nome,email:prof.email,profissionalId:prof.id};
+    usuarioAtual={id:prof.id,perfil:'profissional',nome:prof.nome,nomeConta:prof.nomeConta||'',email:prof.email,profissionalId:prof.id};
     entrar();
     if(profBootstrap)setTimeout(()=>{toast('Cadastre seu e-mail em "Minha Conta" para poder recuperar a senha no futuro.','erro');abrirMeuPerfil();},500);
     return;
   }
-  if(!identificador){erroLogin('Informe seu e-mail ou nome.');return;}
+  if(!identificador){erroLogin('Informe seu e-mail ou nome de acesso.');return;}
   erroLogin('E-mail ou nome não encontrado. Verifique ou fale com a Cáritas.');
 }
 function erroLogin(m){
@@ -1080,15 +914,14 @@ function entrar(){
   carregarDados();
   document.getElementById('tela-login').style.display='none';
   document.getElementById('tela-app').style.display='flex';
-  document.getElementById('topbar-perfil-nome').textContent=(usuarioAtual.perfil==='paroquia'&&usuarioAtual.paroquia)?`${usuarioAtual.nomeExibicao||usuarioAtual.nome} — ${usuarioAtual.paroquia}`:(usuarioAtual.nomeExibicao||usuarioAtual.nome);
-  const niveis={admin:'Administrador',pastoral:'Pastoral',profissional:'Voluntário',paroquia:'Responsável Paroquial'};
-  document.getElementById('topbar-nivel').textContent=usuarioAtual.cargo||niveis[usuarioAtual.perfil]||'';
+  document.getElementById('topbar-perfil-nome').textContent=usuarioAtual.nome;
+  const niveis={admin:'Administrador',pastoral:'Pastoral',profissional:'Voluntário'};
+  document.getElementById('topbar-nivel').textContent=niveis[usuarioAtual.perfil]||'';
 
   // Visibilidade das abas por perfil
   const perm={
-    admin:['painel','profissionais','horarios','beneficiarios','necessidades','agendamentos','relatorios','usuarios','config'],
-    pastoral:['painel','agendar','beneficiarios','necessidades','agendamentos','relatorios'],
-    paroquia:['agendar','beneficiarios','necessidades','agendamentos','relatorios'],
+    admin:['painel','profissionais','beneficiarios','necessidades','agendamentos','relatorios','config'],
+    pastoral:['painel','agendar','beneficiarios','agendamentos','relatorios'],
     profissional:['minha-agenda','relatorios']
   };
   const p=perm[usuarioAtual.perfil]||[];
@@ -1101,7 +934,6 @@ function entrar(){
   }
   mudarAba(p[0]||'painel');
   atualizarBadges();
-  atualizarBadgeNecessidades();
 }
 function sair(){
   usuarioAtual=null;
@@ -1120,7 +952,7 @@ function mudarAba(id){
   if(s)s.classList.add('ativa');
   const fn={painel:renderPainel,profissionais:renderProfissionais,beneficiarios:renderBeneficiarios,
     agendamentos:renderAgendamentos,relatorios:renderRelatorios,'minha-agenda':renderMinhaAgenda,
-    agendar:iniciarAgendar,usuarios:renderUsuarios,horarios:renderHorariosAdmin,necessidades:renderNecessidades};
+    agendar:iniciarAgendar,config:renderContas,necessidades:renderNecessidades};
   if(fn[id])fn[id]();
 }
 function abrirModal(id){document.getElementById(id).classList.add('aberto');}
@@ -1139,7 +971,7 @@ function salvarLocal(){
   localStorage.setItem('salus_ag',JSON.stringify(agendamentos));
   localStorage.setItem('salus_rel',JSON.stringify(relatorios));
   localStorage.setItem('salus_contas',JSON.stringify(contas));
-  localStorage.setItem('salus_necessidades',JSON.stringify(necessidadesLatentes));
+  localStorage.setItem('salus_nec',JSON.stringify(necessidadesLatentes));
 }
 function carregarDados(){
   profissionais=JSON.parse(localStorage.getItem('salus_prof')||'[]');
@@ -1148,7 +980,7 @@ function carregarDados(){
   agendamentos=JSON.parse(localStorage.getItem('salus_ag')||'[]');
   relatorios=JSON.parse(localStorage.getItem('salus_rel')||'[]');
   contas=JSON.parse(localStorage.getItem('salus_contas')||'[]');
-  necessidadesLatentes=JSON.parse(localStorage.getItem('salus_necessidades')||'[]');
+  necessidadesLatentes=JSON.parse(localStorage.getItem('salus_nec')||'[]');
   if(profissionais.length===0)carregarDemo();
   if(contas.length===0)seedContas();
 }
@@ -1159,18 +991,18 @@ function carregarDemo(){
     {id:'p3',nome:'Dra. Lúcia Ferreira',especialidade:'Nutricionista',telefone:'(16) 99111-0003',email:'lucia@ex.com',senha:'salus123',local:'UBS Centro — sala 3',obs:'',status:'ativo',atendimentos:2},
   ];
   beneficiarios=[
-    {id:'b1',codigo:'SAL-2025-0001',nome:'Maria S.',paroquia:'Paróquia Sé',pastoral:'Pastoral da Criança',telefone:'(16) 99222-0001',faixa:'Criança (0–12)',necessidade:'Dentista',descricao:'Avaliação odontológica'},
-    {id:'b2',codigo:'SAL-2025-0002',nome:'João R.',paroquia:'Paróquia São Pedro',pastoral:'Vicentinos (SSVP)',telefone:'(16) 99222-0002',faixa:'Idoso (60+)',necessidade:'Psicólogo(a)',descricao:'Acompanhamento após luto'},
+    {id:'b1',codigo:'SAL-2025-0001',nome:'Maria S.',pastoral:'Pastoral da Criança — Sé',telefone:'(16) 99222-0001',faixa:'Criança (0–12)',necessidade:'Dentista',descricao:'Avaliação odontológica'},
+    {id:'b2',codigo:'SAL-2025-0002',nome:'João R.',pastoral:'SVP — São Pedro',telefone:'(16) 99222-0002',faixa:'Idoso (60+)',necessidade:'Psicólogo(a)',descricao:'Acompanhamento após luto'},
   ];
   const hoje=new Date();
   const d1=new Date(hoje); d1.setDate(d1.getDate()+5);
   const d2=new Date(hoje); d2.setDate(d2.getDate()+7);
   const d3=new Date(hoje); d3.setDate(d3.getDate()+9);
   horarios=[
-    {id:'h1',profissionalId:'p1',data:d1.toISOString().slice(0,10),hora:'10:00',tipo:'Consulta / Avaliação',local:'Rua das Flores, 100 — sala 5',obs:'',ocupado:false},
-    {id:'h2',profissionalId:'p1',data:d2.toISOString().slice(0,10),hora:'14:00',tipo:'Limpeza e Profilaxia',local:'Rua das Flores, 100 — sala 5',obs:'',ocupado:false},
-    {id:'h3',profissionalId:'p2',data:d1.toISOString().slice(0,10),hora:'09:00',tipo:'Consulta / Avaliação',local:'Online via WhatsApp',obs:'',ocupado:false},
-    {id:'h4',profissionalId:'p3',data:d3.toISOString().slice(0,10),hora:'15:30',tipo:'Consulta / Avaliação Nutricional',local:'UBS Centro — sala 3',obs:'',ocupado:false},
+    {id:'h1',profissionalId:'p1',data:d1.toISOString().slice(0,10),hora:'10:00',local:'Rua das Flores, 100 — sala 5',obs:'',ocupado:false},
+    {id:'h2',profissionalId:'p1',data:d2.toISOString().slice(0,10),hora:'14:00',local:'Rua das Flores, 100 — sala 5',obs:'',ocupado:false},
+    {id:'h3',profissionalId:'p2',data:d1.toISOString().slice(0,10),hora:'09:00',local:'Online via WhatsApp',obs:'',ocupado:false},
+    {id:'h4',profissionalId:'p3',data:d3.toISOString().slice(0,10),hora:'15:30',local:'UBS Centro — sala 3',obs:'',ocupado:false},
   ];
   agendamentos=[];relatorios=[];
   salvarLocal();
@@ -1181,147 +1013,30 @@ function seedContas(){
   // Migração: reaproveita senha antiga compartilhada, se já existir salva no navegador
   const legado=JSON.parse(localStorage.getItem('salus_senhas')||'{}');
   contas=[
-    {id:'admin-1',nome:'Coordenação Cáritas',email:'',senha:legado.admin||'caritas2026',perfil:'admin',status:'ativo'},
-    {id:'pastoral-1',nome:'Coordenação Pastoral',email:'',senha:legado.pastoral||'pastoral123',perfil:'pastoral',status:'ativo'},
-    {id:'paroquia-1',nome:'Pe. Antônio',email:'se@ex.com',senha:'salus123',perfil:'paroquia',paroquia:'Paróquia Sé',status:'ativo'},
-    {id:'paroquia-2',nome:'Pe. José',email:'saopedro@ex.com',senha:'salus123',perfil:'paroquia',paroquia:'Paróquia São Pedro',status:'ativo'},
+    {id:'admin-1',nome:'Coordenação Cáritas',email:'',senha:legado.admin||'caritas2026',perfil:'admin'},
+    {id:'pastoral-1',nome:'Coordenação Pastoral',email:'',senha:legado.pastoral||'pastoral123',perfil:'pastoral'},
   ];
   salvarLocal();
-  // IMPORTANTE: nunca gravar essas contas padrão no Firebase automaticamente aqui.
-  // Isso já causou perda de dados reais quando o Firebase respondia vazio momentaneamente
-  // (ex.: rede instável, cache local limpo). Só o que o usuário salva explicitamente
-  // (Editar Conta / Minha Conta) deve ser escrito no Firebase.
+  if(usandoFirebase)contas.forEach(c=>salvarFirebase('contas',c.id,c));
 }
-// ── ZONA DE RISCO: apagar todos os usuários e recriar admin único ──
-function confirmarResetUsuarios(){
-  document.getElementById('modal-conf-titulo').textContent='Apagar TODOS os usuários?';
-  document.getElementById('modal-conf-msg').textContent='Isso vai excluir permanentemente todas as contas (admin, pastoral, paróquia) e todos os profissionais cadastrados neste sistema, e criar uma única conta admin nova (login: admin / senha: caritas2026). Beneficiários, agendamentos e relatórios não são afetados. Essa ação não pode ser desfeita. Tem certeza?';
-  document.getElementById('modal-conf-btn').onclick=()=>{resetarTodosUsuarios();fecharModal('modal-confirmar');};
-  abrirModal('modal-confirmar');
-}
-function resetarTodosUsuarios(){
-  const idsContas=contas.map(c=>c.id);
-  const idsProf=profissionais.map(p=>p.id);
-  const novoAdmin={id:'admin-1',nome:'Coordenação Cáritas',email:'admin',senha:'caritas2026',perfil:'admin',status:'ativo'};
-  contas=[novoAdmin];
-  profissionais=[];
-  salvarLocal();
-  if(usandoFirebase){
-    idsContas.forEach(id=>excluirFirebase('contas',id));
-    idsProf.forEach(id=>excluirFirebase('profissionais',id));
-    salvarFirebase('contas',novoAdmin.id,novoAdmin);
-  }
-  renderUsuarios();
-  toast('Usuários apagados. Nova conta admin: admin / caritas2026','ok');
-  setTimeout(()=>{
-    toast('Sua sessão foi encerrada — entre novamente com a nova conta admin.','erro');
-    sair();
-  },1500);
-}
-function renderUsuarios(){
-  const tbody=document.getElementById('tabela-usuarios');
+function renderContas(){
+  const tbody=document.getElementById('tabela-contas');
   if(!tbody)return;
-  const rotulos={admin:'Admin',pastoral:'Pastoral',paroquia:'Paróquia'};
-
-  const linhasContas=contas.map(c=>{
-    const inativa=c.status==='inativo';
-    const ehUnicoAdminAtivo=c.perfil==='admin'&&contas.filter(x=>x.perfil==='admin'&&x.status!=='inativo').length<=1;
-    return `<tr ${inativa?'style="opacity:0.6;"':''}>
-      <td><strong>${esc(c.nome)}</strong>${c.nomeConta?`<div style="font-size:0.78rem;color:var(--gold);">nome da conta: ${esc(c.nomeConta)}</div>`:''}${c.cargo?`<div style="font-size:0.78rem;color:var(--brown-lt);">${esc(c.cargo)}</div>`:''}${c.perfil==='paroquia'&&c.paroquia?`<div style="font-size:0.78rem;color:var(--brown-lt);">${esc(c.paroquia)}</div>`:''}</td>
-      <td><span class="badge badge-prof">${rotulos[c.perfil]||c.perfil}</span></td>
-      <td>${esc(c.email)||'<em style="color:var(--vermelho);">sem e-mail</em>'}</td>
-      <td style="font-family:monospace;">${esc(c.senha)||'—'}</td>
-      <td><span class="badge ${inativa?'badge-cancelado':'badge-ativo'}">${inativa?'Inativo':'Ativo'}</span></td>
-      <td style="display:flex;gap:5px;flex-wrap:wrap;">
-        <button class="btn btn-xs btn-primario" onclick="editarConta('${c.id}')">Editar</button>
-        ${!inativa&&!ehUnicoAdminAtivo?`<button class="btn btn-xs btn-secundario" onclick="alternarStatusConta('${c.id}')">Inativar</button>`:''}
-        ${inativa?`<button class="btn btn-xs btn-verde" onclick="alternarStatusConta('${c.id}')">Ativar</button>`:''}
-        ${contas.filter(x=>x.perfil==='admin').length>1||c.perfil!=='admin'?`<button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('conta','${c.id}')">✕</button>`:''}
-      </td>
-    </tr>`;
-  }).join('');
-
-  const linhasProf=profissionais.map(p=>{
-    const inativo=p.status==='inativo';
-    const pendente=p.status==='pendente';
-    return `<tr ${inativo?'style="opacity:0.6;"':''}>
-      <td><strong>${esc(p.nome)}</strong>${p.nomeConta?`<div style="font-size:0.78rem;color:var(--gold);">nome da conta: ${esc(p.nomeConta)}</div>`:''}<div style="font-size:0.78rem;color:var(--brown-lt);">${esc(p.especialidade||'')}</div></td>
-      <td><span class="badge badge-prof">Profissional</span></td>
-      <td>${esc(p.email)||'<em style="color:var(--vermelho);">sem e-mail</em>'}</td>
-      <td style="font-family:monospace;">${esc(p.senha)||'salus123'}</td>
-      <td><span class="badge ${pendente?'badge-pendente':inativo?'badge-cancelado':'badge-ativo'}">${pendente?'Pendente':inativo?'Inativo':'Ativo'}</span></td>
-      <td style="display:flex;gap:5px;flex-wrap:wrap;">
-        ${pendente?`<button class="btn btn-xs btn-verde" onclick="aprovarProfissional('${p.id}')">✓ Aprovar</button>`:''}
-        <button class="btn btn-xs btn-primario" onclick="editarProfissional('${p.id}')">Editar</button>
-        ${!pendente&&!inativo?`<button class="btn btn-xs btn-secundario" onclick="alternarStatusProfissional('${p.id}')">Inativar</button>`:''}
-        ${!pendente&&inativo?`<button class="btn btn-xs btn-verde" onclick="alternarStatusProfissional('${p.id}')">Ativar</button>`:''}
-        <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('profissional','${p.id}')">✕</button>
-      </td>
-    </tr>`;
-  }).join('');
-
-  tbody.innerHTML=linhasContas+linhasProf||`<tr><td colspan="6"><div class="vazio"><div class="vazio-icone">🔑</div><p>Nenhum usuário cadastrado ainda.</p></div></td></tr>`;
+  tbody.innerHTML=contas.map(c=>`<tr>
+    <td><strong>${esc(c.nome)}</strong></td>
+    <td>${esc(c.email)||'<em style="color:var(--vermelho);">sem e-mail — recuperação de senha não funciona</em>'}</td>
+    <td>${esc(c.nomeConta)||'—'}</td>
+    <td><span class="badge badge-prof">${c.perfil==='admin'?'Admin':'Pastoral'}</span></td>
+    <td style="display:flex;gap:5px;flex-wrap:wrap;">
+      <button class="btn btn-xs btn-primario" onclick="editarConta('${c.id}')">Editar</button>
+      ${contas.filter(x=>x.perfil==='admin').length>1||c.perfil!=='admin'?`<button class="btn btn-xs btn-perigo" onclick="excluirConta('${c.id}')">✕</button>`:''}
+    </td>
+  </tr>`).join('');
 }
-function alternarStatusConta(id){
-  const c=contas.find(x=>x.id===id);if(!c)return;
-  const vaiInativar=c.status!=='inativo';
-  if(vaiInativar&&c.perfil==='admin'&&contas.filter(x=>x.perfil==='admin'&&x.status!=='inativo').length<=1){
-    toast('Precisa haver ao menos uma conta de Admin ativa.','erro');return;
-  }
-  c.status=vaiInativar?'inativo':'ativo';
-  salvarLocal();
-  if(usandoFirebase)salvarFirebase('contas',c.id,c);
-  renderUsuarios();
-  toast(vaiInativar?'Conta inativada.':'Conta reativada!','ok');
-}
-function alternarStatusProfissional(id){
-  const p=profissionais.find(x=>x.id===id);if(!p)return;
-  const vaiInativar=p.status!=='inativo';
-  p.status=vaiInativar?'inativo':'ativo';
-  salvarLocal();
-  if(usandoFirebase)salvarFirebase('profissionais',p.id,p);
-  renderUsuarios();
-  if(document.getElementById('tabela-profissionais'))renderProfissionais();
-  toast(vaiInativar?'Profissional inativado.':'Profissional reativado!','ok');
-}
-function popularSelectParoquiasFranca(selectId,valorAtual){
-  let html='<option value="">Selecione</option>';
-  let encontrado=!valorAtual;
-  PAROQUIAS_FRANCA.forEach(f=>{
-    html+=`<optgroup label="Forania ${esc(f.forania)}">`;
-    f.paroquias.forEach(p=>{
-      const ehValorParoquia=p.paroquia===valorAtual;
-      if(ehValorParoquia)encontrado=true;
-      html+=`<option value="${esc(p.paroquia)}" ${ehValorParoquia?'selected':''}>${esc(p.paroquia)} (matriz)</option>`;
-      p.capelas.forEach(c=>{
-        const valorCompleto=`${p.paroquia} — ${c}`;
-        const ehValorCapela=valorCompleto===valorAtual;
-        if(ehValorCapela)encontrado=true;
-        html+=`<option value="${esc(valorCompleto)}" ${ehValorCapela?'selected':''}>　↳ ${esc(c)}</option>`;
-      });
-    });
-    html+='</optgroup>';
-  });
-  html+=`<option value="Outra" ${(valorAtual&&!encontrado)?'selected':''}>Outra (não está na lista)</option>`;
-  document.getElementById('c-paroquia').innerHTML=html;
-  const caiuEmOutra=valorAtual&&!encontrado;
-  document.getElementById('grupo-c-paroquia-outra').style.display=caiuEmOutra?'block':'none';
-  document.getElementById('c-paroquia-outra').value=caiuEmOutra?valorAtual:'';
-}
-function aoMudarParoquiaConta(){
-  const ehOutra=document.getElementById('c-paroquia').value==='Outra';
-  document.getElementById('grupo-c-paroquia-outra').style.display=ehOutra?'block':'none';
-}
-function aoMudarPerfilConta(){
-  const ehParoquia=document.getElementById('c-perfil').value==='paroquia';
-  document.getElementById('grupo-c-paroquia').style.display=ehParoquia?'block':'none';
-}
-function abrirModalConta(perfilInicial){
+function abrirModalConta(){
   document.getElementById('modal-conta-titulo').textContent='Nova Conta';
-  ['c-id','c-nome','c-nome-conta','c-email','c-telefone','c-senha','c-paroquia-outra','c-cargo'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('c-perfil').value=perfilInicial||'pastoral';
-  popularSelectParoquiasFranca('c-paroquia','');
-  aoMudarPerfilConta();
+  ['c-id','c-nome','c-email','c-nome-conta','c-senha'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('c-perfil').value='pastoral';
   abrirModal('modal-conta');
 }
 function editarConta(id){
@@ -1329,54 +1044,37 @@ function editarConta(id){
   document.getElementById('modal-conta-titulo').textContent='Editar Conta';
   document.getElementById('c-id').value=c.id;
   document.getElementById('c-nome').value=c.nome||'';
-  document.getElementById('c-nome-conta').value=c.nomeConta||'';
   document.getElementById('c-email').value=c.email||'';
-  document.getElementById('c-telefone').value=c.telefone||'';
+  document.getElementById('c-nome-conta').value=c.nomeConta||'';
   document.getElementById('c-perfil').value=c.perfil||'pastoral';
-  popularSelectParoquiasFranca('c-paroquia',c.paroquia||'');
-  document.getElementById('c-cargo').value=c.cargo||'';
   document.getElementById('c-senha').value=c.senha||'';
-  document.getElementById('grupo-c-paroquia').style.display=c.perfil==='paroquia'?'block':'none';
   abrirModal('modal-conta');
 }
 function salvarConta(){
   const nome=document.getElementById('c-nome').value.trim();
-  const nomeConta=document.getElementById('c-nome-conta').value.trim();
   const email=document.getElementById('c-email').value.trim().toLowerCase();
-  const telefone=document.getElementById('c-telefone').value.trim();
+  const nomeConta=document.getElementById('c-nome-conta').value.trim().toLowerCase();
   const senha=document.getElementById('c-senha').value.trim();
   const perfil=document.getElementById('c-perfil').value;
-  const paroquiaSel=document.getElementById('c-paroquia').value;
-  const paroquia=paroquiaSel==='Outra'?document.getElementById('c-paroquia-outra').value.trim():paroquiaSel;
-  const cargo=document.getElementById('c-cargo').value.trim();
   if(!nome||!email||!senha){toast('Preencha nome, e-mail e senha.','erro');return;}
-  if(perfil==='paroquia'&&!paroquia){toast('Informe o nome da paróquia.','erro');return;}
-  if(emailEmUso(email,document.getElementById('c-id').value)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
-  if(nomeConta&&emailEmUso(nomeConta,document.getElementById('c-id').value)){toast('Esse Nome da Conta já está em uso — escolha outro.','erro');return;}
-  const id=document.getElementById('c-id').value||uid();
+  const id0=document.getElementById('c-id').value;
+  if(emailEmUso(email,id0)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
+  if(nomeConta&&emailEmUso(nomeConta,id0)){toast('Esse nome da conta já está em uso.','erro');return;}
+  const id=id0||uid();
   const idx=contas.findIndex(x=>x.id===id);
-  const statusAtual=idx>=0?(contas[idx].status||'ativo'):'ativo';
-  const obj={id,nome,email,telefone,senha,perfil,paroquia:perfil==='paroquia'?paroquia:'',cargo,nomeConta,status:statusAtual};
+  const obj={id,nome,email,nomeConta,senha,perfil};
   if(idx>=0)contas[idx]=obj;else contas.push(obj);
   salvarLocal();
-  const btnSalvar=document.querySelector('#modal-conta .btn-primario');
-  if(usandoFirebase){
-    if(btnSalvar){btnSalvar.disabled=true;btnSalvar.textContent='Salvando...';}
-    salvarFirebase('contas',id,obj)
-      .then(()=>{
-        fecharModal('modal-conta');renderUsuarios();
-        toast('Conta salva e sincronizada!','ok');
-      })
-      .catch((e)=>{
-        toast('Erro ao salvar no servidor: '+(e&&e.message?e.message:'motivo desconhecido')+'. A alteração ficou salva só neste navegador.','erro');
-      })
-      .finally(()=>{
-        if(btnSalvar){btnSalvar.disabled=false;btnSalvar.textContent='Salvar';}
-      });
-  } else {
-    fecharModal('modal-conta');renderUsuarios();
-    toast('Conta salva (modo local)!','ok');
-  }
+  if(usandoFirebase)salvarFirebase('contas',id,obj);
+  fecharModal('modal-conta');renderContas();
+  toast('Conta salva!','ok');
+}
+function excluirConta(id){
+  contas=contas.filter(x=>x.id!==id);
+  salvarLocal();
+  if(usandoFirebase)excluirFirebase('contas',id);
+  renderContas();
+  toast('Conta removida.','ok');
 }
 function emailEmUso(valor,idIgnorar){
   const v=(valor||'').toLowerCase();
@@ -1390,58 +1088,43 @@ function emailEmUso(valor,idIgnorar){
 function abrirMeuPerfil(){
   if(!usuarioAtual)return;
   document.getElementById('mp-nome').value=usuarioAtual.nome||'';
-  document.getElementById('mp-nome-conta').value=usuarioAtual.nomeConta||'';
   document.getElementById('mp-email').value=usuarioAtual.email||'';
-  const registroAtual=usuarioAtual.perfil==='profissional'?profissionais.find(x=>x.id===usuarioAtual.id):contas.find(x=>x.id===usuarioAtual.id);
-  document.getElementById('mp-telefone').value=registroAtual?.telefone||'';
+  document.getElementById('mp-nome-conta').value=usuarioAtual.nomeConta||'';
   document.getElementById('mp-senha1').value='';
   document.getElementById('mp-senha2').value='';
   document.getElementById('mp-msg').style.display='none';
   abrirModal('modal-meu-perfil');
 }
 function salvarMeuPerfil(){
-  if(!usuarioAtual){mpMsg('Sessão perdida — feche esta janela, saia e entre de novo.','erro');return;}
+  if(!usuarioAtual)return;
   const email=document.getElementById('mp-email').value.trim().toLowerCase();
-  const nomeConta=document.getElementById('mp-nome-conta').value.trim();
-  const telefone=document.getElementById('mp-telefone').value.trim();
+  const nomeConta=document.getElementById('mp-nome-conta').value.trim().toLowerCase();
   const s1=document.getElementById('mp-senha1').value.trim();
   const s2=document.getElementById('mp-senha2').value.trim();
   const msg=document.getElementById('mp-msg');
   if(!email){mpMsg('Informe um e-mail.','erro');return;}
   if(emailEmUso(email,usuarioAtual.id)){mpMsg('Esse e-mail já está em uso por outra conta.','erro');return;}
-  if(nomeConta&&emailEmUso(nomeConta,usuarioAtual.id)){mpMsg('Esse Nome da Conta já está em uso — escolha outro.','erro');return;}
+  if(nomeConta&&emailEmUso(nomeConta,usuarioAtual.id)){mpMsg('Esse nome da conta já está em uso.','erro');return;}
   if(s1||s2){
     if(s1!==s2){mpMsg('As senhas não conferem.','erro');return;}
     if(s1.length<4){mpMsg('A senha deve ter ao menos 4 caracteres.','erro');return;}
   }
-  let registro,colecao;
   if(usuarioAtual.perfil==='profissional'){
-    registro=profissionais.find(x=>x.id===usuarioAtual.id);colecao='profissionais';
+    const p=profissionais.find(x=>x.id===usuarioAtual.id);if(!p)return;
+    p.email=email; p.nomeConta=nomeConta; if(s1)p.senha=s1;
+    salvarLocal(); if(usandoFirebase)salvarFirebase('profissionais',p.id,p);
+    renderProfissionais();
   }else{
-    registro=contas.find(x=>x.id===usuarioAtual.id);colecao='contas';
+    const c=contas.find(x=>x.id===usuarioAtual.id);if(!c)return;
+    c.email=email; c.nomeConta=nomeConta; if(s1)c.senha=s1;
+    salvarLocal(); if(usandoFirebase)salvarFirebase('contas',c.id,c);
+    renderContas();
   }
-  if(!registro){mpMsg('Não encontrei seu cadastro pra atualizar (id: '+esc(usuarioAtual.id||'—')+'). Saia e entre de novo, ou avise a coordenação.','erro');return;}
-  registro.email=email; registro.nomeConta=nomeConta; registro.telefone=telefone; if(s1)registro.senha=s1;
-  salvarLocal();
-  const finalizar=()=>{
-    if(colecao==='profissionais')renderProfissionais();
-    renderUsuarios();
-    usuarioAtual.email=email;
-    usuarioAtual.nomeConta=nomeConta;
-    usuarioAtual.nomeExibicao=nomeConta||usuarioAtual.nome;
-    document.getElementById('topbar-perfil-nome').textContent=(usuarioAtual.perfil==='paroquia'&&usuarioAtual.paroquia)?`${usuarioAtual.nomeExibicao} — ${usuarioAtual.paroquia}`:usuarioAtual.nomeExibicao;
-    mpMsg('Dados atualizados com sucesso!','ok');
-    toast('Conta atualizada!','ok');
-    setTimeout(()=>fecharModal('modal-meu-perfil'),900);
-  };
-  if(usandoFirebase){
-    mpMsg('Salvando...','ok');
-    salvarFirebase(colecao,registro.id,registro)
-      .then(finalizar)
-      .catch((e)=>mpMsg('Erro ao salvar no servidor: '+(e&&e.message?e.message:'motivo desconhecido'),'erro'));
-  } else {
-    finalizar();
-  }
+  usuarioAtual.email=email;
+  usuarioAtual.nomeConta=nomeConta;
+  mpMsg('Dados atualizados com sucesso!','ok');
+  toast('Conta atualizada!','ok');
+  setTimeout(()=>fecharModal('modal-meu-perfil'),900);
 }
 function mpMsg(t,tipo){
   const el=document.getElementById('mp-msg');
@@ -1540,7 +1223,7 @@ function profNome(id){const p=profissionais.find(x=>x.id===id);return p?p.nome:'
 function benefNome(id){const b=beneficiarios.find(x=>x.id===id);return b?`${b.codigo} — ${b.nome}`:'—';}
 function badgeStatus(s){
   const m={solicitado:'badge-solicitado',confirmado:'badge-confirmado',pastoral_ciente:'badge-realizado',realizado:'badge-realizado',recusado:'badge-recusado',cancelado:'badge-cancelado'};
-  const t={solicitado:'Solicitado',confirmado:'Confirmado pelo profissional',pastoral_ciente:'✓ Confirmado pelo agente',realizado:'Realizado',recusado:'Recusado',cancelado:'Cancelado'};
+  const t={solicitado:'Solicitado',confirmado:'Confirmado ✓',pastoral_ciente:'Pastoral ciente',realizado:'Realizado',recusado:'Recusado',cancelado:'Cancelado'};
   return `<span class="badge ${m[s]||''}">${t[s]||s}</span>`;
 }
 
@@ -1560,6 +1243,7 @@ function atualizarBadges(){
     bMinhaAg.textContent=minhaSol||'';
     bMinhaAg.style.display=minhaSol?'inline':'none';
   }
+  atualizarBadgeNecessidades();
 }
 
 // ══════════════════════════════════════════════════════
@@ -1597,7 +1281,7 @@ function renderPainel(){
         <td>${esc(profNome(a.profissionalId))}</td>
         <td style="font-size:0.84rem;">${esc(a.local||'—')}</td>
         <td>${badgeStatus(a.status)}</td>
-        <td><button class="btn btn-xs btn-verde" onclick="abrirWhatsModal('${a.id}')">✓ Confirmar</button></td>
+        <td><button class="btn btn-xs btn-whats" onclick="abrirWhatsModal('${a.id}')">📱 Avisar</button></td>
       </tr>`).join('');
 }
 
@@ -1606,11 +1290,6 @@ function renderPainel(){
 // ══════════════════════════════════════════════════════
 function renderMinhaAgenda(){
   const profId=usuarioAtual?.profissionalId||profissionais.find(p=>p.nome===usuarioAtual?.nome)?.id;
-  const profLogado=profissionais.find(p=>p.id===profId);
-
-  // Cabeçalho com a especialidade do profissional logado
-  const elEsp=document.getElementById('minha-agenda-especialidade');
-  if(elEsp)elEsp.textContent=profLogado?.especialidade?`Especialidade: ${profLogado.especialidade}`:'';
 
   // Solicitações pendentes para este profissional
   const solicit=profId
@@ -1654,8 +1333,6 @@ function renderMinhaAgenda(){
       <div class="horario-card ${h.ocupado?'ocupado':''}" style="cursor:default;">
         <div class="hc-dia">${fmtData(h.data)}</div>
         <div class="hc-hora">⏰ ${h.hora||'—'}</div>
-        <div style="font-size:0.8rem;font-weight:600;color:var(--brown);margin-top:4px;">${esc(profLogado?.especialidade||'')}</div>
-        <div style="font-size:0.78rem;color:var(--gold);margin-top:1px;">${esc(h.tipo||'—')}</div>
         <div style="font-size:0.78rem;color:var(--cinza-txt);margin-top:3px;">${esc(h.local||'')}</div>
         <div class="hc-vaga">${h.ocupado?'🔒 Ocupado':'✓ Disponível'}</div>
         ${!h.ocupado?`<button class="btn btn-xs btn-perigo" style="margin-top:8px;" onclick="excluirHorario('${h.id}')">Remover</button>`:''}
@@ -1685,13 +1362,10 @@ function iniciarAgendar(){
   horarioSelecionado=null;
   document.getElementById('bloco-horarios-disponiveis').style.display='none';
   document.getElementById('bloco-confirmar-solicitacao').style.display='none';
-  // Popular select beneficiários (restrito à própria paróquia, se for o caso)
-  const benefVisiveis=usuarioAtual?.perfil==='paroquia'
-    ? beneficiarios.filter(b=>(b.paroquia||'')===usuarioAtual.paroquia)
-    : beneficiarios;
+  // Popular select beneficiários
   const sel=document.getElementById('sol-beneficiario');
   sel.innerHTML='<option value="">Selecione</option>'+
-    benefVisiveis.map(b=>`<option value="${b.id}">${esc(b.codigo)} — ${esc(b.nome)}</option>`).join('');
+    beneficiarios.map(b=>`<option value="${b.id}">${esc(b.codigo)} — ${esc(b.nome)}</option>`).join('');
   document.getElementById('sol-especialidade').value='';
   document.getElementById('sol-obs').value='';
 }
@@ -1721,21 +1395,9 @@ function carregarHorariosDisponiveis(){
   document.getElementById('bloco-confirmar-solicitacao').style.display='none';
 
   if(disponíveis.length===0){
+    grade.innerHTML=`<div class="vazio" style="grid-column:1/-1;padding:30px;"><div class="vazio-icone">🗓️</div><p>Nenhum horário disponível para <strong>${esc(esp)}</strong> no momento.<br>Aguarde o profissional ofertar novos horários. A coordenação já foi avisada.</p></div>`;
     const bId=document.getElementById('sol-beneficiario').value;
-    const jaRegistrada=bId?necessidadesLatentes.find(n=>n.beneficiarioId===bId&&n.especialidade===esp&&n.status==='aberta'):null;
-    if(jaRegistrada){
-      grade.innerHTML=`<div class="vazio" style="grid-column:1/-1;padding:30px;">
-        <div class="vazio-icone">✅</div>
-        <p>Nenhum horário disponível para <strong>${esc(esp)}</strong> no momento.<br>Essa necessidade já foi avisada à coordenação${jaRegistrada.tentativas>1?` (${jaRegistrada.tentativas}ª tentativa)`:''}.</p>
-        <button class="btn btn-secundario btn-sm" style="margin-top:12px;" onclick="registrarNecessidadeManual()">🔔 Avisar novamente</button>
-      </div>`;
-    }else{
-      grade.innerHTML=`<div class="vazio" style="grid-column:1/-1;padding:30px;">
-        <div class="vazio-icone">🗓️</div>
-        <p>Nenhum horário disponível para <strong>${esc(esp)}</strong> no momento.<br>Aguarde o profissional ofertar novos horários, ou avise a coordenação agora dessa necessidade.</p>
-        <button class="btn btn-primario btn-sm" style="margin-top:12px;" onclick="registrarNecessidadeManual()">📌 Registrar Necessidade</button>
-      </div>`;
-    }
+    if(bId)registrarTentativaNecessidade(bId,esp);
     return;
   }
 
@@ -1745,10 +1407,8 @@ function carregarHorariosDisponiveis(){
       <div class="hc-dia">${fmtData(h.data)}</div>
       <div class="hc-hora">⏰ ${h.hora||'—'}</div>
       <div style="font-size:0.84rem;font-weight:600;color:var(--brown);margin-top:4px;">${esc(p?.nome||'—')}</div>
-      ${h.tipo?`<div style="font-size:0.78rem;color:var(--gold);margin-top:1px;">${esc(h.tipo)}</div>`:''}
       <div style="font-size:0.78rem;color:var(--cinza-txt);margin-top:2px;">${esc(h.local||'')}</div>
       ${h.obs?`<div style="font-size:0.75rem;color:var(--brown-lt);margin-top:2px;font-style:italic;">${esc(h.obs)}</div>`:''}
-      ${p?.whatsappAtivo&&p?.whatsappNumero?`<a href="https://wa.me/55${p.whatsappNumero.replace(/\D/g,'')}" target="_blank" onclick="event.stopPropagation()" style="display:inline-flex;align-items:center;gap:4px;font-size:0.74rem;color:#1da851;font-weight:600;margin-top:4px;text-decoration:none;">💬 Falar direto no WhatsApp</a>`:''}
       <div class="hc-vaga">✓ Disponível</div>
     </div>`;
   }).join('');
@@ -1772,8 +1432,6 @@ function selecionarHorario(hId){
           <div style="font-size:1.05rem;font-weight:600;color:var(--brown);">${fmtData(h?.data)} às ${h?.hora||'—'}</div></div>
         <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Profissional</div>
           <div style="font-size:1.05rem;color:var(--brown);">${esc(p?.nome||'—')}</div></div>
-        <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Tipo de Atendimento</div>
-          <div style="font-size:1.05rem;color:var(--brown);">${esc(h?.tipo||'—')}</div></div>
         <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Beneficiário</div>
           <div style="font-size:1.05rem;color:var(--brown);">${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</div></div>
         <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Local</div>
@@ -1799,13 +1457,13 @@ function enviarSolicitacao(){
 
   const ag={
     id:uid(), horarioId:h.id,
-    data:h.data, hora:h.hora, local:h.local, tipoAtendimento:h.tipo||'',
+    data:h.data, hora:h.hora, local:h.local,
     beneficiarioId:bId,
     profissionalId:h.profissionalId,
     especialidade:profissionais.find(p=>p.id===h.profissionalId)?.especialidade||'',
     obs:document.getElementById('sol-obs').value.trim(),
     status:'solicitado',
-    solicitadoPor:usuarioAtual.nomeExibicao||usuarioAtual.nome,
+    solicitadoPor:usuarioAtual.nome,
     dataSolicitacao:new Date().toISOString(),
     msgProfissional:'',msgPastoral:''
   };
@@ -1813,7 +1471,6 @@ function enviarSolicitacao(){
   // Marcar horário como ocupado
   h.ocupado=true;
   salvarLocal();
-  if(usandoFirebase){salvarFirebase('agendamentos',ag.id,ag);salvarFirebase('horarios',h.id,h);}
   atualizarBadges();
   toast('Solicitação enviada! O profissional será notificado ao entrar no sistema.','ok');
   // Resetar
@@ -1884,17 +1541,12 @@ function abrirWhatsModal(agId){
   const a=agendamentos.find(x=>x.id===agId); if(!a)return;
   const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
   const p=profissionais.find(x=>x.id===a.profissionalId);
-  const registrante=contas.find(x=>x.id===b?.cadastradoPor);
-  const telDestino=registrante?.telefone||b?.telefone||'';
 
   document.getElementById('whats-resumo').innerHTML=`
     <div style="font-size:0.9rem;line-height:1.7;color:var(--brown);">
       <strong>${fmtData(a.data)} às ${a.hora||'—'}</strong> · ${esc(p?.nome||'—')} (${esc(a.especialidade||'')})<br>
-      ${a.tipoAtendimento?`Tipo de atendimento: <strong>${esc(a.tipoAtendimento)}</strong><br>`:''}
       Beneficiário: <strong>${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</strong><br>
       Local: ${esc(a.local||'—')}<br>
-      ${telDestino?`Mensagem será enviada para: <strong>${esc(registrante?.nome||'—')}</strong> (${esc(registrante?.telefone?'quem cadastrou o beneficiário':'telefone do beneficiário')}) — ${esc(telDestino)}<br>`:`<span style="color:var(--vermelho);">Nenhum telefone cadastrado (nem de quem cadastrou, nem do beneficiário) — o WhatsApp abrirá sem número.</span><br>`}
-      ${p?.whatsappAtivo&&p?.whatsappNumero?`Profissional autoriza contato direto: <strong>${esc(p.whatsappNumero)}</strong><br>`:''}
       ${a.msgProfissional?`Mensagem do profissional: <em>"${esc(a.msgProfissional)}"</em>`:''}
     </div>`;
 
@@ -1905,10 +1557,9 @@ Olá! Temos uma boa notícia: a consulta foi *confirmada* pelo(a) voluntário(a)
 📅 *Data:* ${fmtData(a.data)}
 ⏰ *Horário:* ${a.hora||'—'}
 👨‍⚕️ *Profissional:* ${p?.nome||'—'} (${a.especialidade||''})
-${a.tipoAtendimento?`🩺 *Tipo de atendimento:* ${a.tipoAtendimento}\n`:''}📍 *Local:* ${a.local||'—'}
+📍 *Local:* ${a.local||'—'}
 🔖 *Código:* ${b?.codigo||'—'}
-${p?.whatsappAtivo&&p?.whatsappNumero?`\n💬 *O(a) profissional autorizou contato direto pelo WhatsApp:*\n${p.whatsappNumero}`:''}
-${a.msgProfissional?`\n📝 *Mensagem do profissional:*\n"${a.msgProfissional}"`:''}
+${a.msgProfissional?`\n💬 *Mensagem do profissional:*\n"${a.msgProfissional}"`:''}
 
 Por favor, confirme o recebimento desta mensagem. 🙏
 _Cáritas Diocesana de Franca_`;
@@ -1918,10 +1569,8 @@ _Cáritas Diocesana de Franca_`;
 }
 
 function abrirWhats(){
-  const a=agendamentos.find(x=>x.id===agWhatsId);
-  const b=beneficiarios.find(x=>x.id===a?.beneficiarioId);
-  const registrante=contas.find(x=>x.id===b?.cadastradoPor);
-  const tel=(registrante?.telefone||b?.telefone||'').replace(/\D/g,'');
+  const b=beneficiarios.find(x=>x.id===agendamentos.find(a=>a.id===agWhatsId)?.beneficiarioId);
+  const tel=(b?.telefone||'').replace(/\D/g,'');
   const msg=encodeURIComponent(document.getElementById('whats-msg').value);
   const url=tel?`https://wa.me/55${tel}?text=${msg}`:`https://wa.me/?text=${msg}`;
   window.open(url,'_blank');
@@ -1960,7 +1609,7 @@ function renderProfissionais(){
       return `<tr ${isPendente?'style="background:var(--gold-faint);"':''}>
         <td><strong>${esc(p.nome)}</strong>${isPendente?` <span class="badge badge-pendente" style="font-size:0.68rem;">Forms</span>`:''}${p.origem==='google_forms'&&!isPendente?` <span style="font-size:0.72rem;color:var(--brown-lt);">via Forms</span>`:''}</td>
         <td><span class="badge badge-prof">${esc(p.especialidade)}</span></td>
-        <td><a href="tel:${esc(p.telefone)}" style="color:var(--brown);text-decoration:none;">${esc(p.telefone)}</a>${p.whatsappAtivo?`<div style="font-size:0.72rem;color:#1da851;font-weight:600;">💬 WhatsApp direto</div>`:''}</td>
+        <td><a href="tel:${esc(p.telefone)}" style="color:var(--brown);text-decoration:none;">${esc(p.telefone)}</a></td>
         <td style="text-align:center;">${nh}</td>
         <td style="text-align:center;">${rels}</td>
         <td><span class="badge ${p.status==='ativo'?'badge-ativo':isPendente?'badge-pendente':'badge-cancelado'}">${p.status==='ativo'?'Ativo':isPendente?'Pendente':'Inativo'}</span></td>
@@ -1973,18 +1622,12 @@ function renderProfissionais(){
     }).join('');
 }
 
-function aoMudarWhatsProfissional(){
-  const aceita=document.getElementById('p-whats-aceita').value==='sim';
-  document.getElementById('grupo-p-whats-numero').style.display=aceita?'block':'none';
-}
 function abrirModalProfissional(){
   document.getElementById('modal-prof-titulo').textContent='Novo Profissional';
-  ['p-id','p-nome','p-registro','p-telefone','p-email','p-nome-conta','p-local','p-obs','p-whats-numero'].forEach(id=>document.getElementById(id).value='');
+  ['p-id','p-nome','p-registro','p-telefone','p-email','p-nome-conta','p-local','p-obs'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('p-especialidade').value='';
   document.getElementById('p-status').value='ativo';
   document.getElementById('p-senha').value='salus123';
-  document.getElementById('p-whats-aceita').value='nao';
-  aoMudarWhatsProfissional();
   abrirModal('modal-profissional');
 }
 function editarProfissional(id){
@@ -2001,9 +1644,6 @@ function editarProfissional(id){
   document.getElementById('p-obs').value=p.obs||'';
   document.getElementById('p-status').value=p.status||'ativo';
   document.getElementById('p-senha').value=p.senha||'salus123';
-  document.getElementById('p-whats-aceita').value=p.whatsappAtivo?'sim':'nao';
-  document.getElementById('p-whats-numero').value=p.whatsappNumero||'';
-  aoMudarWhatsProfissional();
   abrirModal('modal-profissional');
 }
 function salvarProfissional(){
@@ -2011,24 +1651,19 @@ function salvarProfissional(){
   const tel=document.getElementById('p-telefone').value.trim();
   const esp=document.getElementById('p-especialidade').value;
   const email=document.getElementById('p-email').value.trim().toLowerCase();
-  const nomeConta=document.getElementById('p-nome-conta').value.trim();
+  const nomeConta=document.getElementById('p-nome-conta').value.trim().toLowerCase();
   const senha=document.getElementById('p-senha').value.trim()||'salus123';
-  const whatsappAtivo=document.getElementById('p-whats-aceita').value==='sim';
-  const whatsappNumero=document.getElementById('p-whats-numero').value.trim();
   if(!nome||!tel||!esp){toast('Preencha nome, especialidade e telefone.','erro');return;}
   if(!email){toast('Informe o e-mail — é o login do profissional no app.','erro');return;}
-  if(whatsappAtivo&&!whatsappNumero){toast('Informe o número de WhatsApp para contato direto.','erro');return;}
   const id=document.getElementById('p-id').value||uid();
   if(emailEmUso(email,id)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
-  if(nomeConta&&emailEmUso(nomeConta,id)){toast('Esse Nome da Conta já está em uso — escolha outro.','erro');return;}
+  if(nomeConta&&emailEmUso(nomeConta,id)){toast('Esse nome da conta já está em uso.','erro');return;}
   const idx=profissionais.findIndex(x=>x.id===id);
   const obj={id,nome,especialidade:esp,registro:document.getElementById('p-registro').value.trim(),
-    telefone:tel,email,senha,
+    telefone:tel,email,nomeConta,senha,
     local:document.getElementById('p-local').value.trim(),
-    whatsappAtivo,whatsappNumero:whatsappAtivo?whatsappNumero:'',
     obs:document.getElementById('p-obs').value.trim(),
     status:document.getElementById('p-status').value,
-    nomeConta,
     atendimentos:idx>=0?(profissionais[idx].atendimentos||0):0};
   if(idx>=0)profissionais[idx]=obj;else profissionais.push(obj);
   salvarLocal();
@@ -2039,10 +1674,6 @@ function salvarProfissional(){
 
 
 // ── HORÁRIOS ──
-function aoMudarWhatsHorario(){
-  const aceita=document.getElementById('h-whats-aceita').value==='sim';
-  document.getElementById('grupo-h-whats-numero').style.display=aceita?'block':'none';
-}
 function abrirModalHorario(){
   document.getElementById('h-data').value=new Date().toISOString().slice(0,10);
   document.getElementById('h-hora').value='';
@@ -2051,194 +1682,26 @@ function abrirModalHorario(){
   // Pré-preencher local do profissional logado
   const p=profissionais.find(x=>x.id===usuarioAtual?.profissionalId)||profissionais.find(x=>x.nome===usuarioAtual?.nome);
   if(p?.local)document.getElementById('h-local').value=p.local;
-  // Popular tipos de atendimento conforme a especialidade do profissional
-  const tipos=TIPOS_ATENDIMENTO[p?.especialidade]||TIPOS_ATENDIMENTO['Outro'];
-  document.getElementById('h-tipo').innerHTML='<option value="">Selecione</option>'+
-    tipos.map(t=>`<option>${esc(t)}</option>`).join('');
-  // Pré-preencher preferência de WhatsApp já cadastrada do profissional
-  document.getElementById('h-whats-aceita').value=p?.whatsappAtivo?'sim':'nao';
-  document.getElementById('h-whats-numero').value=p?.whatsappNumero||'';
-  aoMudarWhatsHorario();
   abrirModal('modal-horario');
 }
 function salvarHorario(){
   const data=document.getElementById('h-data').value;
   const hora=document.getElementById('h-hora').value;
-  const tipo=document.getElementById('h-tipo').value;
   const local=document.getElementById('h-local').value.trim();
-  const whatsappAtivo=document.getElementById('h-whats-aceita').value==='sim';
-  const whatsappNumero=document.getElementById('h-whats-numero').value.trim();
-  if(!data||!hora||!tipo||!local){toast('Preencha data, horário, tipo de atendimento e local.','erro');return;}
-  if(whatsappAtivo&&!whatsappNumero){toast('Informe o número de WhatsApp para contato direto.','erro');return;}
+  if(!data||!hora||!local){toast('Preencha data, horário e local.','erro');return;}
   // Encontrar profissional logado
   const p=profissionais.find(x=>x.id===usuarioAtual?.profissionalId)||profissionais.find(x=>x.nome===usuarioAtual?.nome)||profissionais[0];
   if(!p){toast('Nenhum profissional cadastrado com este nome.','erro');return;}
-  const novoHorario={id:uid(),profissionalId:p.id,data,hora,tipo,local,obs:document.getElementById('h-obs').value.trim(),ocupado:false};
-  horarios.push(novoHorario);
-  // Atualizar a preferência de WhatsApp do profissional (vale pra todos os horários dele)
-  p.whatsappAtivo=whatsappAtivo;
-  p.whatsappNumero=whatsappAtivo?whatsappNumero:'';
-  salvarLocal();
-  if(usandoFirebase){
-    salvarFirebase('horarios',novoHorario.id,novoHorario);
-    salvarFirebase('profissionais',p.id,p);
-  }
-  renderProfissionais();
-  resolverNecessidadesLatentesPara(p.especialidade);
-  fecharModal('modal-horario');renderMinhaAgenda();
+  horarios.push({id:uid(),profissionalId:p.id,data,hora,local,obs:document.getElementById('h-obs').value.trim(),ocupado:false});
+  salvarLocal();fecharModal('modal-horario');renderMinhaAgenda();
+  if(p.especialidade)resolverNecessidadesPorEspecialidade(p.especialidade);
   toast('Horário oferecido!','ok');
 }
 function excluirHorario(hId){
   const h=horarios.find(x=>x.id===hId);
   if(h?.ocupado){toast('Este horário já tem uma consulta solicitada.','erro');return;}
   horarios=horarios.filter(x=>x.id!==hId);
-  salvarLocal();
-  if(usandoFirebase)excluirFirebase('horarios',hId);
-  renderMinhaAgenda();
-  if(document.getElementById('tabela-horarios'))renderHorariosAdmin();
-  toast('Horário removido.','');
-}
-
-// ══════════════════════════════════════════════════════
-// HORÁRIOS — visão administrativa (todos os profissionais)
-// ══════════════════════════════════════════════════════
-function renderHorariosAdmin(){
-  document.getElementById('hor-cnt-total').textContent=horarios.length;
-  document.getElementById('hor-cnt-livres').textContent=horarios.filter(h=>!h.ocupado).length;
-  document.getElementById('hor-cnt-reservados').textContent=horarios.filter(h=>h.ocupado).length;
-
-  const mes=document.getElementById('filtro-hor-mes')?.value||'';
-  const status=document.getElementById('filtro-hor-status')?.value||'';
-  const area=document.getElementById('filtro-hor-area')?.value||'';
-  const q=(document.getElementById('busca-hor')?.value||'').toLowerCase();
-
-  const lista=horarios.filter(h=>{
-    if(mes&&!(h.data||'').startsWith(mes))return false;
-    if(status==='livre'&&h.ocupado)return false;
-    if(status==='reservado'&&!h.ocupado)return false;
-    const p=profissionais.find(x=>x.id===h.profissionalId);
-    if(area&&p?.especialidade!==area)return false;
-    if(q&&!(p?.nome||'').toLowerCase().includes(q))return false;
-    return true;
-  }).sort((a,b)=>(a.data||'').localeCompare(b.data||'')||(a.hora||'').localeCompare(b.hora||''));
-
-  const tbody=document.getElementById('tabela-horarios');
-  tbody.innerHTML=lista.length===0
-    ?`<tr><td colspan="7"><div class="vazio"><div class="vazio-icone">🗓️</div><p>Nenhum horário encontrado.</p></div></td></tr>`
-    :lista.map(h=>{
-      const p=profissionais.find(x=>x.id===h.profissionalId);
-      return `<tr>
-        <td style="white-space:nowrap;">${fmtData(h.data)} ${h.hora||''}</td>
-        <td>${esc(p?.nome||'—')}</td>
-        <td><span class="badge badge-prof">${esc(p?.especialidade||'—')}</span></td>
-        <td style="font-size:0.85rem;">${esc(h.tipo||'—')}</td>
-        <td style="font-size:0.84rem;">${esc(h.local||'—')}</td>
-        <td><span class="badge ${h.ocupado?'badge-solicitado':'badge-ativo'}">${h.ocupado?'Reservado':'Livre'}</span></td>
-        <td>${!h.ocupado?`<button class="btn btn-xs btn-perigo" onclick="excluirHorario('${h.id}')">✕</button>`:'<span style="font-size:0.78rem;color:var(--cinza-txt);">—</span>'}</td>
-      </tr>`;
-    }).join('');
-}
-
-// ══════════════════════════════════════════════════════
-// NECESSIDADES LATENTES — beneficiário precisa de uma especialidade
-// sem profissional/horário disponível no momento
-// ══════════════════════════════════════════════════════
-function existeDisponibilidadePara(especialidade){
-  const hoje=new Date().toISOString().slice(0,10);
-  const profIds=profissionais.filter(p=>p.especialidade===especialidade&&p.status==='ativo').map(p=>p.id);
-  return horarios.some(h=>profIds.includes(h.profissionalId)&&!h.ocupado&&h.data>=hoje);
-}
-function registrarNecessidadeManual(){
-  const bId=document.getElementById('sol-beneficiario').value;
-  const esp=document.getElementById('sol-especialidade').value;
-  if(!bId||!esp)return;
-  registrarNecessidadeLatente(bId,esp,'solicitacao');
-  toast('Necessidade registrada! A coordenação foi avisada.','ok');
-  carregarHorariosDisponiveis();
-}
-function registrarNecessidadeLatente(beneficiarioId,especialidade,origem){
-  if(!beneficiarioId||!especialidade)return;
-  if(existeDisponibilidadePara(especialidade))return;
-  const agora=new Date().toISOString();
-  let registro=necessidadesLatentes.find(n=>n.beneficiarioId===beneficiarioId&&n.especialidade===especialidade&&n.status==='aberta');
-  if(registro){
-    registro.tentativas=(registro.tentativas||1)+1;
-    registro.ultimaTentativa=agora;
-    if(!registro.origens)registro.origens=[registro.origem||origem];
-    if(!registro.origens.includes(origem))registro.origens.push(origem);
-  }else{
-    registro={id:uid(),beneficiarioId,especialidade,primeiraDeteccao:agora,ultimaTentativa:agora,tentativas:1,origens:[origem],status:'aberta'};
-    necessidadesLatentes.push(registro);
-  }
-  salvarLocal();
-  if(usandoFirebase)salvarFirebase('necessidadesLatentes',registro.id,registro);
-  if(document.getElementById('tabela-necessidades'))renderNecessidades();
-  atualizarBadgeNecessidades();
-}
-function resolverNecessidadesLatentesPara(especialidade){
-  let mudou=false;
-  necessidadesLatentes.forEach(n=>{
-    if(n.especialidade===especialidade&&n.status==='aberta'){
-      n.status='resolvida';n.resolvidaEm=new Date().toISOString();mudou=true;
-      if(usandoFirebase)salvarFirebase('necessidadesLatentes',n.id,n);
-    }
-  });
-  if(mudou){salvarLocal();if(document.getElementById('tabela-necessidades'))renderNecessidades();atualizarBadgeNecessidades();}
-}
-function atualizarBadgeNecessidades(){
-  const abertas=necessidadesLatentes.filter(n=>n.status==='aberta').length;
-  const b=document.getElementById('badge-necessidades');
-  if(b){b.textContent=abertas||'';b.style.display=abertas?'inline':'none';}
-}
-function alternarStatusNecessidade(id){
-  const n=necessidadesLatentes.find(x=>x.id===id);if(!n)return;
-  n.status=n.status==='aberta'?'resolvida':'aberta';
-  if(n.status==='resolvida')n.resolvidaEm=new Date().toISOString();
-  salvarLocal();
-  if(usandoFirebase)salvarFirebase('necessidadesLatentes',n.id,n);
-  renderNecessidades();atualizarBadgeNecessidades();
-}
-function renderNecessidades(){
-  const ehParoquia=usuarioAtual?.perfil==='paroquia';
-  const necessidadesVisiveis=ehParoquia
-    ?necessidadesLatentes.filter(n=>{
-      const b=beneficiarios.find(x=>x.id===n.beneficiarioId);
-      return (b?.paroquia||'')===usuarioAtual.paroquia;
-    })
-    :necessidadesLatentes;
-
-  const abertas=necessidadesVisiveis.filter(n=>n.status==='aberta');
-  document.getElementById('nec-cnt-abertas').textContent=abertas.length;
-  document.getElementById('nec-cnt-beneficiarios').textContent=new Set(abertas.map(n=>n.beneficiarioId)).size;
-
-  // Resumo por especialidade
-  const porEspecialidade={};
-  abertas.forEach(n=>{porEspecialidade[n.especialidade]=(porEspecialidade[n.especialidade]||0)+1;});
-  const resumo=document.getElementById('nec-resumo-especialidade');
-  const entradas=Object.entries(porEspecialidade).sort((a,b)=>b[1]-a[1]);
-  resumo.innerHTML=entradas.length===0?'<span style="color:var(--cinza-txt);font-style:italic;font-size:0.9rem;">Nenhuma necessidade em aberto no momento.</span>'
-    :entradas.map(([esp,n])=>`<span class="badge badge-pendente" style="font-size:0.85rem;padding:5px 12px;">${esc(esp)}: ${n}</span>`).join(' ');
-
-  const filtroStatus=document.getElementById('filtro-nec-status')?.value||'aberta';
-  const lista=necessidadesVisiveis.filter(n=>!filtroStatus||n.status===filtroStatus)
-    .sort((a,b)=>(b.ultimaTentativa||'').localeCompare(a.ultimaTentativa||''));
-
-  const tbody=document.getElementById('tabela-necessidades');
-  tbody.innerHTML=lista.length===0
-    ?`<tr><td colspan="7"><div class="vazio"><div class="vazio-icone">🔎</div><p>Nenhuma necessidade encontrada.</p></div></td></tr>`
-    :lista.map(n=>{
-      const b=beneficiarios.find(x=>x.id===n.beneficiarioId);
-      const origensTxt={cadastro:'Cadastro',solicitacao:'Solicitar Consulta'};
-      return `<tr>
-        <td>${esc(b?.codigo||'—')}</td>
-        <td><span class="badge badge-prof">${esc(n.especialidade)}</span></td>
-        <td style="font-size:0.84rem;">${esc(b?.paroquia||'—')}</td>
-        <td style="text-align:center;">${n.tentativas||1}</td>
-        <td style="font-size:0.82rem;white-space:nowrap;">${fmtData((n.ultimaTentativa||'').slice(0,10))}</td>
-        <td><span class="badge ${n.status==='aberta'?'badge-pendente':'badge-realizado'}">${n.status==='aberta'?'Aberta':'Resolvida'}</span></td>
-        <td><button class="btn btn-xs ${n.status==='aberta'?'btn-verde':'btn-secundario'}" onclick="alternarStatusNecessidade('${n.id}')">${n.status==='aberta'?'✓ Marcar resolvida':'Reabrir'}</button></td>
-      </tr>`;
-    }).join('');
+  salvarLocal();renderMinhaAgenda();toast('Horário removido.','');
 }
 
 // ══════════════════════════════════════════════════════
@@ -2246,54 +1709,32 @@ function renderNecessidades(){
 // ══════════════════════════════════════════════════════
 function renderBeneficiarios(){
   const q=(document.getElementById('busca-benef')?.value||'').toLowerCase();
-  let lista=beneficiarios.filter(b=>!q||b.nome.toLowerCase().includes(q)||b.codigo.toLowerCase().includes(q));
-  if(usuarioAtual?.perfil==='paroquia'){
-    lista=lista.filter(b=>(b.paroquia||'')===usuarioAtual.paroquia);
-  }
+  const lista=beneficiarios.filter(b=>!q||b.nome.toLowerCase().includes(q)||b.codigo.toLowerCase().includes(q));
   const tbody=document.getElementById('tabela-beneficiarios');
   tbody.innerHTML=lista.length===0
-    ?`<tr><td colspan="7"><div class="vazio"><div class="vazio-icone">🙏</div><p>Nenhum beneficiário encontrado.</p></div></td></tr>`
+    ?`<tr><td colspan="6"><div class="vazio"><div class="vazio-icone">🙏</div><p>Nenhum beneficiário encontrado.</p></div></td></tr>`
     :lista.map(b=>{
       const n=agendamentos.filter(a=>a.beneficiarioId===b.id).length;
       return `<tr>
-        <td style="font-family:'Raleway',sans-serif;font-size:0.82rem;letter-spacing:0.06em;color:var(--gold);">${esc(b.codigo)}</td>
-        <td><strong>${esc(b.nome)}</strong> <span style="font-size:0.78rem;color:var(--cinza-txt);">${esc(b.faixa||'')}</span></td>
-        <td style="font-size:0.84rem;">${esc(b.paroquia||'—')}</td>
+        <td style="font-family:'Raleway',sans-serif;font-size:0.82rem;letter-spacing:0.06em;color:var(--gold);cursor:pointer;" onclick="verBeneficiario('${b.id}')">${esc(b.codigo)}</td>
+        <td style="cursor:pointer;" onclick="verBeneficiario('${b.id}')"><strong>${esc(b.nome)}</strong> <span style="font-size:0.78rem;color:var(--cinza-txt);">${esc(b.faixa||'')}</span></td>
         <td style="font-size:0.84rem;">${esc(b.pastoral||'—')}</td>
         <td><span class="badge badge-prof">${esc(b.necessidade)}</span></td>
         <td style="text-align:center;">${n}</td>
         <td style="display:flex;gap:5px;">
+          <button class="btn btn-xs btn-secundario" onclick="verBeneficiario('${b.id}')">Ver</button>
           ${usuarioAtual?.perfil!=='profissional'?`<button class="btn btn-xs btn-primario" onclick="editarBeneficiario('${b.id}')">Editar</button>
           <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('beneficiario','${b.id}')">✕</button>`:''}
         </td>
       </tr>`;
     }).join('');
 }
-function popularSelectParoquias(selectId,valorAtual){
-  const paroquias=[...new Set(contas.filter(c=>c.perfil==='paroquia'&&c.paroquia).map(c=>c.paroquia))].sort();
-  const sel=document.getElementById(selectId);
-  sel.innerHTML='<option value="">Selecione</option>'+
-    paroquias.map(p=>`<option ${p===valorAtual?'selected':''}>${esc(p)}</option>`).join('');
-  if(paroquias.length===0){
-    sel.innerHTML='<option value="">Nenhuma paróquia cadastrada ainda</option>';
-  }
-}
-// Pastorais/grupos padrão oferecidos no cadastro de beneficiário
-const PASTORAIS_PADRAO=['Pastoral da Saúde','Pastoral do Idoso','Pastoral do Menor','Pastoral da Criança','Vicentinos (SSVP)','Pastoral Carcerária'];
-function aoMudarPastoralBeneficiario(){
-  const ehOutra=document.getElementById('b-pastoral').value==='Outra';
-  document.getElementById('grupo-b-pastoral-outra').style.display=ehOutra?'block':'none';
-}
 function abrirModalBeneficiario(){
   document.getElementById('modal-benef-titulo').textContent='Novo Beneficiário';
-  ['b-id','b-nome','b-pastoral','b-pastoral-outra','b-telefone','b-descricao'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('grupo-b-pastoral-outra').style.display='none';
+  ['b-id','b-nome','b-pastoral','b-telefone','b-descricao'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('b-codigo').value=gerarCodigo();
   document.getElementById('b-faixa').value='';
   document.getElementById('b-necessidade').value='';
-  const souParoquia=usuarioAtual?.perfil==='paroquia';
-  popularSelectParoquias('b-paroquia',souParoquia?usuarioAtual.paroquia:'');
-  document.getElementById('b-paroquia').disabled=souParoquia;
   abrirModal('modal-beneficiario');
 }
 function editarBeneficiario(id){
@@ -2302,46 +1743,137 @@ function editarBeneficiario(id){
   document.getElementById('b-id').value=b.id;
   document.getElementById('b-codigo').value=b.codigo;
   document.getElementById('b-nome').value=b.nome||'';
-  // Pastoral: se bater com uma das opções padrão, seleciona; senão cai em "Outra"
-  if(b.pastoral&&!PASTORAIS_PADRAO.includes(b.pastoral)){
-    document.getElementById('b-pastoral').value='Outra';
-    document.getElementById('b-pastoral-outra').value=b.pastoral;
-  }else{
-    document.getElementById('b-pastoral').value=b.pastoral||'';
-    document.getElementById('b-pastoral-outra').value='';
-  }
-  aoMudarPastoralBeneficiario();
+  document.getElementById('b-pastoral').value=b.pastoral||'';
   document.getElementById('b-telefone').value=b.telefone||'';
   document.getElementById('b-faixa').value=b.faixa||'';
   document.getElementById('b-necessidade').value=b.necessidade||'';
   document.getElementById('b-descricao').value=b.descricao||'';
-  const souParoquia=usuarioAtual?.perfil==='paroquia';
-  popularSelectParoquias('b-paroquia',souParoquia?usuarioAtual.paroquia:(b.paroquia||''));
-  document.getElementById('b-paroquia').disabled=souParoquia;
   abrirModal('modal-beneficiario');
+}
+let vbId=null;
+function verBeneficiario(id){
+  const b=beneficiarios.find(x=>x.id===id);if(!b)return;
+  vbId=id;
+  document.getElementById('ver-benef-titulo').textContent=b.codigo+' — '+b.nome;
+  document.getElementById('vb-codigo').textContent=b.codigo||'—';
+  document.getElementById('vb-nome').textContent=b.nome||'—';
+  document.getElementById('vb-pastoral').textContent=b.pastoral||'—';
+  document.getElementById('vb-telefone').textContent=b.telefone||'—';
+  document.getElementById('vb-faixa').textContent=b.faixa||'—';
+  document.getElementById('vb-necessidade').textContent=b.necessidade||'—';
+  document.getElementById('vb-descricao').textContent=b.descricao||'Nenhuma descrição informada.';
+  const ags=agendamentos.filter(a=>a.beneficiarioId===id).sort((x,y)=>(y.data||'').localeCompare(x.data||''));
+  const tbody=document.getElementById('vb-agendamentos');
+  tbody.innerHTML=ags.length===0
+    ?`<tr><td colspan="4"><div class="vazio" style="padding:16px;"><p>Nenhuma consulta registrada.</p></div></td></tr>`
+    :ags.map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(profNome(a.profissionalId))}</td>
+        <td><span class="badge badge-prof">${esc(a.especialidade||'')}</span></td>
+        <td>${badgeStatus(a.status)}</td>
+      </tr>`).join('');
+  document.getElementById('vb-btn-editar').style.display=usuarioAtual?.perfil!=='profissional'?'':'none';
+  abrirModal('modal-ver-beneficiario');
+}
+function editarBeneficiarioDeVer(){
+  fecharModal('modal-ver-beneficiario');
+  if(vbId)editarBeneficiario(vbId);
 }
 function salvarBeneficiario(){
   const nome=document.getElementById('b-nome').value.trim();
-  const pastoralSel=document.getElementById('b-pastoral').value;
-  const pastoral=pastoralSel==='Outra'?document.getElementById('b-pastoral-outra').value.trim():pastoralSel;
+  const pastoral=document.getElementById('b-pastoral').value.trim();
   const nec=document.getElementById('b-necessidade').value;
-  const souParoquia=usuarioAtual?.perfil==='paroquia';
-  const paroquia=souParoquia?usuarioAtual.paroquia:document.getElementById('b-paroquia').value;
-  if(!nome||!paroquia||!nec){toast('Preencha nome, paróquia e necessidade.','erro');return;}
+  if(!nome||!pastoral||!nec){toast('Preencha nome, pastoral e necessidade.','erro');return;}
   const id=document.getElementById('b-id').value||uid();
   const idx=beneficiarios.findIndex(x=>x.id===id);
-  const cadastradoPor=idx>=0?(beneficiarios[idx].cadastradoPor||usuarioAtual?.id||''):(usuarioAtual?.id||'');
-  const obj={id,codigo:document.getElementById('b-codigo').value,nome,paroquia,pastoral,
+  const obj={id,codigo:document.getElementById('b-codigo').value,nome,pastoral,
     telefone:document.getElementById('b-telefone').value.trim(),
     faixa:document.getElementById('b-faixa').value,necessidade:nec,
-    descricao:document.getElementById('b-descricao').value.trim(),
-    cadastradoPor};
+    descricao:document.getElementById('b-descricao').value.trim()};
   if(idx>=0)beneficiarios[idx]=obj;else beneficiarios.push(obj);
-  salvarLocal();
-  if(usandoFirebase)salvarFirebase('beneficiarios',id,obj);
-  registrarNecessidadeLatente(id,nec,'cadastro');
-  fecharModal('modal-beneficiario');renderBeneficiarios();
+  salvarLocal();fecharModal('modal-beneficiario');renderBeneficiarios();
+  if(!temEspecialistaLivre(nec))registrarTentativaNecessidade(id,nec);
   toast('Beneficiário salvo!','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// NECESSIDADES LATENTES
+// ══════════════════════════════════════════════════════
+function temEspecialistaLivre(especialidade){
+  const hoje=new Date().toISOString().slice(0,10);
+  const profEsp=profissionais.filter(p=>p.especialidade===especialidade&&p.status==='ativo').map(p=>p.id);
+  return horarios.some(h=>profEsp.includes(h.profissionalId)&&!h.ocupado&&h.data>=hoje);
+}
+function registrarTentativaNecessidade(beneficiarioId,especialidade){
+  const hoje=new Date().toISOString().slice(0,10);
+  let n=necessidadesLatentes.find(x=>x.beneficiarioId===beneficiarioId&&x.especialidade===especialidade&&x.status==='aberta');
+  if(n){
+    n.tentativas=(n.tentativas||1)+1;
+    n.ultimaTentativa=hoje;
+  }else{
+    n={id:uid(),beneficiarioId,especialidade,tentativas:1,ultimaTentativa:hoje,dataAbertura:hoje,status:'aberta'};
+    necessidadesLatentes.push(n);
+  }
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('necessidadesLatentes',n.id,n);
+  atualizarBadgeNecessidades();
+}
+function resolverNecessidadesPorEspecialidade(especialidade){
+  let mudou=false;
+  necessidadesLatentes.filter(n=>n.especialidade===especialidade&&n.status==='aberta').forEach(n=>{
+    n.status='resolvida';mudou=true;
+    if(usandoFirebase)salvarFirebase('necessidadesLatentes',n.id,n);
+  });
+  if(mudou){salvarLocal();atualizarBadgeNecessidades();}
+}
+function toggleNecessidade(id){
+  const n=necessidadesLatentes.find(x=>x.id===id);if(!n)return;
+  n.status=n.status==='aberta'?'resolvida':'aberta';
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('necessidadesLatentes',id,n);
+  renderNecessidades();atualizarBadgeNecessidades();
+  toast(n.status==='resolvida'?'Marcada como resolvida.':'Reaberta.','ok');
+}
+function atualizarBadgeNecessidades(){
+  const b=document.getElementById('badge-necessidades');
+  if(!b)return;
+  const abertas=necessidadesLatentes.filter(n=>n.status==='aberta').length;
+  b.textContent=abertas||'';
+  b.style.display=abertas?'inline':'none';
+}
+function renderNecessidades(){
+  const filtro=document.getElementById('filtro-nec-status')?.value??'aberta';
+  const abertas=necessidadesLatentes.filter(n=>n.status==='aberta');
+  document.getElementById('nec-cnt-abertas').textContent=abertas.length;
+  document.getElementById('nec-cnt-benef').textContent=new Set(abertas.map(n=>n.beneficiarioId)).size;
+
+  const porEsp={};
+  abertas.forEach(n=>{porEsp[n.especialidade]=(porEsp[n.especialidade]||0)+1;});
+  const wrap=document.getElementById('nec-por-especialidade');
+  const chips=Object.entries(porEsp);
+  wrap.innerHTML=chips.length===0
+    ?`<span style="font-size:0.88rem;color:var(--cinza-txt);font-style:italic;">Nenhuma necessidade em aberto no momento.</span>`
+    :chips.map(([esp,n])=>`<span class="badge badge-prof" style="font-size:0.82rem;padding:5px 12px;">${esc(esp)}: ${n}</span>`).join('');
+
+  const lista=necessidadesLatentes.filter(n=>!filtro||n.status===filtro)
+    .sort((a,b)=>(b.ultimaTentativa||'').localeCompare(a.ultimaTentativa||''));
+  const tbody=document.getElementById('tabela-necessidades');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="7"><div class="vazio"><div class="vazio-icone">🔎</div><p>Nenhuma necessidade encontrada.</p></div></td></tr>`
+    :lista.map(n=>{
+      const b=beneficiarios.find(x=>x.id===n.beneficiarioId);
+      return `<tr>
+        <td style="font-family:'Raleway',sans-serif;font-size:0.82rem;letter-spacing:0.06em;color:var(--gold);cursor:pointer;" onclick="verBeneficiario('${n.beneficiarioId}')">${esc(b?.codigo||'—')}</td>
+        <td><span class="badge badge-prof">${esc(n.especialidade)}</span></td>
+        <td style="font-size:0.84rem;">${esc(b?.pastoral||'—')}</td>
+        <td style="text-align:center;">${n.tentativas||1}</td>
+        <td style="white-space:nowrap;">${fmtData(n.ultimaTentativa)}</td>
+        <td><span class="badge ${n.status==='aberta'?'badge-pendente':'badge-realizado'}">${n.status==='aberta'?'Aberta':'Resolvida'}</span></td>
+        <td>${n.status==='aberta'
+          ?`<button class="btn btn-xs btn-verde" onclick="toggleNecessidade('${n.id}')">✓ Marcar resolvida</button>`
+          :`<button class="btn btn-xs btn-secundario" onclick="toggleNecessidade('${n.id}')">↺ Reabrir</button>`}</td>
+      </tr>`;
+    }).join('');
 }
 
 // ══════════════════════════════════════════════════════
@@ -2351,44 +1883,9 @@ function renderAgendamentos(){
   const mes=document.getElementById('filtro-ag-mes')?.value||'';
   const status=document.getElementById('filtro-ag-status')?.value||'';
   const q=(document.getElementById('busca-ag')?.value||'').toLowerCase();
-  const ehParoquia=usuarioAtual?.perfil==='paroquia';
-
-  // Confirmados pelo profissional aguardando confirmação do agente (destaque no topo)
-  const aguardandoAgente=agendamentos.filter(a=>{
-    if(a.status!=='confirmado')return false;
-    if(ehParoquia){
-      const benef=beneficiarios.find(b=>b.id===a.beneficiarioId);
-      if((benef?.paroquia||'')!==usuarioAtual.paroquia)return false;
-    }
-    return true;
-  });
-  const blocoDestaque=document.getElementById('bloco-confirmados-agente');
-  if(blocoDestaque){
-    if(aguardandoAgente.length>0){
-      blocoDestaque.style.display='block';
-      document.getElementById('lista-confirmados-agente').innerHTML=aguardandoAgente.map(a=>{
-        const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
-        const p=profissionais.find(x=>x.id===a.profissionalId);
-        return `<div style="background:white;border:1.5px solid var(--border);border-left:4px solid var(--verde);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-          <div>
-            <div style="font-weight:600;font-size:1rem;color:var(--brown);">${fmtData(a.data)} às ${a.hora||'—'} · ${esc(p?.nome||'—')} (${esc(a.especialidade||'')})</div>
-            <div style="font-size:0.85rem;color:var(--brown-lt);margin-top:3px;">Beneficiário: <strong>${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</strong> · Local: ${esc(a.local||'—')}</div>
-          </div>
-          <button class="btn btn-sm btn-verde" onclick="abrirWhatsModal('${a.id}')">✓ Confirmar Agendamento</button>
-        </div>`;
-      }).join('');
-    }else{
-      blocoDestaque.style.display='none';
-    }
-  }
-
   const lista=agendamentos.filter(a=>{
     if(mes&&!(a.data||'').startsWith(mes))return false;
     if(status&&a.status!==status)return false;
-    if(ehParoquia){
-      const benef=beneficiarios.find(b=>b.id===a.beneficiarioId);
-      if((benef?.paroquia||'')!==usuarioAtual.paroquia)return false;
-    }
     if(q){
       const bn=(beneficiarios.find(b=>b.id===a.beneficiarioId)?.nome||'').toLowerCase();
       const pn=profNome(a.profissionalId).toLowerCase();
@@ -2407,7 +1904,7 @@ function renderAgendamentos(){
         <td>${badgeStatus(a.status)}</td>
         <td style="display:flex;gap:5px;flex-wrap:wrap;">
           ${a.status==='solicitado'?`<button class="btn btn-xs btn-primario" onclick="abrirResponder('${a.id}')">Responder</button>`:''}
-          ${a.status==='confirmado'?`<button class="btn btn-xs btn-verde" onclick="abrirWhatsModal('${a.id}')">✓ Confirmar</button>`:''}
+          ${a.status==='confirmado'?`<button class="btn btn-xs btn-whats" onclick="abrirWhatsModal('${a.id}')">📱 Avisar</button>`:''}
           <button class="btn btn-xs btn-verde" onclick="abrirRelPorAg('${a.id}')">📝</button>
           <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('agendamento','${a.id}')">✕</button>
         </td>
@@ -2476,10 +1973,6 @@ function renderRelatorios(){
   const q=(document.getElementById('busca-rel')?.value||'').toLowerCase();
   const lista=relatorios.filter(r=>{
     if(mes&&!(r.data||'').startsWith(mes))return false;
-    if(usuarioAtual?.perfil==='paroquia'){
-      const benef=beneficiarios.find(b=>b.id===r.beneficiarioId);
-      if((benef?.paroquia||'')!==usuarioAtual.paroquia)return false;
-    }
     if(q&&!r.protocolo.toLowerCase().includes(q)){
       const bn=(beneficiarios.find(b=>b.id===r.beneficiarioId)?.nome||'').toLowerCase();
       if(!bn.includes(q))return false;
@@ -2507,7 +2000,7 @@ function renderRelatorios(){
 // EXCLUIR / CONFIG / EXPORT
 // ══════════════════════════════════════════════════════
 function confirmarExcluir(tipo,id){
-  const msgs={profissional:'Excluir este profissional?',beneficiario:'Excluir este beneficiário?',agendamento:'Excluir este agendamento?',relatorio:'Excluir este relatório?',conta:'Excluir esta conta de acesso?'};
+  const msgs={profissional:'Excluir este profissional?',beneficiario:'Excluir este beneficiário?',agendamento:'Excluir este agendamento?',relatorio:'Excluir este relatório?'};
   document.getElementById('modal-conf-titulo').textContent='Confirmar exclusão';
   document.getElementById('modal-conf-msg').textContent=msgs[tipo]||'Confirmar?';
   document.getElementById('modal-conf-btn').onclick=()=>{excluir(tipo,id);fecharModal('modal-confirmar');};
@@ -2515,25 +2008,17 @@ function confirmarExcluir(tipo,id){
 }
 function excluir(tipo,id){
   const mapas={profissional:[profissionais,renderProfissionais],beneficiario:[beneficiarios,renderBeneficiarios],
-    agendamento:[agendamentos,renderAgendamentos],relatorio:[relatorios,renderRelatorios],
-    conta:[contas,renderUsuarios]};
-  const colecaoFirebase={profissional:'profissionais',beneficiario:'beneficiarios',agendamento:'agendamentos',relatorio:'relatorios',conta:'contas'};
+    agendamento:[agendamentos,renderAgendamentos],relatorio:[relatorios,renderRelatorios]};
   const [arr,render]=mapas[tipo];
-  // Se agendamento excluído, capturar o horário ANTES de remover da lista, para liberá-lo
-  let horarioParaLiberar=null;
-  if(tipo==='agendamento'){
-    const ag=agendamentos.find(x=>x.id===id);
-    if(ag)horarioParaLiberar=horarios.find(h=>h.id===ag.horarioId);
-  }
   const idx=arr.findIndex(x=>x.id===id);
   if(idx>=0)arr.splice(idx,1);
-  if(horarioParaLiberar)horarioParaLiberar.ocupado=false;
-  salvarLocal();
-  if(usandoFirebase){
-    excluirFirebase(colecaoFirebase[tipo],id);
-    if(horarioParaLiberar)salvarFirebase('horarios',horarioParaLiberar.id,horarioParaLiberar);
+  // Se agendamento excluído, liberar horário
+  if(tipo==='agendamento'){
+    const ag=agendamentos.find(x=>x.id===id)||{};
+    const h=horarios.find(x=>x.id===ag.horarioId);
+    if(h)h.ocupado=false;
   }
-  render();atualizarBadges();
+  salvarLocal();render();atualizarBadges();
   toast('Registro excluído.','ok');
 }
 function exportarCSV(){
@@ -2622,16 +2107,16 @@ function atualizarStatusFirebase(conectado) {
 function sincronizarDoFirebase() {
   if (!db) return;
   const colecoes = {
-    profissionais: (d) => { profissionais = d ? Object.values(d) : []; renderProfissionais(); renderUsuarios(); atualizarBadges(); },
+    profissionais: (d) => { profissionais = d ? Object.values(d) : []; renderProfissionais(); atualizarBadges(); },
     beneficiarios: (d) => { beneficiarios = d ? Object.values(d) : []; renderBeneficiarios(); },
     horarios:      (d) => { horarios = d ? Object.values(d) : []; },
     agendamentos:  (d) => { agendamentos = d ? Object.values(d) : []; renderPainel(); atualizarBadges(); },
     relatorios:    (d) => { relatorios = d ? Object.values(d) : []; },
-    necessidadesLatentes: (d) => { necessidadesLatentes = d ? Object.values(d) : []; if(document.getElementById('tabela-necessidades'))renderNecessidades(); },
+    necessidadesLatentes: (d) => { necessidadesLatentes = d ? Object.values(d) : []; if(document.getElementById('tabela-necessidades'))renderNecessidades(); atualizarBadgeNecessidades(); },
     contas:        (d) => {
       if (d) { contas = Object.values(d); }
       else if (!contasSeedFirebaseFeito) { contasSeedFirebaseFeito = true; seedContas(); }
-      renderUsuarios();
+      renderContas();
     },
   };
   Object.entries(colecoes).forEach(([col, fn]) => {
@@ -2667,13 +2152,9 @@ function atualizarBadgeFormsAdmin() {
 
 // ── ESCRITA NO FIREBASE (substitui salvarLocal para dados principais) ──
 function salvarFirebase(colecao, id, obj) {
-  if (!db) { salvarLocal(); return Promise.resolve(); }
-  const escrita = db.ref(colecao + '/' + id).set(obj);
-  const comLimite = Promise.race([
-    escrita,
-    new Promise((_, rej) => setTimeout(() => rej(new Error('sem resposta do servidor em 10s — verifique sua internet')), 10000))
-  ]);
-  return comLimite.catch(e => { toast('Erro ao salvar no servidor: ' + e.message, 'erro'); salvarLocal(); throw e; });
+  if (!db) { salvarLocal(); return; }
+  db.ref(colecao + '/' + id).set(obj)
+    .catch(e => { toast('Erro ao salvar: ' + e.message, 'erro'); salvarLocal(); });
 }
 
 function excluirFirebase(colecao, id) {
