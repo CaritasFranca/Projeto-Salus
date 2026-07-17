@@ -609,6 +609,7 @@ tr:hover td{background:var(--gold-faint);}
     <div class="secao" id="secao-usuarios">
       <div class="secao-header">
         <h2 class="secao-titulo">Usuários do Sistema</h2>
+        <button class="btn btn-primario" onclick="abrirEscolherTipoUsuario()">+ Novo Usuário</button>
       </div>
       <div class="aviso aviso-info">Visão consolidada de todas as contas com acesso ao sistema — Administradores, Agentes Pastorais e Profissionais Voluntários. Para editar dados específicos do voluntariado (especialidade, horários), use a aba Profissionais; aqui o foco é acesso e credenciais.</div>
       <div class="busca-wrap">
@@ -946,6 +947,26 @@ tr:hover td{background:var(--gold-faint);}
     <div class="modal-footer">
       <button class="btn btn-secundario" onclick="fecharModal('modal-confirmar')">Cancelar</button>
       <button class="btn btn-perigo" id="modal-conf-btn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Escolher Tipo de Usuário -->
+<div class="modal-overlay" id="modal-tipo-usuario">
+  <div class="modal">
+    <div class="modal-header"><h2>Novo Usuário</h2><button class="modal-fechar" onclick="fecharModal('modal-tipo-usuario')">×</button></div>
+    <div class="modal-body">
+      <p style="font-size:0.9rem;color:var(--brown-mid);margin-bottom:14px;">Qual o tipo do novo usuário?</p>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="btn btn-secundario" style="justify-content:flex-start;padding:14px 16px;" onclick="escolherTipoUsuario('admin')">🔑 Administrador</button>
+        <button class="btn btn-secundario" style="justify-content:flex-start;padding:14px 16px;" onclick="escolherTipoUsuario('paroquia')">⛪ Responsável Paróquia</button>
+        <button class="btn btn-secundario" style="justify-content:flex-start;padding:14px 16px;" onclick="escolherTipoUsuario('pastoral')">🤝 Agente Pastoral</button>
+        <button class="btn btn-secundario" style="justify-content:flex-start;padding:14px 16px;" onclick="escolherTipoUsuario('responsavel_pastoral')">📋 Responsável Pastoral</button>
+        <button class="btn btn-secundario" style="justify-content:flex-start;padding:14px 16px;" onclick="escolherTipoUsuario('profissional')">🩺 Profissional Voluntário</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-tipo-usuario')">Cancelar</button>
     </div>
   </div>
 </div>
@@ -1346,6 +1367,18 @@ function alternarStatusUsuario(tipo,id){
   }
   renderUsuarios();
   toast('Status atualizado!','ok');
+}
+function abrirEscolherTipoUsuario(){
+  abrirModal('modal-tipo-usuario');
+}
+function escolherTipoUsuario(tipo){
+  fecharModal('modal-tipo-usuario');
+  if(tipo==='profissional'){
+    abrirModalProfissional();
+    return;
+  }
+  abrirModalConta();
+  document.getElementById('c-perfil').value=tipo;
 }
 function abrirModalConta(){
   document.getElementById('modal-conta-titulo').textContent='Nova Conta';
