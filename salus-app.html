@@ -1150,11 +1150,29 @@ function atualizarAbaAtual(){
   if(id==='agendar')refrescarListaBeneficiariosAgendar(); // evita resetar uma solicitação em andamento
   else if(mapaAbas[id])mapaAbas[id]();
 }
-function atualizarManual(){
+async function atualizarManual(){
   const btn=document.getElementById('btn-atualizar-dados');
   if(btn){btn.disabled=true;const original=btn.textContent;btn.textContent='Atualizando...';
-    setTimeout(()=>{btn.disabled=false;btn.textContent=original;},700);}
-  if(!usandoFirebase)carregarDados();
+    setTimeout(()=>{btn.disabled=false;btn.textContent=original;},1200);}
+  if(usandoFirebase&&db){
+    try{
+      const nomes=['profissionais','beneficiarios','horarios','agendamentos','relatorios','necessidadesLatentes','contas'];
+      const leituras=await Promise.all(nomes.map(n=>db.ref(n).once('value')));
+      const [dProf,dBenef,dHor,dAg,dRel,dNec,dContas]=leituras.map(s=>s.val());
+      profissionais=dProf?Object.values(dProf):[];
+      beneficiarios=dBenef?Object.values(dBenef):[];
+      horarios=dHor?Object.values(dHor):[];
+      agendamentos=dAg?Object.values(dAg):[];
+      relatorios=dRel?Object.values(dRel):[];
+      necessidadesLatentes=dNec?Object.values(dNec):[];
+      if(dContas)contas=Object.values(dContas);
+      salvarLocal();
+    }catch(e){
+      toast('Erro ao buscar dados do Firebase: '+e.message,'erro');
+    }
+  } else {
+    carregarDados();
+  }
   atualizarAbaAtual();
   atualizarBadges();
   toast('Dados atualizados!','ok');
@@ -1246,7 +1264,9 @@ function seedContas(){
     {id:'pastoral-1',nome:'Coordenação Pastoral',email:'',senha:legado.pastoral||'pastoral123',perfil:'pastoral'},
   ];
   salvarLocal();
-  if(usandoFirebase)contas.forEach(c=>salvarFirebase('contas',c.id,c));
+  // NUNCA gravar essas contas de demonstração no Firebase automaticamente —
+  // isso já causou sobrescrita de contas reais (mesmo ID "admin-1"). Servem
+  // só de fallback local/offline para o primeiro login funcionar.
 }
 function rotuloPerfilConta(perfil){
   return {admin:'Administrador',pastoral:'Agente Pastoral',paroquia:'Responsável Paróquia',responsavel_pastoral:'Responsável Pastoral'}[perfil]||perfil;
