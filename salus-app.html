@@ -643,7 +643,9 @@ tr:hover td{background:var(--gold-faint);}
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
           <button class="btn btn-primario" onclick="conectarFirebase()">Conectar ao Firebase</button>
           <button class="btn btn-secundario" onclick="atualizarStatusFirebase(false)">Usar apenas local</button>
+          <button class="btn btn-secundario" onclick="rodarDiagnostico()">🔍 Diagnóstico de Sincronização</button>
         </div>
+        <div id="area-diagnostico" style="margin-top:14px;"></div>
         <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-lt);font-size:0.82rem;color:var(--cinza-txt);line-height:1.8;">
           <strong>Integração com Google Forms:</strong><br>
           Os voluntários que se cadastrarem pelo Forms entram no Firebase com <code>status: "pendente"</code>.<br>
@@ -2863,6 +2865,31 @@ function inicializarFirebase(cfg) {
   }
 }
 
+async function rodarDiagnostico(){
+  const area=document.getElementById('area-diagnostico');
+  area.innerHTML='<div class="aviso aviso-info">Rodando diagnóstico...</div>';
+  const linhas=[];
+  linhas.push(`Conectado ao Firebase (usandoFirebase): <strong>${usandoFirebase}</strong>`);
+  linhas.push(`Contas carregadas em memória: <strong>${contas.length}</strong>`);
+  linhas.push(`Profissionais carregados em memória: <strong>${profissionais.length}</strong>`);
+  if(db){
+    try{
+      linhas.push(`URL do banco conectado: <strong>${db.ref().toString()}</strong>`);
+    }catch(e){
+      linhas.push(`Erro ao ler URL do banco: ${e.message}`);
+    }
+    try{
+      const snap=await db.ref('contas').once('value');
+      const val=snap.val();
+      linhas.push(`Leitura direta de "contas" no banco agora: <strong>${val?Object.keys(val).length:0} registro(s)</strong> — chaves: ${val?Object.keys(val).join(', '):'(nenhuma)'}`);
+    }catch(e){
+      linhas.push(`<span style="color:var(--vermelho);">Erro ao ler "contas" do banco: ${e.message} (código: ${e.code||'?'})</span>`);
+    }
+  } else {
+    linhas.push('<span style="color:var(--vermelho);">Variável db está vazia — não há conexão ativa com o Firebase.</span>');
+  }
+  area.innerHTML=`<div class="aviso aviso-info" style="line-height:1.9;">${linhas.join('<br>')}</div>`;
+}
 function atualizarStatusFirebase(conectado) {
   const el = document.getElementById('status-firebase');
   if (!el) return;
