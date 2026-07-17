@@ -377,6 +377,13 @@ tr:hover td{background:var(--gold-faint);}
           <tbody id="painel-confirmados"></tbody>
         </table></div>
       </div>
+      <div class="painel-secao">
+        <div class="painel-secao-titulo">❌ Recusados aguardando ciência da pastoral</div>
+        <div class="tabela-wrap"><table>
+          <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Profissional</th><th>Motivo</th><th>Ações</th></tr></thead>
+          <tbody id="painel-recusados"></tbody>
+        </table></div>
+      </div>
     </div>
 
     <!-- MINHA AGENDA (profissional) -->
@@ -867,7 +874,7 @@ tr:hover td{background:var(--gold-faint);}
     <div class="modal-body">
       <div id="responder-resumo"></div>
       <div class="form-grupo" style="margin-top:16px;">
-        <label>Mensagem para a pastoral (opcional)</label>
+        <label id="responder-msg-label">Mensagem para a pastoral (opcional)</label>
         <textarea id="responder-msg" placeholder="Ex.: Confirmo. Solicito que o paciente traga documentos de identidade."></textarea>
       </div>
     </div>
@@ -898,6 +905,21 @@ tr:hover td{background:var(--gold-faint);}
         Abrir WhatsApp
       </button>
       <button class="btn btn-verde" onclick="marcarPastoralCiente()">Marcar como: Pastoral ciente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ciência da Recusa (pastoral) -->
+<div class="modal-overlay" id="modal-recusa-ciente">
+  <div class="modal">
+    <div class="modal-header"><h2>❌ Solicitação Recusada</h2><button class="modal-fechar" onclick="fecharModal('modal-recusa-ciente')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-erro">O profissional não pôde atender esta solicitação. Veja o motivo abaixo.</div>
+      <div id="recusa-resumo" style="margin:14px 0;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-recusa-ciente')">Fechar</button>
+      <button class="btn btn-verde" onclick="marcarRecusaCiente()">Marcar como: Ciente da recusa</button>
     </div>
   </div>
 </div>
@@ -1054,6 +1076,7 @@ let usuarioAtual=null;
 let horarioSelecionado=null;
 let agRespondendoId=null;
 let agWhatsId=null;
+let agRecusaId=null;
 
 // ── LOGIN (por e-mail individual) ──
 function toggleSenha(){
@@ -1596,8 +1619,8 @@ function fmtData(iso){if(!iso)return'—';const[y,m,d]=iso.split('-');return`${d
 function profNome(id){const p=profissionais.find(x=>x.id===id);return p?p.nome:'—';}
 function benefNome(id){const b=beneficiarios.find(x=>x.id===id);return b?`${b.codigo} — ${b.nome}`:'—';}
 function badgeStatus(s){
-  const m={solicitado:'badge-solicitado',confirmado:'badge-confirmado',pastoral_ciente:'badge-realizado',realizado:'badge-realizado',recusado:'badge-recusado',cancelado:'badge-cancelado'};
-  const t={solicitado:'Solicitado',confirmado:'Confirmado ✓',pastoral_ciente:'Pastoral ciente',realizado:'Realizado',recusado:'Recusado',cancelado:'Cancelado'};
+  const m={solicitado:'badge-solicitado',confirmado:'badge-confirmado',pastoral_ciente:'badge-realizado',realizado:'badge-realizado',recusado:'badge-recusado',recusado_ciente:'badge-cancelado',cancelado:'badge-cancelado'};
+  const t={solicitado:'Solicitado',confirmado:'Confirmado ✓',pastoral_ciente:'Pastoral ciente',realizado:'Realizado',recusado:'Recusado',recusado_ciente:'Recusado (ciente)',cancelado:'Cancelado'};
   return `<span class="badge ${m[s]||''}">${t[s]||s}</span>`;
 }
 
@@ -1657,6 +1680,19 @@ function renderPainel(){
         <td>${badgeStatus(a.status)}</td>
         <td><button class="btn btn-xs btn-whats" onclick="abrirWhatsModal('${a.id}')">📱 Avisar</button></td>
       </tr>`).join('');
+
+  // Recusados aguardando ciência da pastoral
+  const recus=agendamentos.filter(a=>a.status==='recusado');
+  const tbr=document.getElementById('painel-recusados');
+  tbr.innerHTML=recus.length===0
+    ?`<tr><td colspan="5"><div class="vazio" style="padding:20px;"><p>Nenhuma recusa aguardando ciência.</p></div></td></tr>`
+    :recus.map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(benefNome(a.beneficiarioId))}</td>
+        <td>${esc(profNome(a.profissionalId))}</td>
+        <td style="font-size:0.84rem;max-width:260px;">${esc(a.motivoRecusa||'—')}</td>
+        <td><button class="btn btn-xs btn-perigo" onclick="abrirRecusaModal('${a.id}')">Ver motivo / Ciente</button></td>
+      </tr>`).join('');
 }
 
 // ══════════════════════════════════════════════════════
@@ -1685,7 +1721,7 @@ function renderMinhaAgenda(){
             <div style="font-size:0.82rem;color:var(--cinza-txt);margin-top:3px;">Local: ${esc(a.local||'—')} · Solicitado por: ${esc(a.solicitadoPor||'—')}</div>
           </div>
           <div style="display:flex;gap:8px;">
-            <button class="btn btn-sm btn-perigo" onclick="resposta('${a.id}','recusado')">✕ Recusar</button>
+            <button class="btn btn-sm btn-perigo" onclick="abrirResponder('${a.id}')">✕ Recusar</button>
             <button class="btn btn-sm btn-verde" onclick="abrirResponder('${a.id}')">✓ Confirmar</button>
           </div>
         </div>
@@ -1870,14 +1906,25 @@ function abrirResponder(agId){
       <div style="font-weight:600;font-size:1.05rem;color:var(--brown);margin-bottom:8px;">Solicitação de consulta</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.9rem;">
         <div><span style="color:var(--brown-lt);">Data:</span> <strong>${fmtData(a.data)} às ${a.hora||'—'}</strong></div>
-        <div><span style="color:var(--brown-lt);">Beneficiário:</span> <strong>${esc(b?.codigo||'—')}</strong></div>
-        <div><span style="color:var(--brown-lt);">Faixa:</span> ${esc(b?.faixa||'—')}</div>
+        <div><span style="color:var(--brown-lt);">Beneficiário:</span> <strong>${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</strong></div>
+        <div><span style="color:var(--brown-lt);">Faixa:</span> ${esc(b?.faixa||'—')}${b?.idade?` (${b.idade} anos)`:''}</div>
         <div><span style="color:var(--brown-lt);">Pastoral:</span> ${esc(b?.pastoral||'—')}</div>
         <div style="grid-column:1/-1;"><span style="color:var(--brown-lt);">Local:</span> ${esc(a.local||'—')}</div>
         ${a.obs?`<div style="grid-column:1/-1;font-style:italic;color:var(--cinza-txt);">"${esc(a.obs)}"</div>`:''}
       </div>
+    </div>
+    <div style="background:white;border:1.5px solid var(--border-lt);border-radius:var(--r);padding:14px 16px;margin-top:10px;">
+      <div style="font-weight:600;font-size:0.95rem;color:var(--brown);margin-bottom:8px;">📋 Prontuário — necessidade encaminhada pela pastoral</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.88rem;">
+        <div><span style="color:var(--brown-lt);">Necessidade principal:</span> <strong>${esc(b?.necessidade||'—')}</strong></div>
+        <div><span style="color:var(--brown-lt);">Urgência:</span> ${esc(b?.urgencia||'—')}</div>
+        <div><span style="color:var(--brown-lt);">Já acompanhado por:</span> ${esc(b?.acompanhamento||'—')}</div>
+        <div><span style="color:var(--brown-lt);">Pode se deslocar:</span> ${esc(b?.desloca||'—')}</div>
+        <div style="grid-column:1/-1;"><span style="color:var(--brown-lt);">Descrição da necessidade:</span><br>${esc(b?.descricao||'Nenhuma descrição informada.')}</div>
+      </div>
     </div>`;
   document.getElementById('responder-msg').value='';
+  document.getElementById('responder-msg-label').textContent='Mensagem para a pastoral (opcional ao confirmar — obrigatório se recusar)';
   abrirModal('modal-responder');
 }
 
@@ -1888,13 +1935,19 @@ function resposta(agId, novoStatus){
 
 function responderSolicitacao(novoStatus){
   const a=agendamentos.find(x=>x.id===agRespondendoId); if(!a)return;
+  const msg=document.getElementById('responder-msg')?.value?.trim()||'';
+  if(novoStatus==='recusado'&&!msg){
+    toast('Informe o motivo da recusa para a pastoral.','erro');
+    return;
+  }
   a.status=novoStatus;
-  a.msgProfissional=document.getElementById('responder-msg')?.value?.trim()||'';
   a.dataResposta=new Date().toISOString();
-  // Se recusado, liberar o horário
   if(novoStatus==='recusado'){
+    a.motivoRecusa=msg;
     const h=horarios.find(x=>x.id===a.horarioId);
     if(h)h.ocupado=false;
+  } else {
+    a.msgProfissional=msg;
   }
   salvarLocal(); fecharModal('modal-responder'); atualizarBadges();
 
@@ -1902,7 +1955,7 @@ function responderSolicitacao(novoStatus){
     toast('Consulta confirmada! A pastoral será avisada.','ok');
     setTimeout(()=>abrirWhatsModal(agRespondendoId),600);
   } else {
-    toast('Solicitação recusada. O horário ficou disponível novamente.','');
+    toast('Solicitação recusada. O horário ficou disponível novamente. A pastoral verá o motivo ao entrar no sistema.','');
   }
   renderPainel(); renderMinhaAgenda();
 }
@@ -1956,6 +2009,44 @@ function marcarPastoralCiente(){
   salvarLocal(); fecharModal('modal-whats'); atualizarBadges();
   renderPainel(); renderAgendamentos();
   toast('Pastoral marcada como ciente.','ok');
+}
+
+function abrirRecusaModal(agId){
+  agRecusaId=agId;
+  const a=agendamentos.find(x=>x.id===agId); if(!a)return;
+  const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
+  document.getElementById('recusa-resumo').innerHTML=`
+    <div style="font-size:0.9rem;line-height:1.7;color:var(--brown);">
+      <strong>${fmtData(a.data)} às ${a.hora||'—'}</strong> · ${esc(profNome(a.profissionalId))} (${esc(a.especialidade||'')})<br>
+      Beneficiário: <strong>${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</strong><br>
+      <div style="margin-top:8px;padding:10px 12px;background:var(--gold-faint);border-radius:var(--r);border:1px solid var(--border-lt);">
+        <strong>Motivo da recusa:</strong><br>${esc(a.motivoRecusa||'Não informado.')}
+      </div>
+    </div>`;
+  abrirModal('modal-recusa-ciente');
+}
+
+function marcarRecusaCiente(){
+  const a=agendamentos.find(x=>x.id===agRecusaId); if(!a)return;
+  a.status='recusado_ciente';
+  salvarLocal();
+
+  // Registra automaticamente no histórico de Relatórios, já que não haverá atendimento
+  const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
+  const rel={
+    id:uid(), protocolo:gerarProtocolo(), agendamentoId:a.id,
+    profissionalId:a.profissionalId, beneficiarioId:a.beneficiarioId,
+    data:new Date().toISOString().slice(0,10), tipo:'Recusado pelo profissional',
+    retorno:'nao', nota:0,
+    descricao:`Solicitação de ${fmtData(a.data)} às ${a.hora||'—'} recusada pelo profissional. Motivo: ${a.motivoRecusa||'não informado'}.`
+  };
+  relatorios.push(rel);
+
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('relatorios',rel.id,rel);
+  fecharModal('modal-recusa-ciente'); atualizarBadges();
+  renderPainel(); renderAgendamentos();
+  toast('Recusa registrada como ciente e enviada para Relatórios.','ok');
 }
 
 // ══════════════════════════════════════════════════════
@@ -2344,6 +2435,7 @@ function renderAgendamentos(){
         <td style="display:flex;gap:5px;flex-wrap:wrap;">
           ${a.status==='solicitado'?`<button class="btn btn-xs btn-primario" onclick="abrirResponder('${a.id}')">Responder</button>`:''}
           ${a.status==='confirmado'?`<button class="btn btn-xs btn-whats" onclick="abrirWhatsModal('${a.id}')">📱 Avisar</button>`:''}
+          ${a.status==='recusado'?`<button class="btn btn-xs btn-perigo" onclick="abrirRecusaModal('${a.id}')">Ver motivo / Ciente</button>`:''}
           <button class="btn btn-xs btn-verde" onclick="abrirRelPorAg('${a.id}')">📝</button>
           <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('agendamento','${a.id}')">✕</button>
         </td>
