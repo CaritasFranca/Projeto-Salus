@@ -246,6 +246,36 @@ tr:hover td{background:var(--gold-faint);}
   .login-box{padding:28px 18px 22px;}
   .horarios-grid{grid-template-columns:1fr 1fr;}
 }
+
+/* RELATÓRIO CONSOLIDADO — tela */
+.print-area{background:white;border-radius:var(--r);box-shadow:var(--sombra);padding:0;overflow:hidden;}
+.rc-folha{padding:32px 36px;}
+.rc-cabecalho{text-align:center;border-bottom:2px solid var(--gold);padding-bottom:16px;margin-bottom:20px;}
+.rc-cabecalho .rc-ornamento{color:var(--gold);letter-spacing:0.3em;font-size:1rem;}
+.rc-cabecalho h1{font-size:1.4rem;font-weight:600;color:var(--brown);margin-top:6px;}
+.rc-cabecalho .rc-sub{font-family:'Raleway',sans-serif;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown-lt);margin-top:4px;}
+.rc-cabecalho .rc-periodo{margin-top:10px;font-size:0.95rem;color:var(--brown-mid);font-style:italic;}
+.rc-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:26px;}
+.rc-card{border:1.5px solid var(--border-lt);border-radius:var(--r);padding:14px;text-align:center;}
+.rc-card .rc-num{font-size:1.7rem;font-weight:700;color:var(--brown);line-height:1;}
+.rc-card .rc-label{font-size:0.7rem;color:var(--cinza-txt);margin-top:4px;font-family:'Raleway',sans-serif;letter-spacing:0.05em;text-transform:uppercase;}
+.rc-bloco{margin-bottom:26px;}
+.rc-bloco h3{font-size:0.92rem;font-weight:700;color:var(--brown);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border-lt);font-family:'Raleway',sans-serif;letter-spacing:0.04em;text-transform:uppercase;}
+.rc-bloco table{width:100%;border-collapse:collapse;}
+.rc-bloco th{background:var(--gold-faint);padding:8px 12px;text-align:left;font-size:0.7rem;font-weight:700;color:var(--brown-lt);text-transform:uppercase;letter-spacing:0.06em;font-family:'Raleway',sans-serif;border-bottom:1px solid var(--border-lt);}
+.rc-bloco td{padding:8px 12px;border-bottom:1px solid var(--cinza);font-size:0.88rem;color:var(--brown);}
+.rc-rodape{margin-top:30px;padding-top:14px;border-top:1px solid var(--border-lt);font-size:0.76rem;color:var(--cinza-txt);text-align:center;font-family:'Raleway',sans-serif;}
+.rc-assinaturas{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:50px;}
+.rc-assinatura{text-align:center;border-top:1px solid var(--brown-lt);padding-top:6px;font-size:0.82rem;color:var(--brown-mid);}
+
+/* IMPRESSÃO: só o relatório consolidado, limpo, sem chrome do app */
+@media print{
+  body *{visibility:hidden;}
+  .print-area, .print-area *{visibility:visible;}
+  .print-area{position:absolute;top:0;left:0;width:100%;box-shadow:none;border-radius:0;}
+  .no-print{display:none !important;}
+  .topbar,.abas{display:none !important;}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
@@ -289,6 +319,7 @@ tr:hover td{background:var(--gold-faint);}
     </div>
     <div class="topbar-dir">
       <span class="badge-perfil" id="topbar-nivel"></span>
+      <button class="btn-sair" id="btn-atualizar-dados" onclick="atualizarManual()" title="Recarregar dados mais recentes">🔄 Atualizar</button>
       <button class="btn-sair" onclick="abrirMeuPerfil()">Minha Conta</button>
       <button class="btn-sair" onclick="sair()">Sair</button>
     </div>
@@ -303,6 +334,8 @@ tr:hover td{background:var(--gold-faint);}
     <button class="aba" onclick="mudarAba('necessidades')" id="aba-necessidades">🔎 Necessidades<span class="notif-badge" id="badge-necessidades"></span></button>
     <button class="aba" onclick="mudarAba('agendamentos')" id="aba-agendamentos">📋 Todos os Agendamentos<span class="notif-badge" id="badge-agendamentos"></span></button>
     <button class="aba" onclick="mudarAba('relatorios')" id="aba-relatorios">📝 Relatórios</button>
+    <button class="aba" onclick="mudarAba('consolidado')" id="aba-consolidado">🖨️ Relatório Consolidado</button>
+    <button class="aba" onclick="mudarAba('usuarios')" id="aba-usuarios">🔑 Usuários</button>
     <button class="aba" onclick="mudarAba('config')" id="aba-config">⚙️ Config</button>
   </div>
 
@@ -426,7 +459,10 @@ tr:hover td{background:var(--gold-faint);}
     <div class="secao" id="secao-profissionais">
       <div class="secao-header">
         <h2 class="secao-titulo">Profissionais Voluntários</h2>
-        <button class="btn btn-primario" onclick="abrirModalProfissional()">+ Novo Profissional</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-secundario" onclick="abrirImportarCSV('profissional')">📥 Importar CSV</button>
+          <button class="btn btn-primario" onclick="abrirModalProfissional()">+ Novo Profissional</button>
+        </div>
       </div>
       <div class="busca-wrap">
         <input class="busca-input" type="text" id="busca-prof" placeholder="Buscar por nome ou especialidade..." oninput="renderProfissionais()">
@@ -453,10 +489,17 @@ tr:hover td{background:var(--gold-faint);}
     <div class="secao" id="secao-beneficiarios">
       <div class="secao-header">
         <h2 class="secao-titulo">Beneficiários</h2>
-        <button class="btn btn-primario" id="btn-novo-benef" onclick="abrirModalBeneficiario()">+ Novo Beneficiário</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-secundario" onclick="abrirImportarCSV('beneficiario')">📥 Importar CSV</button>
+          <button class="btn btn-primario" id="btn-novo-benef" onclick="abrirModalBeneficiario()">+ Novo Beneficiário</button>
+        </div>
       </div>
       <div class="busca-wrap">
         <input class="busca-input" type="text" id="busca-benef" placeholder="Buscar por nome ou código..." oninput="renderBeneficiarios()">
+        <select id="filtro-benef-revisao" onchange="renderBeneficiarios()" style="padding:8px 12px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="">Todos</option>
+          <option value="pendente">⏳ Revisão pendente (Forms) <span id="badge-benef-pendentes" class="notif-badge"></span></option>
+        </select>
       </div>
       <div class="tabela-wrap"><table>
         <thead><tr><th>Código</th><th>Nome</th><th>Pastoral</th><th>Necessidade</th><th>Consultas</th><th>Ações</th></tr></thead>
@@ -529,6 +572,53 @@ tr:hover td{background:var(--gold-faint);}
       </table></div>
     </div>
 
+    <!-- RELATÓRIO CONSOLIDADO -->
+    <div class="secao" id="secao-consolidado">
+      <div class="secao-header no-print">
+        <h2 class="secao-titulo">Relatório Consolidado</h2>
+      </div>
+      <div class="aviso aviso-info no-print">
+        Gere um documento para prestação de contas (bispo, coordenação da Diocese, financiadores). Escolha o período, filtre se quiser, e use "Imprimir / Salvar PDF".
+      </div>
+
+      <div class="tabela-wrap no-print" style="padding:18px 20px;">
+        <div class="form-grid cols3">
+          <div class="form-grupo"><label>Mês inicial *</label><input type="month" id="cons-mes-de"></div>
+          <div class="form-grupo"><label>Mês final *</label><input type="month" id="cons-mes-ate"></div>
+          <div class="form-grupo"><label>Pastoral / Paróquia (opcional)</label><input type="text" id="cons-pastoral" placeholder="Ex.: Sé, São Pedro..."></div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primario" onclick="renderConsolidado()">Gerar Relatório</button>
+          <button class="btn btn-verde" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+        </div>
+      </div>
+
+      <div id="area-consolidado" class="print-area"></div>
+    </div>
+
+    <!-- USUÁRIOS -->
+    <div class="secao" id="secao-usuarios">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Usuários do Sistema</h2>
+      </div>
+      <div class="aviso aviso-info">Visão consolidada de todas as contas com acesso ao sistema — Administradores, Agentes Pastorais e Profissionais Voluntários. Para editar dados específicos do voluntariado (especialidade, horários), use a aba Profissionais; aqui o foco é acesso e credenciais.</div>
+      <div class="busca-wrap">
+        <input class="busca-input" type="text" id="busca-usuarios" placeholder="Buscar por nome ou e-mail..." oninput="renderUsuarios()">
+        <select id="filtro-usuarios-perfil" onchange="renderUsuarios()" style="padding:8px 12px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="">Todos os perfis</option>
+          <option value="admin">Administrador</option>
+          <option value="paroquia">Responsável Paróquia</option>
+          <option value="pastoral">Agente Pastoral</option>
+          <option value="responsavel_pastoral">Responsável Pastoral</option>
+          <option value="profissional">Profissional</option>
+        </select>
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Nome</th><th>Identificador</th><th>Perfil</th><th>Senha</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-usuarios"></tbody>
+      </table></div>
+    </div>
+
     <!-- CONFIG -->
     <div class="secao" id="secao-config">
       <h2 class="secao-titulo" style="margin-bottom:18px;">Configurações</h2>
@@ -557,10 +647,10 @@ tr:hover td{background:var(--gold-faint);}
         <h3 style="font-size:1rem;margin-bottom:14px;font-weight:600;color:var(--brown);">Contas de Acesso</h3>
         <div class="aviso aviso-info">Admin e coordenadores(as) pastorais têm e-mail e senha próprios. Cada profissional gerencia a própria senha pelo botão <strong>"Minha Conta"</strong>, no topo do app, após fazer login.</div>
         <div class="tabela-wrap"><table>
-          <thead><tr><th>Nome</th><th>E-mail</th><th>Nome da Conta</th><th>Perfil</th><th>Ações</th></tr></thead>
+          <thead><tr><th>Nome</th><th>E-mail</th><th>Nome da Conta</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead>
           <tbody id="tabela-contas"></tbody>
         </table></div>
-        <div style="margin-top:14px;"><button class="btn btn-primario" onclick="abrirModalConta()">+ Nova Conta Pastoral</button></div>
+        <div style="margin-top:14px;"><button class="btn btn-primario" onclick="abrirModalConta()">+ Nova Conta</button></div>
       </div>
 
       <!-- EmailJS (recuperação de senha) -->
@@ -638,22 +728,49 @@ tr:hover td{background:var(--gold-faint);}
     <div class="modal-header"><h2 id="modal-benef-titulo">Novo Beneficiário</h2><button class="modal-fechar" onclick="fecharModal('modal-beneficiario')">×</button></div>
     <div class="modal-body">
       <div class="aviso aviso-alerta">⚠️ <strong>Sigilo:</strong> Use apenas nome parcial. O código protege a identidade.</div>
+
+      <div class="painel-secao-titulo" style="margin-top:4px;">Quem está encaminhando</div>
+      <div class="form-grid">
+        <div class="form-grupo"><label>Pastoral / Paróquia *</label><input type="text" id="b-pastoral" placeholder="Pastoral da Criança — Paróquia X"></div>
+        <div class="form-grupo"><label>Nome de quem preencheu</label><input type="text" id="b-agente-nome" placeholder="Nome do agente da pastoral"></div>
+        <div class="form-grupo"><label>Telefone / WhatsApp do agente</label><input type="tel" id="b-agente-telefone" placeholder="(00) 00000-0000"></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:18px;">Sobre a pessoa a ser atendida</div>
       <div class="form-grid">
         <div class="form-grupo"><label>Código</label><input type="text" id="b-codigo" readonly style="background:var(--parchment);font-family:'Raleway',sans-serif;letter-spacing:0.1em;"></div>
         <div class="form-grupo"><label>Nome (parcial) *</label><input type="text" id="b-nome" placeholder="Ex.: Maria S."></div>
-        <div class="form-grupo"><label>Pastoral / Paróquia *</label><input type="text" id="b-pastoral" placeholder="Pastoral da Criança — Paróquia X"></div>
-        <div class="form-grupo"><label>Telefone de contato</label><input type="tel" id="b-telefone" placeholder="(00) 00000-0000"></div>
+        <div class="form-grupo"><label>Idade</label><input type="number" id="b-idade" min="0" max="120" placeholder="Ex.: 34" onchange="sugerirFaixaPorIdade()"></div>
         <div class="form-grupo"><label>Faixa etária</label>
           <select id="b-faixa"><option value="">Selecione</option>
             <option>Criança (0–12)</option><option>Adolescente (13–17)</option><option>Adulto (18–59)</option><option>Idoso (60+)</option>
           </select></div>
+        <div class="form-grupo"><label>Nome do responsável (se menor)</label><input type="text" id="b-responsavel" placeholder="Se a pessoa for menor de idade"></div>
+        <div class="form-grupo"><label>Telefone de contato</label><input type="tel" id="b-telefone" placeholder="(00) 00000-0000"></div>
+        <div class="form-grupo full"><label>Endereço</label><input type="text" id="b-endereco" placeholder="Rua, número, bairro..."></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:18px;">Necessidade a ser atendida</div>
+      <div class="form-grid">
         <div class="form-grupo"><label>Necessidade principal *</label>
           <select id="b-necessidade"><option value="">Selecione</option>
             <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
             <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
             <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+            <option>Não sei dizer</option>
           </select></div>
+        <div class="form-grupo"><label>Existe urgência?</label>
+          <select id="b-urgencia"><option value="">Selecione</option><option>Sim</option><option>Não</option><option>Não sei dizer</option></select></div>
+        <div class="form-grupo"><label>Já acompanhado por serviço público?</label>
+          <select id="b-acompanhamento"><option value="">Selecione</option><option>CRAS</option><option>CREAS</option><option>UBS</option><option>Não sei dizer</option><option>Outros</option></select></div>
+        <div class="form-grupo"><label>Pode se deslocar até o local do atendimento?</label>
+          <select id="b-desloca"><option value="">Selecione</option><option>Sim</option><option>Não</option></select></div>
         <div class="form-grupo full"><label>Descrição da Necessidade</label><textarea id="b-descricao" placeholder="Descreva resumidamente..."></textarea></div>
+        <div class="form-grupo full">
+          <label>Família está ciente e autoriza o compartilhamento dos dados com a Cáritas? *</label>
+          <select id="b-consentimento" onchange="aoMudarConsentimento()"><option value="">Selecione</option><option>Sim</option><option>Não</option></select>
+          <div id="b-consentimento-aviso" class="aviso aviso-erro" style="display:none;margin-top:8px;">⚠️ Sem autorização, evite compartilhar detalhes da necessidade com o profissional até regularizar com a família.</div>
+        </div>
       </div>
       <input type="hidden" id="b-id">
     </div>
@@ -669,13 +786,31 @@ tr:hover td{background:var(--gold-faint);}
   <div class="modal">
     <div class="modal-header"><h2 id="ver-benef-titulo">Beneficiário</h2><button class="modal-fechar" onclick="fecharModal('modal-ver-beneficiario')">×</button></div>
     <div class="modal-body">
+      <div class="painel-secao-titulo" style="margin-top:0;">Quem encaminhou</div>
+      <div class="detalhe-grid">
+        <div class="detalhe-item"><label>Pastoral / Paróquia</label><span id="vb-pastoral">—</span></div>
+        <div class="detalhe-item"><label>Agente</label><span id="vb-agente-nome">—</span></div>
+        <div class="detalhe-item"><label>Telefone do agente</label><span id="vb-agente-telefone">—</span></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:18px;">Pessoa atendida</div>
       <div class="detalhe-grid">
         <div class="detalhe-item"><label>Código</label><span id="vb-codigo">—</span></div>
         <div class="detalhe-item"><label>Nome</label><span id="vb-nome">—</span></div>
-        <div class="detalhe-item"><label>Pastoral / Paróquia</label><span id="vb-pastoral">—</span></div>
-        <div class="detalhe-item"><label>Telefone</label><span id="vb-telefone">—</span></div>
+        <div class="detalhe-item"><label>Idade</label><span id="vb-idade">—</span></div>
         <div class="detalhe-item"><label>Faixa Etária</label><span id="vb-faixa">—</span></div>
+        <div class="detalhe-item"><label>Responsável</label><span id="vb-responsavel">—</span></div>
+        <div class="detalhe-item"><label>Telefone</label><span id="vb-telefone">—</span></div>
+        <div class="detalhe-item"><label>Endereço</label><span id="vb-endereco">—</span></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:18px;">Necessidade</div>
+      <div class="detalhe-grid">
         <div class="detalhe-item"><label>Necessidade Principal</label><span id="vb-necessidade">—</span></div>
+        <div class="detalhe-item"><label>Urgência</label><span id="vb-urgencia">—</span></div>
+        <div class="detalhe-item"><label>Acompanhado por</label><span id="vb-acompanhamento">—</span></div>
+        <div class="detalhe-item"><label>Pode se deslocar</label><span id="vb-desloca">—</span></div>
+        <div class="detalhe-item"><label>Consentimento da família</label><span id="vb-consentimento">—</span></div>
       </div>
       <div class="form-grupo" style="margin-top:6px;">
         <label>Descrição da Necessidade</label>
@@ -690,6 +825,25 @@ tr:hover td{background:var(--gold-faint);}
     <div class="modal-footer">
       <button class="btn btn-secundario" onclick="fecharModal('modal-ver-beneficiario')">Fechar</button>
       <button class="btn btn-primario" id="vb-btn-editar" onclick="editarBeneficiarioDeVer()">Editar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Importar CSV -->
+<div class="modal-overlay" id="modal-importar-csv">
+  <div class="modal">
+    <div class="modal-header"><h2 id="importar-csv-titulo">Importar CSV</h2><button class="modal-fechar" onclick="fecharModal('modal-importar-csv')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-info" id="importar-csv-instrucoes"></div>
+      <div class="form-grupo">
+        <label>Arquivo CSV exportado do Google Sheets vinculado ao formulário</label>
+        <input type="file" id="importar-csv-arquivo" accept=".csv" onchange="processarArquivoCSV(event)">
+      </div>
+      <div id="importar-csv-previa" style="margin-top:16px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-importar-csv')">Cancelar</button>
+      <button class="btn btn-primario" id="btn-confirmar-importacao" style="display:none;" onclick="confirmarImportacaoCSV()">Importar Registros</button>
     </div>
   </div>
 </div>
@@ -798,7 +952,15 @@ tr:hover td{background:var(--gold-faint);}
         <p style="font-size:0.78rem;color:var(--brown-lt);font-style:italic;margin-top:4px;">Pode ser usado para entrar no lugar do e-mail — a senha continua a mesma. Deixe em branco pra manter só o login por e-mail.</p>
       </div>
       <div class="form-grupo" style="margin-bottom:10px;"><label>Perfil</label>
-        <select id="c-perfil"><option value="pastoral">Coordenador(a) Pastoral</option><option value="admin">Coordenação Cáritas (Admin)</option></select>
+        <select id="c-perfil">
+          <option value="admin">Administrador</option>
+          <option value="paroquia">Responsável Paróquia</option>
+          <option value="pastoral">Agente Pastoral</option>
+          <option value="responsavel_pastoral">Responsável Pastoral</option>
+        </select>
+      </div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Status</label>
+        <select id="c-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select>
       </div>
       <div class="form-grupo"><label>Senha *</label><input type="text" id="c-senha" placeholder="Senha inicial"></div>
       <input type="hidden" id="c-id">
@@ -877,6 +1039,7 @@ function fazerLogin(){
   let contaBootstrap=false;
   if(!conta){conta=contas.find(c=>!c.email&&!c.nomeConta&&c.senha===senha);if(conta)contaBootstrap=true;}
   if(conta){
+    if(conta.status==='inativo'){erroLogin('Conta inativa. Fale com a coordenação da Cáritas.');return;}
     if(!contaBootstrap&&conta.senha!==senha){erroLogin('Senha incorreta.');return;}
     usuarioAtual={id:conta.id,perfil:conta.perfil,nome:conta.nome,nomeConta:conta.nomeConta||'',email:conta.email};
     entrar();
@@ -915,13 +1078,15 @@ function entrar(){
   document.getElementById('tela-login').style.display='none';
   document.getElementById('tela-app').style.display='flex';
   document.getElementById('topbar-perfil-nome').textContent=usuarioAtual.nome;
-  const niveis={admin:'Administrador',pastoral:'Pastoral',profissional:'Voluntário'};
+  const niveis={admin:'Administrador',pastoral:'Agente Pastoral',paroquia:'Responsável Paróquia',responsavel_pastoral:'Responsável Pastoral',profissional:'Voluntário'};
   document.getElementById('topbar-nivel').textContent=niveis[usuarioAtual.perfil]||'';
 
   // Visibilidade das abas por perfil
   const perm={
-    admin:['painel','profissionais','beneficiarios','necessidades','agendamentos','relatorios','config'],
-    pastoral:['painel','agendar','beneficiarios','agendamentos','relatorios'],
+    admin:['painel','profissionais','beneficiarios','necessidades','agendamentos','relatorios','consolidado','usuarios','config'],
+    pastoral:['painel','agendar','beneficiarios','agendamentos','relatorios','consolidado'],
+    paroquia:['painel','agendar','beneficiarios','agendamentos','relatorios','consolidado'],
+    responsavel_pastoral:['painel','agendar','beneficiarios','agendamentos','relatorios','consolidado'],
     profissional:['minha-agenda','relatorios']
   };
   const p=perm[usuarioAtual.perfil]||[];
@@ -943,6 +1108,9 @@ function sair(){
 }
 
 // ── ABAS / MODAL / TOAST ──
+const mapaAbas={painel:renderPainel,profissionais:renderProfissionais,beneficiarios:renderBeneficiarios,
+  agendamentos:renderAgendamentos,relatorios:renderRelatorios,'minha-agenda':renderMinhaAgenda,
+  agendar:iniciarAgendar,config:renderContas,necessidades:renderNecessidades,consolidado:iniciarConsolidado,usuarios:renderUsuarios};
 function mudarAba(id){
   document.querySelectorAll('.aba').forEach(a=>a.classList.remove('ativa'));
   document.querySelectorAll('.secao').forEach(s=>s.classList.remove('ativa'));
@@ -950,10 +1118,35 @@ function mudarAba(id){
   const s=document.getElementById('secao-'+id);
   if(a)a.classList.add('ativa');
   if(s)s.classList.add('ativa');
-  const fn={painel:renderPainel,profissionais:renderProfissionais,beneficiarios:renderBeneficiarios,
-    agendamentos:renderAgendamentos,relatorios:renderRelatorios,'minha-agenda':renderMinhaAgenda,
-    agendar:iniciarAgendar,config:renderContas,necessidades:renderNecessidades};
-  if(fn[id])fn[id]();
+  if(mapaAbas[id])mapaAbas[id]();
+}
+function abaAtivaId(){
+  const s=document.querySelector('.secao.ativa');
+  return s?s.id.replace('secao-',''):null;
+}
+function refrescarListaBeneficiariosAgendar(){
+  const sel=document.getElementById('sol-beneficiario');
+  if(!sel)return;
+  const atual=sel.value;
+  sel.innerHTML='<option value="">Selecione</option>'+
+    beneficiarios.map(b=>`<option value="${b.id}">${esc(b.codigo)} — ${esc(b.nome)}</option>`).join('');
+  if(atual&&beneficiarios.some(b=>b.id===atual))sel.value=atual;
+}
+function atualizarAbaAtual(){
+  if(!usuarioAtual)return;
+  const id=abaAtivaId();
+  if(!id)return;
+  if(id==='agendar')refrescarListaBeneficiariosAgendar(); // evita resetar uma solicitação em andamento
+  else if(mapaAbas[id])mapaAbas[id]();
+}
+function atualizarManual(){
+  const btn=document.getElementById('btn-atualizar-dados');
+  if(btn){btn.disabled=true;const original=btn.textContent;btn.textContent='Atualizando...';
+    setTimeout(()=>{btn.disabled=false;btn.textContent=original;},700);}
+  if(!usandoFirebase)carregarDados();
+  atualizarAbaAtual();
+  atualizarBadges();
+  toast('Dados atualizados!','ok');
 }
 function abrirModal(id){document.getElementById(id).classList.add('aberto');}
 function fecharModal(id){document.getElementById(id).classList.remove('aberto');}
@@ -1019,6 +1212,9 @@ function seedContas(){
   salvarLocal();
   if(usandoFirebase)contas.forEach(c=>salvarFirebase('contas',c.id,c));
 }
+function rotuloPerfilConta(perfil){
+  return {admin:'Administrador',pastoral:'Agente Pastoral',paroquia:'Responsável Paróquia',responsavel_pastoral:'Responsável Pastoral'}[perfil]||perfil;
+}
 function renderContas(){
   const tbody=document.getElementById('tabela-contas');
   if(!tbody)return;
@@ -1026,17 +1222,80 @@ function renderContas(){
     <td><strong>${esc(c.nome)}</strong></td>
     <td>${esc(c.email)||'<em style="color:var(--vermelho);">sem e-mail — recuperação de senha não funciona</em>'}</td>
     <td>${esc(c.nomeConta)||'—'}</td>
-    <td><span class="badge badge-prof">${c.perfil==='admin'?'Admin':'Pastoral'}</span></td>
+    <td><span class="badge badge-prof">${rotuloPerfilConta(c.perfil)}</span></td>
+    <td><span class="badge ${c.status==='inativo'?'badge-cancelado':'badge-realizado'}">${c.status==='inativo'?'Inativo':'Ativo'}</span></td>
     <td style="display:flex;gap:5px;flex-wrap:wrap;">
       <button class="btn btn-xs btn-primario" onclick="editarConta('${c.id}')">Editar</button>
       ${contas.filter(x=>x.perfil==='admin').length>1||c.perfil!=='admin'?`<button class="btn btn-xs btn-perigo" onclick="excluirConta('${c.id}')">✕</button>`:''}
     </td>
   </tr>`).join('');
 }
+
+// ══════════════════════════════════════════════════════
+// USUÁRIOS (visão consolidada — admin/pastoral/profissional)
+// ══════════════════════════════════════════════════════
+function renderUsuarios(){
+  const q=(document.getElementById('busca-usuarios')?.value||'').toLowerCase();
+  const filtroPerfil=document.getElementById('filtro-usuarios-perfil')?.value||'';
+  const rotulo={admin:'Administrador',pastoral:'Agente Pastoral',paroquia:'Responsável Paróquia',responsavel_pastoral:'Responsável Pastoral',profissional:'Profissional'};
+
+  let lista=[
+    ...contas.map(c=>({tipo:'conta',id:c.id,nome:c.nome,identificador:c.email||c.nomeConta||'—',
+      perfil:c.perfil,senha:c.senha,status:c.status||'ativo'})),
+    ...profissionais.map(p=>({tipo:'profissional',id:p.id,nome:p.nome,identificador:p.email||p.nomeConta||'—',
+      perfil:'profissional',senha:p.senha||'salus123',status:p.status||'ativo'})),
+  ];
+  if(filtroPerfil)lista=lista.filter(u=>u.perfil===filtroPerfil);
+  if(q)lista=lista.filter(u=>u.nome.toLowerCase().includes(q)||u.identificador.toLowerCase().includes(q));
+  lista.sort((a,b)=>a.nome.localeCompare(b.nome));
+
+  const tbody=document.getElementById('tabela-usuarios');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="6"><div class="vazio"><div class="vazio-icone">🔑</div><p>Nenhum usuário encontrado.</p></div></td></tr>`
+    :lista.map(u=>`<tr>
+        <td><strong>${esc(u.nome)}</strong></td>
+        <td style="font-size:0.86rem;">${esc(u.identificador)}</td>
+        <td><span class="badge badge-prof">${rotulo[u.perfil]||u.perfil}</span></td>
+        <td><span class="senha-mascarada" data-senha="${esc(u.senha)}" onclick="alternarSenhaVisivel(this)" style="cursor:pointer;font-family:monospace;" title="Clique para mostrar/ocultar">••••••</span></td>
+        <td>${u.status==='pendente'?'<span class="badge badge-pendente">⏳ Pendente</span>':u.status==='inativo'?'<span class="badge badge-cancelado">Inativo</span>':'<span class="badge badge-realizado">Ativo</span>'}</td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap;">
+          <button class="btn btn-xs btn-primario" onclick="editarUsuario('${u.tipo}','${u.id}')">Editar</button>
+          ${u.status!=='pendente'?`<button class="btn btn-xs ${u.status==='inativo'?'btn-verde':'btn-secundario'}" onclick="alternarStatusUsuario('${u.tipo}','${u.id}')">${u.status==='inativo'?'Ativar':'Inativar'}</button>`:''}
+          <button class="btn btn-xs btn-perigo" onclick="confirmarExcluirUsuario('${u.tipo}','${u.id}','${esc(u.nome).replace(/'/g,"\\'")}')">✕ Excluir</button>
+        </td>
+      </tr>`).join('');
+}
+function alternarSenhaVisivel(el){
+  if(el.textContent==='••••••')el.textContent=el.dataset.senha||'—';
+  else el.textContent='••••••';
+}
+function editarUsuario(tipo,id){
+  if(tipo==='conta')editarConta(id);else editarProfissional(id);
+}
+function alternarStatusUsuario(tipo,id){
+  if(tipo==='conta'){
+    const c=contas.find(x=>x.id===id);if(!c)return;
+    const novo=c.status==='inativo'?'ativo':'inativo';
+    if(novo==='inativo'&&c.perfil==='admin'&&contas.filter(x=>x.perfil==='admin'&&x.status!=='inativo'&&x.id!==id).length===0){
+      toast('Não é possível inativar o único administrador ativo.','erro');return;
+    }
+    c.status=novo;
+    salvarLocal();
+    if(usandoFirebase)salvarFirebase('contas',id,c);
+  } else {
+    const p=profissionais.find(x=>x.id===id);if(!p)return;
+    p.status=p.status==='inativo'?'ativo':'inativo';
+    salvarLocal();
+    if(usandoFirebase)salvarFirebase('profissionais',id,p);
+  }
+  renderUsuarios();
+  toast('Status atualizado!','ok');
+}
 function abrirModalConta(){
   document.getElementById('modal-conta-titulo').textContent='Nova Conta';
   ['c-id','c-nome','c-email','c-nome-conta','c-senha'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('c-perfil').value='pastoral';
+  document.getElementById('c-status').value='ativo';
   abrirModal('modal-conta');
 }
 function editarConta(id){
@@ -1047,6 +1306,7 @@ function editarConta(id){
   document.getElementById('c-email').value=c.email||'';
   document.getElementById('c-nome-conta').value=c.nomeConta||'';
   document.getElementById('c-perfil').value=c.perfil||'pastoral';
+  document.getElementById('c-status').value=c.status||'ativo';
   document.getElementById('c-senha').value=c.senha||'';
   abrirModal('modal-conta');
 }
@@ -1056,25 +1316,50 @@ function salvarConta(){
   const nomeConta=document.getElementById('c-nome-conta').value.trim().toLowerCase();
   const senha=document.getElementById('c-senha').value.trim();
   const perfil=document.getElementById('c-perfil').value;
+  const status=document.getElementById('c-status').value;
   if(!nome||!email||!senha){toast('Preencha nome, e-mail e senha.','erro');return;}
   const id0=document.getElementById('c-id').value;
   if(emailEmUso(email,id0)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
   if(nomeConta&&emailEmUso(nomeConta,id0)){toast('Esse nome da conta já está em uso.','erro');return;}
+  if(status==='inativo'&&perfil==='admin'&&contas.filter(x=>x.perfil==='admin'&&x.status!=='inativo'&&x.id!==id0).length===0){
+    toast('Não é possível inativar o único administrador ativo.','erro');return;
+  }
   const id=id0||uid();
   const idx=contas.findIndex(x=>x.id===id);
-  const obj={id,nome,email,nomeConta,senha,perfil};
+  const obj={id,nome,email,nomeConta,senha,perfil,status};
   if(idx>=0)contas[idx]=obj;else contas.push(obj);
   salvarLocal();
   if(usandoFirebase)salvarFirebase('contas',id,obj);
   fecharModal('modal-conta');renderContas();
+  if(document.getElementById('secao-usuarios').classList.contains('ativa'))renderUsuarios();
   toast('Conta salva!','ok');
 }
 function excluirConta(id){
+  const c=contas.find(x=>x.id===id);
+  if(c&&c.perfil==='admin'&&contas.filter(x=>x.perfil==='admin').length<=1){
+    toast('Não é possível excluir o único administrador do sistema.','erro');return;
+  }
   contas=contas.filter(x=>x.id!==id);
   salvarLocal();
   if(usandoFirebase)excluirFirebase('contas',id);
   renderContas();
   toast('Conta removida.','ok');
+}
+function confirmarExcluirUsuario(tipo,id,nome){
+  document.getElementById('modal-conf-titulo').textContent='Confirmar exclusão';
+  document.getElementById('modal-conf-msg').textContent=`Excluir definitivamente "${nome}"? Essa ação não pode ser desfeita.`;
+  document.getElementById('modal-conf-btn').onclick=()=>{excluirUsuarioConfirmado(tipo,id);fecharModal('modal-confirmar');};
+  abrirModal('modal-confirmar');
+}
+function excluirUsuarioConfirmado(tipo,id){
+  if(tipo==='conta')excluirConta(id);
+  else{
+    profissionais=profissionais.filter(x=>x.id!==id);
+    salvarLocal();
+    if(usandoFirebase)excluirFirebase('profissionais',id);
+    toast('Profissional removido.','ok');
+  }
+  renderUsuarios();
 }
 function emailEmUso(valor,idIgnorar){
   const v=(valor||'').toLowerCase();
@@ -1709,19 +1994,27 @@ function excluirHorario(hId){
 // ══════════════════════════════════════════════════════
 function renderBeneficiarios(){
   const q=(document.getElementById('busca-benef')?.value||'').toLowerCase();
-  const lista=beneficiarios.filter(b=>!q||b.nome.toLowerCase().includes(q)||b.codigo.toLowerCase().includes(q));
+  const filtroRevisao=document.getElementById('filtro-benef-revisao')?.value||'';
+  const lista=beneficiarios.filter(b=>{
+    if(filtroRevisao==='pendente'&&b.statusRevisao!=='pendente')return false;
+    if(!q)return true;
+    return b.nome.toLowerCase().includes(q)||b.codigo.toLowerCase().includes(q);
+  });
+  atualizarBadgeBenefPendentes();
   const tbody=document.getElementById('tabela-beneficiarios');
   tbody.innerHTML=lista.length===0
     ?`<tr><td colspan="6"><div class="vazio"><div class="vazio-icone">🙏</div><p>Nenhum beneficiário encontrado.</p></div></td></tr>`
     :lista.map(b=>{
       const n=agendamentos.filter(a=>a.beneficiarioId===b.id).length;
-      return `<tr>
-        <td style="font-family:'Raleway',sans-serif;font-size:0.82rem;letter-spacing:0.06em;color:var(--gold);cursor:pointer;" onclick="verBeneficiario('${b.id}')">${esc(b.codigo)}</td>
-        <td style="cursor:pointer;" onclick="verBeneficiario('${b.id}')"><strong>${esc(b.nome)}</strong> <span style="font-size:0.78rem;color:var(--cinza-txt);">${esc(b.faixa||'')}</span></td>
+      const pendente=b.statusRevisao==='pendente';
+      return `<tr ${pendente?'style="background:var(--gold-faint);"':''}>
+        <td style="font-family:'Raleway',sans-serif;font-size:0.82rem;letter-spacing:0.06em;color:var(--gold);cursor:pointer;" onclick="verBeneficiario('${b.id}')">${b.urgencia==='Sim'?'🔴 ':''}${esc(b.codigo)}</td>
+        <td style="cursor:pointer;" onclick="verBeneficiario('${b.id}')"><strong>${esc(b.nome)}</strong> <span style="font-size:0.78rem;color:var(--cinza-txt);">${esc(b.faixa||'')}</span>${pendente?` <span class="badge badge-pendente" style="font-size:0.68rem;">Forms</span>`:''}</td>
         <td style="font-size:0.84rem;">${esc(b.pastoral||'—')}</td>
         <td><span class="badge badge-prof">${esc(b.necessidade)}</span></td>
         <td style="text-align:center;">${n}</td>
-        <td style="display:flex;gap:5px;">
+        <td style="display:flex;gap:5px;flex-wrap:wrap;">
+          ${pendente?`<button class="btn btn-xs btn-verde" onclick="aprovarBeneficiario('${b.id}')">✓ Revisado</button>`:''}
           <button class="btn btn-xs btn-secundario" onclick="verBeneficiario('${b.id}')">Ver</button>
           ${usuarioAtual?.perfil!=='profissional'?`<button class="btn btn-xs btn-primario" onclick="editarBeneficiario('${b.id}')">Editar</button>
           <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('beneficiario','${b.id}')">✕</button>`:''}
@@ -1729,12 +2022,25 @@ function renderBeneficiarios(){
       </tr>`;
     }).join('');
 }
+function atualizarBadgeBenefPendentes(){
+  const pendentes=beneficiarios.filter(b=>b.statusRevisao==='pendente').length;
+  const badge=document.getElementById('badge-benef-pendentes');
+  if(badge){badge.textContent=pendentes||'';badge.style.display=pendentes?'inline':'none';}
+}
+function aprovarBeneficiario(id){
+  const b=beneficiarios.find(x=>x.id===id);if(!b)return;
+  delete b.statusRevisao;
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('beneficiarios',id,b);
+  renderBeneficiarios();
+  toast('Cadastro marcado como revisado!','ok');
+}
 function abrirModalBeneficiario(){
   document.getElementById('modal-benef-titulo').textContent='Novo Beneficiário';
-  ['b-id','b-nome','b-pastoral','b-telefone','b-descricao'].forEach(id=>document.getElementById(id).value='');
+  ['b-id','b-nome','b-pastoral','b-telefone','b-descricao','b-agente-nome','b-agente-telefone','b-idade','b-responsavel','b-endereco'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('b-codigo').value=gerarCodigo();
-  document.getElementById('b-faixa').value='';
-  document.getElementById('b-necessidade').value='';
+  ['b-faixa','b-necessidade','b-urgencia','b-acompanhamento','b-desloca','b-consentimento'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('b-consentimento-aviso').style.display='none';
   abrirModal('modal-beneficiario');
 }
 function editarBeneficiario(id){
@@ -1744,11 +2050,34 @@ function editarBeneficiario(id){
   document.getElementById('b-codigo').value=b.codigo;
   document.getElementById('b-nome').value=b.nome||'';
   document.getElementById('b-pastoral').value=b.pastoral||'';
+  document.getElementById('b-agente-nome').value=b.agenteNome||'';
+  document.getElementById('b-agente-telefone').value=b.agenteTelefone||'';
   document.getElementById('b-telefone').value=b.telefone||'';
+  document.getElementById('b-idade').value=b.idade||'';
   document.getElementById('b-faixa').value=b.faixa||'';
+  document.getElementById('b-responsavel').value=b.responsavel||'';
+  document.getElementById('b-endereco').value=b.endereco||'';
   document.getElementById('b-necessidade').value=b.necessidade||'';
+  document.getElementById('b-urgencia').value=b.urgencia||'';
+  document.getElementById('b-acompanhamento').value=b.acompanhamento||'';
+  document.getElementById('b-desloca').value=b.desloca||'';
+  document.getElementById('b-consentimento').value=b.consentimento||'';
   document.getElementById('b-descricao').value=b.descricao||'';
+  aoMudarConsentimento();
   abrirModal('modal-beneficiario');
+}
+function sugerirFaixaPorIdade(){
+  const idade=parseInt(document.getElementById('b-idade').value,10);
+  if(isNaN(idade))return;
+  const faixa=document.getElementById('b-faixa');
+  if(idade<=12)faixa.value='Criança (0–12)';
+  else if(idade<=17)faixa.value='Adolescente (13–17)';
+  else if(idade<=59)faixa.value='Adulto (18–59)';
+  else faixa.value='Idoso (60+)';
+}
+function aoMudarConsentimento(){
+  const v=document.getElementById('b-consentimento').value;
+  document.getElementById('b-consentimento-aviso').style.display=v==='Não'?'block':'none';
 }
 let vbId=null;
 function verBeneficiario(id){
@@ -1758,9 +2087,18 @@ function verBeneficiario(id){
   document.getElementById('vb-codigo').textContent=b.codigo||'—';
   document.getElementById('vb-nome').textContent=b.nome||'—';
   document.getElementById('vb-pastoral').textContent=b.pastoral||'—';
+  document.getElementById('vb-agente-nome').textContent=b.agenteNome||'—';
+  document.getElementById('vb-agente-telefone').textContent=b.agenteTelefone||'—';
   document.getElementById('vb-telefone').textContent=b.telefone||'—';
+  document.getElementById('vb-idade').textContent=b.idade||'—';
   document.getElementById('vb-faixa').textContent=b.faixa||'—';
+  document.getElementById('vb-responsavel').textContent=b.responsavel||'—';
+  document.getElementById('vb-endereco').textContent=b.endereco||'—';
   document.getElementById('vb-necessidade').textContent=b.necessidade||'—';
+  document.getElementById('vb-urgencia').textContent=b.urgencia||'—';
+  document.getElementById('vb-acompanhamento').textContent=b.acompanhamento||'—';
+  document.getElementById('vb-desloca').textContent=b.desloca||'—';
+  document.getElementById('vb-consentimento').textContent=b.consentimento||'—';
   document.getElementById('vb-descricao').textContent=b.descricao||'Nenhuma descrição informada.';
   const ags=agendamentos.filter(a=>a.beneficiarioId===id).sort((x,y)=>(y.data||'').localeCompare(x.data||''));
   const tbody=document.getElementById('vb-agendamentos');
@@ -1783,12 +2121,24 @@ function salvarBeneficiario(){
   const nome=document.getElementById('b-nome').value.trim();
   const pastoral=document.getElementById('b-pastoral').value.trim();
   const nec=document.getElementById('b-necessidade').value;
+  const consentimento=document.getElementById('b-consentimento').value;
   if(!nome||!pastoral||!nec){toast('Preencha nome, pastoral e necessidade.','erro');return;}
+  if(!consentimento){toast('Informe se a família autoriza o compartilhamento dos dados.','erro');return;}
   const id=document.getElementById('b-id').value||uid();
   const idx=beneficiarios.findIndex(x=>x.id===id);
   const obj={id,codigo:document.getElementById('b-codigo').value,nome,pastoral,
+    agenteNome:document.getElementById('b-agente-nome').value.trim(),
+    agenteTelefone:document.getElementById('b-agente-telefone').value.trim(),
     telefone:document.getElementById('b-telefone').value.trim(),
-    faixa:document.getElementById('b-faixa').value,necessidade:nec,
+    idade:document.getElementById('b-idade').value?parseInt(document.getElementById('b-idade').value,10):null,
+    faixa:document.getElementById('b-faixa').value,
+    responsavel:document.getElementById('b-responsavel').value.trim(),
+    endereco:document.getElementById('b-endereco').value.trim(),
+    necessidade:nec,
+    urgencia:document.getElementById('b-urgencia').value,
+    acompanhamento:document.getElementById('b-acompanhamento').value,
+    desloca:document.getElementById('b-desloca').value,
+    consentimento,
     descricao:document.getElementById('b-descricao').value.trim()};
   if(idx>=0)beneficiarios[idx]=obj;else beneficiarios.push(obj);
   salvarLocal();fecharModal('modal-beneficiario');renderBeneficiarios();
@@ -1997,6 +2347,394 @@ function renderRelatorios(){
 }
 
 // ══════════════════════════════════════════════════════
+// RELATÓRIO CONSOLIDADO (prestação de contas — período)
+// ══════════════════════════════════════════════════════
+function iniciarConsolidado(){
+  const hoje=new Date().toISOString().slice(0,7);
+  if(!document.getElementById('cons-mes-de').value)document.getElementById('cons-mes-de').value=hoje;
+  if(!document.getElementById('cons-mes-ate').value)document.getElementById('cons-mes-ate').value=hoje;
+  renderConsolidado();
+}
+function renderConsolidado(){
+  const de=document.getElementById('cons-mes-de').value;
+  const ate=document.getElementById('cons-mes-ate').value;
+  const pastoralFiltro=(document.getElementById('cons-pastoral').value||'').trim().toLowerCase();
+  const area=document.getElementById('area-consolidado');
+  if(!de||!ate){area.innerHTML='';return;}
+
+  // Relatórios de atendimento dentro do período (YYYY-MM)
+  const relsPeriodo=relatorios.filter(r=>{
+    const m=(r.data||'').slice(0,7);
+    if(!m||m<de||m>ate)return false;
+    if(pastoralFiltro){
+      const b=beneficiarios.find(x=>x.id===r.beneficiarioId);
+      if(!(b?.pastoral||'').toLowerCase().includes(pastoralFiltro))return false;
+    }
+    return true;
+  });
+
+  const beneficiariosAtendidos=new Set(relsPeriodo.map(r=>r.beneficiarioId).filter(Boolean));
+  const profissionaisAtuantes=new Set(relsPeriodo.map(r=>r.profissionalId).filter(Boolean));
+  const retornos=relsPeriodo.filter(r=>r.retorno&&r.retorno!=='nao').length;
+  const notas=relsPeriodo.map(r=>r.nota).filter(n=>n>0);
+  const notaMedia=notas.length?(notas.reduce((a,b)=>a+b,0)/notas.length).toFixed(1):'—';
+
+  // Agrupar por especialidade
+  const porEspecialidade={};
+  relsPeriodo.forEach(r=>{
+    const p=profissionais.find(x=>x.id===r.profissionalId);
+    const esp=p?.especialidade||'Não informado';
+    porEspecialidade[esp]=(porEspecialidade[esp]||0)+1;
+  });
+
+  // Agrupar por pastoral/paróquia (a partir do beneficiário)
+  const porPastoral={};
+  relsPeriodo.forEach(r=>{
+    const b=beneficiarios.find(x=>x.id===r.beneficiarioId);
+    const past=b?.pastoral||'Não informado';
+    porPastoral[past]=porPastoral[past]||{atendimentos:0,beneficiarios:new Set()};
+    porPastoral[past].atendimentos++;
+    if(b)porPastoral[past].beneficiarios.add(b.id);
+  });
+
+  const linhaEsp=Object.entries(porEspecialidade).sort((a,b)=>b[1]-a[1])
+    .map(([esp,qtd])=>`<tr><td>${esc(esp)}</td><td style="text-align:center;">${qtd}</td></tr>`).join('')
+    ||'<tr><td colspan="2" style="text-align:center;color:var(--cinza-txt);">Nenhum atendimento no período</td></tr>';
+
+  const linhaPast=Object.entries(porPastoral).sort((a,b)=>b[1].atendimentos-a[1].atendimentos)
+    .map(([past,d])=>`<tr><td>${esc(past)}</td><td style="text-align:center;">${d.beneficiarios.size}</td><td style="text-align:center;">${d.atendimentos}</td></tr>`).join('')
+    ||'<tr><td colspan="3" style="text-align:center;color:var(--cinza-txt);">Nenhum atendimento no período</td></tr>';
+
+  // Detalhe individual, sempre anonimizado (código do beneficiário, nunca nome)
+  const linhaDetalhe=relsPeriodo.sort((a,b)=>(a.data||'').localeCompare(b.data||''))
+    .map(r=>{
+      const b=beneficiarios.find(x=>x.id===r.beneficiarioId);
+      const p=profissionais.find(x=>x.id===r.profissionalId);
+      return `<tr>
+        <td>${fmtData(r.data)}</td>
+        <td>${esc(b?.codigo||'—')}</td>
+        <td>${esc(p?.especialidade||'—')}</td>
+        <td>${esc(b?.pastoral||'—')}</td>
+        <td>${esc(r.tipo||'—')}</td>
+        <td>${r.retorno==='nao'?'Não':r.retorno==='encaminhado'?'Encaminhado':'Sim'}</td>
+      </tr>`;
+    }).join('')
+    ||'<tr><td colspan="6" style="text-align:center;color:var(--cinza-txt);">Nenhum atendimento no período</td></tr>';
+
+  const periodoLabel=de===ate?fmtMesAno(de):`${fmtMesAno(de)} a ${fmtMesAno(ate)}`;
+  const geradoEm=new Date().toLocaleDateString('pt-BR');
+
+  area.innerHTML=`
+    <div class="rc-folha">
+      <div class="rc-cabecalho">
+        <span class="rc-ornamento">✦ · ✦ · ✦</span>
+        <h1>Relatório de Atendimentos — Projeto Salus</h1>
+        <div class="rc-sub">Cáritas Diocesana de Franca</div>
+        <div class="rc-periodo">Período: ${periodoLabel}${pastoralFiltro?` · Filtro: ${esc(document.getElementById('cons-pastoral').value)}`:''}</div>
+      </div>
+
+      <div class="rc-cards">
+        <div class="rc-card"><div class="rc-num">${relsPeriodo.length}</div><div class="rc-label">Atendimentos</div></div>
+        <div class="rc-card"><div class="rc-num">${beneficiariosAtendidos.size}</div><div class="rc-label">Beneficiários</div></div>
+        <div class="rc-card"><div class="rc-num">${profissionaisAtuantes.size}</div><div class="rc-label">Profissionais atuantes</div></div>
+        <div class="rc-card"><div class="rc-num">${retornos}</div><div class="rc-label">Com retorno</div></div>
+        <div class="rc-card"><div class="rc-num">${notaMedia}</div><div class="rc-label">Nota média Cáritas</div></div>
+      </div>
+
+      <div class="rc-bloco">
+        <h3>Atendimentos por Especialidade</h3>
+        <table><thead><tr><th>Especialidade</th><th style="text-align:center;">Atendimentos</th></tr></thead>
+        <tbody>${linhaEsp}</tbody></table>
+      </div>
+
+      <div class="rc-bloco">
+        <h3>Atendimentos por Pastoral / Paróquia</h3>
+        <table><thead><tr><th>Pastoral / Paróquia</th><th style="text-align:center;">Beneficiários</th><th style="text-align:center;">Atendimentos</th></tr></thead>
+        <tbody>${linhaPast}</tbody></table>
+      </div>
+
+      <div class="rc-bloco">
+        <h3>Detalhamento (identificação apenas por código, conforme sigilo)</h3>
+        <table><thead><tr><th>Data</th><th>Código</th><th>Especialidade</th><th>Pastoral</th><th>Tipo</th><th>Retorno</th></tr></thead>
+        <tbody>${linhaDetalhe}</tbody></table>
+      </div>
+
+      <div class="rc-assinaturas">
+        <div class="rc-assinatura">Coordenação Cáritas Diocesana de Franca</div>
+        <div class="rc-assinatura">Mariana Beatriz — Coordenação Pastoral</div>
+      </div>
+
+      <div class="rc-rodape">Documento gerado pelo Projeto Salus em ${geradoEm} · "Não nos cansemos de fazer o bem" — Gálatas 6, 9</div>
+    </div>`;
+}
+function fmtMesAno(m){
+  if(!m)return'—';
+  const[y,mm]=m.split('-');
+  const nomes=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  return `${nomes[parseInt(mm,10)-1]}/${y}`;
+}
+
+// ══════════════════════════════════════════════════════
+// IMPORTAR CSV (respostas do Google Forms via planilha exportada)
+// ══════════════════════════════════════════════════════
+let importarCSVDestino=null;
+let importarCSVRegistrosProntos=[];
+
+function normalizarTexto(s){
+  return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+}
+function acharColuna(headersNorm,candidatos,usados){
+  for(let i=0;i<headersNorm.length;i++){
+    if(usados.includes(i))continue;
+    for(const cand of candidatos){
+      if(headersNorm[i].includes(cand))return i;
+    }
+  }
+  return -1;
+}
+function parseCSV(texto){
+  const rows=[];
+  let row=[],field='',inQuotes=false;
+  const t=texto.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  for(let i=0;i<t.length;i++){
+    const c=t[i];
+    if(inQuotes){
+      if(c==='"'){ if(t[i+1]==='"'){field+='"';i++;} else inQuotes=false; }
+      else field+=c;
+    } else {
+      if(c==='"')inQuotes=true;
+      else if(c===','){row.push(field);field='';}
+      else if(c==='\n'){row.push(field);rows.push(row);row=[];field='';}
+      else field+=c;
+    }
+  }
+  if(field.length||row.length){row.push(field);rows.push(row);}
+  return rows.filter(r=>r.some(v=>(v||'').trim()!==''));
+}
+function abreviarNomeImportado(nomeCompleto){
+  const partes=(nomeCompleto||'').trim().split(/\s+/).filter(Boolean);
+  if(partes.length===0)return'';
+  if(partes.length===1)return partes[0];
+  return partes[0]+' '+partes[partes.length-1].charAt(0).toUpperCase()+'.';
+}
+function apenasDigitos(s){return(s||'').replace(/\D/g,'');}
+
+function abrirImportarCSV(destino){
+  importarCSVDestino=destino;
+  importarCSVRegistrosProntos=[];
+  document.getElementById('importar-csv-arquivo').value='';
+  document.getElementById('importar-csv-previa').innerHTML='';
+  document.getElementById('btn-confirmar-importacao').style.display='none';
+  if(destino==='beneficiario'){
+    document.getElementById('importar-csv-titulo').textContent='Importar Beneficiários do Forms';
+    document.getElementById('importar-csv-instrucoes').innerHTML='Exporte a planilha vinculada ao <strong>Formulário para demandas</strong> como CSV (Arquivo → Fazer download → Valores separados por vírgula) e selecione o arquivo abaixo. Os registros entram como <strong>pendentes de revisão</strong> — ninguém vira beneficiário oficial sem alguém conferir antes.';
+  } else {
+    document.getElementById('importar-csv-titulo').textContent='Importar Profissionais do Forms';
+    document.getElementById('importar-csv-instrucoes').innerHTML='Exporte a planilha vinculada ao <strong>Formulário de voluntariado profissional</strong> como CSV e selecione o arquivo abaixo. Os registros entram com status <strong>pendente</strong>, igual já acontece com o formulário que grava direto no Firebase.';
+  }
+  abrirModal('modal-importar-csv');
+}
+
+const MAPA_NECESSIDADE_IMPORT={
+  'psicologo':'Psicólogo(a)','jurídico':'Advogado(a)','juridico':'Advogado(a)',
+  'servico social':'Assistente Social','orientacao pedagogica':'Psicopedagogo(a)',
+  'dentista':'Dentista','outros':'Outro','nao sei dizer':'Não sei dizer'
+};
+function mapearNecessidade(bruto){
+  const n=normalizarTexto(bruto);
+  for(const chave in MAPA_NECESSIDADE_IMPORT){if(n.includes(normalizarTexto(chave)))return MAPA_NECESSIDADE_IMPORT[chave];}
+  return null; // não mapeado — cai em "Outro" com nota na descrição
+}
+function mapearEspecialidade(bruto){
+  const n=normalizarTexto(bruto);
+  const pares=[['dentist','Dentista'],['psicolog','Psicólogo(a)'],['medic','Médico(a)'],['nutri','Nutricionista'],
+    ['fisioterap','Fisioterapeuta'],['enferm','Enfermeiro(a)'],['psicopedag','Psicopedagogo(a)'],
+    ['assistente social','Assistente Social'],['servico social','Assistente Social'],['advogad','Advogado(a)'],['juridic','Advogado(a)']];
+  for(const [k,v] of pares){if(n.includes(k))return v;}
+  return 'Outro';
+}
+
+function processarArquivoCSV(ev){
+  const arquivo=ev.target.files[0];
+  if(!arquivo)return;
+  const leitor=new FileReader();
+  leitor.onload=()=>{
+    try{
+      const linhas=parseCSV(leitor.result);
+      if(linhas.length<2){toast('Arquivo sem dados (só cabeçalho ou vazio).','erro');return;}
+      const headers=linhas[0];
+      const headersNorm=headers.map(normalizarTexto);
+      const dados=linhas.slice(1);
+      if(importarCSVDestino==='beneficiario')montarPreviaBeneficiarios(headersNorm,dados);
+      else montarPreviaProfissionais(headersNorm,dados);
+    }catch(e){
+      toast('Erro ao ler o CSV: '+e.message,'erro');
+    }
+  };
+  leitor.readAsText(arquivo,'UTF-8');
+}
+
+function montarPreviaBeneficiarios(headersNorm,dados){
+  const usados=[];
+  const col=(cands)=>{const i=acharColuna(headersNorm,cands,usados);if(i>=0)usados.push(i);return i;};
+  const iPastoral=col(['pastoral grupo paroquia','pastoral']);
+  const iAgenteNome=col(['quem esta preenchendo']);
+  const iAgenteTel=col(['whats do agente','telefone do agente']);
+  const iNome=col(['nome da pessoa a ser atendida','nome da pessoa']);
+  const iIdade=col(['idade']);
+  const iResponsavel=col(['nome do responsavel','responsavel']);
+  const iTelefone=col(['telefone']);
+  const iEndereco=col(['endereco']);
+  const iDescricao=col(['descricao sobre a necessidade','breve descricao']);
+  const iNecessidade=col(['qual atendimento','poderia ajudar']);
+  const iUrgencia=col(['urgencia']);
+  const iAcompanhamento=col(['acompanhada por algum servico','servico publico']);
+  const iDesloca=col(['deslocar ate o local','pode se deslocar']);
+  const iObs=col(['observacoes']);
+  const iConsent=col(['compartilhamento','ciente','consentimento']);
+
+  const existentesChaves=new Set(beneficiarios.map(b=>normalizarTexto(b.nome)+'|'+apenasDigitos(b.telefone||b.agenteTelefone)));
+  const vistos=new Set();
+  const prontos=[];
+  let ignorados=0;
+
+  dados.forEach(row=>{
+    const nomeBruto=iNome>=0?row[iNome]:'';
+    if(!nomeBruto||!nomeBruto.trim())return;
+    const nome=abreviarNomeImportado(nomeBruto);
+    const telefone=iTelefone>=0?(row[iTelefone]||'').trim():'';
+    const agenteTelefone=iAgenteTel>=0?(row[iAgenteTel]||'').trim():'';
+    const chave=normalizarTexto(nome)+'|'+apenasDigitos(telefone||agenteTelefone);
+    if(existentesChaves.has(chave)||vistos.has(chave)){ignorados++;return;}
+    vistos.add(chave);
+
+    const necessidadeBruta=iNecessidade>=0?row[iNecessidade]:'';
+    let necessidade=mapearNecessidade(necessidadeBruta);
+    let descricao=(iDescricao>=0?row[iDescricao]:'').trim();
+    if(!necessidade){necessidade='Outro';if(necessidadeBruta)descricao=`[${necessidadeBruta.trim()}] ${descricao}`;}
+    if(iObs>=0&&row[iObs]&&row[iObs].trim())descricao+=(descricao?' — ':'')+'Obs.: '+row[iObs].trim();
+
+    const idade=iIdade>=0?parseInt(row[iIdade],10):NaN;
+    let faixa='';
+    if(!isNaN(idade)){
+      if(idade<=12)faixa='Criança (0–12)';else if(idade<=17)faixa='Adolescente (13–17)';
+      else if(idade<=59)faixa='Adulto (18–59)';else faixa='Idoso (60+)';
+    }
+
+    prontos.push({
+      nome, pastoral:iPastoral>=0?(row[iPastoral]||'').trim():'',
+      agenteNome:iAgenteNome>=0?(row[iAgenteNome]||'').trim():'',
+      agenteTelefone, telefone,
+      idade:isNaN(idade)?null:idade, faixa,
+      responsavel:iResponsavel>=0?(row[iResponsavel]||'').trim():'',
+      endereco:iEndereco>=0?(row[iEndereco]||'').trim():'',
+      necessidade, descricao:descricao.trim(),
+      urgencia:iUrgencia>=0?(row[iUrgencia]||'').trim():'',
+      acompanhamento:iAcompanhamento>=0?(row[iAcompanhamento]||'').trim():'',
+      desloca:iDesloca>=0?(row[iDesloca]||'').trim():'',
+      consentimento:iConsent>=0?(row[iConsent]||'').trim():'',
+      origem:'google_forms', statusRevisao:'pendente'
+    });
+  });
+
+  importarCSVRegistrosProntos=prontos;
+  renderPreviaImportacao(prontos.length,ignorados,prontos.map(p=>`${esc(p.nome)} — ${esc(p.necessidade)}${p.urgencia==='Sim'?' 🔴':''}`));
+}
+
+function montarPreviaProfissionais(headersNorm,dados){
+  const usados=[];
+  const col=(cands)=>{const i=acharColuna(headersNorm,cands,usados);if(i>=0)usados.push(i);return i;};
+  const iNome=col(['nome completo']);
+  const iTelefone=col(['telefone']);
+  const iEmail=col(['e mail','email']);
+  const iProfissao=col(['profissao']);
+  const iRegistro=col(['possui registro profissional']);
+  const iPublico=col(['publico que poderia','publico ao qual']);
+  const iHorarios=col(['dias e horarios']);
+  const iPeriodicidade=col(['periodicidade']);
+  const iLocal=col(['pode atender em qual local','local de atendimento']);
+  const iFormacao=col(['orientacao da caritas']);
+
+  const emailsExistentes=new Set(profissionais.map(p=>(p.email||'').toLowerCase()).concat(contas.map(c=>(c.email||'').toLowerCase())));
+  const vistos=new Set();
+  const prontos=[];
+  let ignorados=0;
+
+  dados.forEach(row=>{
+    const nome=(iNome>=0?row[iNome]:'').trim();
+    const email=(iEmail>=0?row[iEmail]:'').trim().toLowerCase();
+    if(!nome||!email)return;
+    if(emailsExistentes.has(email)||vistos.has(email)){ignorados++;return;}
+    vistos.add(email);
+
+    const especialidade=mapearEspecialidade(iProfissao>=0?row[iProfissao]:'');
+    const obsPartes=[];
+    if(iProfissao>=0&&especialidade==='Outro'&&row[iProfissao])obsPartes.push('Profissão informada: '+row[iProfissao].trim());
+    if(iRegistro>=0&&row[iRegistro])obsPartes.push('Registro profissional: '+row[iRegistro].trim());
+    if(iPublico>=0&&row[iPublico])obsPartes.push('Público de atendimento: '+row[iPublico].trim());
+    if(iHorarios>=0&&row[iHorarios])obsPartes.push('Disponibilidade: '+row[iHorarios].trim());
+    if(iPeriodicidade>=0&&row[iPeriodicidade])obsPartes.push('Periodicidade: '+row[iPeriodicidade].trim());
+    if(iFormacao>=0&&row[iFormacao])obsPartes.push('Disponibilidade p/ orientação Cáritas: '+row[iFormacao].trim());
+
+    prontos.push({
+      nome, especialidade, registro:'',
+      telefone:(iTelefone>=0?row[iTelefone]:'').trim(),
+      email, senha:'salus123',
+      local:(iLocal>=0?row[iLocal]:'').trim(),
+      obs:obsPartes.join(' · '),
+      status:'pendente', origem:'google_forms', atendimentos:0
+    });
+  });
+
+  importarCSVRegistrosProntos=prontos;
+  renderPreviaImportacao(prontos.length,ignorados,prontos.map(p=>`${esc(p.nome)} — ${esc(p.especialidade)} (${esc(p.email)})`));
+}
+
+function renderPreviaImportacao(qtdNovos,qtdIgnorados,linhasPreview){
+  const area=document.getElementById('importar-csv-previa');
+  const btn=document.getElementById('btn-confirmar-importacao');
+  if(qtdNovos===0){
+    area.innerHTML=`<div class="aviso aviso-alerta">Nenhum registro novo encontrado. ${qtdIgnorados?`(${qtdIgnorados} já existentes, ignorados)`:''}</div>`;
+    btn.style.display='none';
+    return;
+  }
+  area.innerHTML=`
+    <div class="aviso aviso-ok">${qtdNovos} registro(s) novo(s) encontrado(s)${qtdIgnorados?` · ${qtdIgnorados} já existente(s), ignorado(s)`:''}.</div>
+    <div class="tabela-wrap" style="max-height:220px;overflow-y:auto;margin-top:10px;">
+      <table><tbody>${linhasPreview.map(l=>`<tr><td style="font-size:0.85rem;">${l}</td></tr>`).join('')}</tbody></table>
+    </div>`;
+  btn.style.display='';
+  btn.textContent=`Importar ${qtdNovos} Registro(s)`;
+}
+
+function confirmarImportacaoCSV(){
+  if(importarCSVRegistrosProntos.length===0)return;
+  if(importarCSVDestino==='beneficiario'){
+    importarCSVRegistrosProntos.forEach(reg=>{
+      const id=uid();
+      const obj={id,codigo:gerarCodigo(),...reg};
+      beneficiarios.push(obj);
+      if(usandoFirebase)salvarFirebase('beneficiarios',id,obj);
+    });
+  } else {
+    importarCSVRegistrosProntos.forEach(reg=>{
+      const id=uid();
+      const obj={id,...reg};
+      profissionais.push(obj);
+      if(usandoFirebase)salvarFirebase('profissionais',id,obj);
+    });
+  }
+  salvarLocal();
+  const n=importarCSVRegistrosProntos.length;
+  const destino=importarCSVDestino;
+  importarCSVRegistrosProntos=[];
+  fecharModal('modal-importar-csv');
+  if(destino==='beneficiario'){renderBeneficiarios();}else{renderProfissionais();}
+  toast(`${n} registro(s) importado(s) com sucesso!`,'ok');
+}
+
+// ══════════════════════════════════════════════════════
 // EXCLUIR / CONFIG / EXPORT
 // ══════════════════════════════════════════════════════
 function confirmarExcluir(tipo,id){
@@ -2120,7 +2858,10 @@ function sincronizarDoFirebase() {
     },
   };
   Object.entries(colecoes).forEach(([col, fn]) => {
-    db.ref(col).on('value', snap => fn(snap.val()));
+    db.ref(col).on('value', snap => {
+      fn(snap.val());
+      atualizarAbaAtual();
+    });
   });
 }
 let contasSeedFirebaseFeito = false;
