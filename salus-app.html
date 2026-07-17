@@ -301,8 +301,16 @@ tr:hover td{background:var(--gold-faint);}
       <a href="#" onclick="abrirEsqueciSenha();return false;" style="font-size:0.78rem;color:var(--brown-lt);font-family:'Raleway',sans-serif;">Esqueci minha senha</a>
     </div>
     <div class="login-erro" id="login-erro"></div>
+    <div id="aviso-file-protocol" style="display:none;margin-top:14px;padding:12px 14px;background:#F8D7DA;border-radius:8px;font-size:0.8rem;color:#8B1A1A;line-height:1.6;text-align:left;">
+      ⚠️ <strong>Este arquivo foi aberto direto do computador.</strong> Nesse modo, os dados não sincronizam com o Firebase — você só vê informações de demonstração salvas neste navegador.
+      <div style="margin-top:8px;">Abra pelo site publicado para usar os dados reais:</div>
+      <button type="button" class="btn-login" style="margin-top:8px;padding:8px;font-size:0.82rem;" onclick="abrirSitePublicado()">Abrir site publicado</button>
+    </div>
     <div class="login-verso">"Vai e faze tu o mesmo."
       <div style="font-family:'Raleway',sans-serif;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-top:4px;">Lucas 10, 37</div>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <a href="#" onclick="forcarRecarregarApp();return false;" style="font-size:0.72rem;color:var(--brown-lt);font-family:'Raleway',sans-serif;">⟳ Buscar versão mais recente do app</a>
     </div>
   </div>
 </div>
@@ -320,6 +328,7 @@ tr:hover td{background:var(--gold-faint);}
     <div class="topbar-dir">
       <span class="badge-perfil" id="topbar-nivel"></span>
       <button class="btn-sair" id="btn-atualizar-dados" onclick="atualizarManual()" title="Recarregar dados mais recentes">🔄 Atualizar</button>
+      <button class="btn-sair" onclick="confirmarForcarAtualizacao()" title="Recarrega a página buscando a versão mais recente do app, ignorando o cache do navegador">⟳ Nova Versão do App</button>
       <button class="btn-sair" onclick="abrirMeuPerfil()">Minha Conta</button>
       <button class="btn-sair" onclick="sair()">Sair</button>
     </div>
@@ -1147,6 +1156,31 @@ function atualizarManual(){
   atualizarAbaAtual();
   atualizarBadges();
   toast('Dados atualizados!','ok');
+}
+// ── LINK DO SITE PUBLICADO (GitHub Pages) ──
+// Preencher assim que soubermos a URL exata: https://caritasfranca.github.io/Projeto-Salus/salus-app.html
+const SITE_PUBLICADO_URL = 'https://caritasfranca.github.io/Projeto-Salus/salus-app.html';
+function abrirSitePublicado(){
+  if(SITE_PUBLICADO_URL){ location.href = SITE_PUBLICADO_URL; return; }
+  toast('Ainda não configurei o link do site publicado — confira a URL no GitHub Pages (aba Settings → Pages do repositório).','erro');
+}
+function detectarAberturaLocal(){
+  if(location.protocol==='file:'){
+    const el=document.getElementById('aviso-file-protocol');
+    if(el)el.style.display='block';
+  }
+}
+detectarAberturaLocal();
+
+function forcarRecarregarApp(){
+  const base=location.href.split('?')[0].split('#')[0];
+  location.href=base+'?v='+Date.now();
+}
+function confirmarForcarAtualizacao(){
+  document.getElementById('modal-conf-titulo').textContent='Buscar nova versão do app';
+  document.getElementById('modal-conf-msg').textContent='A página vai recarregar buscando a versão mais recente do sistema, ignorando o que está guardado em cache no navegador — equivalente a um Ctrl+Shift+R. Você precisará entrar novamente. Continuar?';
+  document.getElementById('modal-conf-btn').onclick=()=>{forcarRecarregarApp();};
+  abrirModal('modal-confirmar');
 }
 function abrirModal(id){document.getElementById(id).classList.add('aberto');}
 function fecharModal(id){document.getElementById(id).classList.remove('aberto');}
