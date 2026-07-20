@@ -1,0 +1,3389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projeto Salus — Cáritas Diocesana de Franca</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#b8860b;--gold-lt:#d4a520;--gold-pale:#f5edcf;--gold-faint:#faf5e4;
+  --cream:#faf7f0;--parchment:#f0e8d0;
+  --dark:#0f0f0f;--dark2:#1a1a1a;
+  --brown:#2c1a0e;--brown-mid:#5c3d1e;--brown-lt:#8b6340;
+  --border:#c8a96e;--border-lt:#e0cfa0;
+  --verde:#1a6b3c;--verde-lt:#d4edda;
+  --azul:#1a4a6b;--azul-lt:#d1e8f5;
+  --vermelho:#8b1a1a;--vermelho-lt:#f8d7da;
+  --cinza:#f4f0e8;--cinza-med:#d5cdb8;--cinza-txt:#6b5c40;
+  --sombra:0 2px 10px rgba(44,26,14,0.10);--sombra-forte:0 4px 24px rgba(44,26,14,0.15);
+  --r:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'EB Garamond',Georgia,serif;}
+body{background:var(--cream);color:var(--brown);min-height:100vh;}
+
+/* LOGIN */
+#tela-login{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg,var(--dark) 0%,var(--dark2) 60%,#1a1200 100%);}
+.login-box{background:white;border-radius:14px;padding:44px 36px 36px;width:100%;max-width:400px;
+  box-shadow:var(--sombra-forte);text-align:center;border-top:3px solid var(--gold);}
+.login-ornamento{font-size:1.4rem;color:var(--gold);letter-spacing:0.4em;display:block;margin-bottom:1rem;}
+.login-titulo{font-size:1.5rem;font-weight:600;color:var(--brown);margin-bottom:2px;}
+.login-sub{font-size:0.82rem;color:var(--brown-lt);margin-bottom:24px;font-family:'Raleway',sans-serif;letter-spacing:0.08em;text-transform:uppercase;}
+.login-box select,.login-box input[type=text],.login-box input[type=email],.login-box input[type=password]{
+  width:100%;padding:11px 14px;border:1.5px solid var(--border-lt);border-radius:var(--r);
+  font-size:0.95rem;margin-bottom:11px;outline:none;transition:border 0.2s;
+  color:var(--brown);background:var(--cream);font-family:'EB Garamond',Georgia,serif;}
+.login-box select:focus,.login-box input:focus{border-color:var(--gold);background:white;}
+.senha-wrap{position:relative;margin-bottom:14px;}
+.senha-wrap input{width:100%;padding:11px 42px 11px 14px;border:1.5px solid var(--border-lt);border-radius:var(--r);
+  font-size:0.95rem;outline:none;transition:border 0.2s;color:var(--brown);background:var(--cream);}
+.senha-wrap input:focus{border-color:var(--gold);background:white;}
+.btn-olho{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--brown-lt);padding:4px;}
+.btn-login{width:100%;padding:12px;background:var(--brown);color:var(--gold-pale);border:none;border-radius:var(--r);
+  font-size:0.85rem;font-weight:600;cursor:pointer;transition:background 0.2s;font-family:'Raleway',sans-serif;letter-spacing:0.15em;text-transform:uppercase;}
+.btn-login:hover{background:var(--gold);color:var(--brown);}
+.login-erro{color:var(--vermelho);font-size:0.84rem;margin-top:10px;display:none;}
+.login-verso{margin-top:20px;font-style:italic;font-size:0.9rem;color:var(--brown-lt);line-height:1.6;border-top:1px solid var(--border-lt);padding-top:16px;}
+
+/* APP */
+#tela-app{display:none;min-height:100vh;flex-direction:column;}
+.topbar{background:linear-gradient(90deg,var(--dark) 0%,var(--dark2) 100%);color:var(--gold-pale);
+  padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:54px;
+  box-shadow:var(--sombra);position:sticky;top:0;z-index:100;}
+.topbar-esq{display:flex;align-items:center;gap:12px;}
+.topbar-ornamento{font-size:1.1rem;color:var(--gold);}
+.topbar-titulo{font-size:1rem;font-weight:600;}
+.topbar-perfil{font-size:0.76rem;color:var(--gold);opacity:0.85;font-family:'Raleway',sans-serif;letter-spacing:0.08em;}
+.topbar-dir{display:flex;align-items:center;gap:10px;}
+.badge-perfil{background:rgba(184,134,11,0.2);border:1px solid var(--gold);border-radius:20px;
+  padding:3px 10px;font-size:0.73rem;font-weight:600;color:var(--gold);font-family:'Raleway',sans-serif;}
+.btn-sair{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:var(--gold-pale);
+  padding:5px 14px;border-radius:20px;cursor:pointer;font-size:0.8rem;font-family:'Raleway',sans-serif;}
+.btn-sair:hover{background:rgba(255,255,255,0.18);}
+
+/* NOTIF BADGE */
+.notif-badge{background:#c0392b;color:white;border-radius:10px;font-size:0.68rem;
+  padding:1px 6px;margin-left:4px;display:none;font-family:'Raleway',sans-serif;font-weight:700;}
+
+/* ABAS */
+.abas{background:white;border-bottom:2px solid var(--border-lt);display:flex;padding:0 16px;overflow-x:auto;gap:2px;scrollbar-width:none;}
+.abas::-webkit-scrollbar{display:none;}
+.aba{padding:13px 14px;font-size:0.84rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;
+  color:var(--cinza-txt);transition:all 0.2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;
+  font-family:'Raleway',sans-serif;letter-spacing:0.04em;position:relative;}
+.aba:hover{color:var(--gold);}
+.aba.ativa{color:var(--brown);border-bottom-color:var(--gold);}
+
+/* CONTEÚDO */
+.conteudo{flex:1;padding:24px;max-width:1100px;margin:0 auto;width:100%;}
+.secao{display:none;}.secao.ativa{display:block;}
+.secao-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.secao-titulo{font-size:1.2rem;font-weight:600;color:var(--brown);}
+
+/* CARDS */
+.cards-resumo{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.card-resumo{background:white;border-radius:var(--r);padding:18px 16px;box-shadow:var(--sombra);border-left:3px solid var(--gold);}
+.card-resumo .numero{font-size:2rem;font-weight:700;color:var(--brown);line-height:1;}
+.card-resumo .label{font-size:0.73rem;color:var(--cinza-txt);margin-top:4px;font-family:'Raleway',sans-serif;letter-spacing:0.06em;text-transform:uppercase;}
+.card-resumo.destaque{border-left-color:var(--vermelho);}
+.card-resumo.destaque .numero{color:var(--vermelho);}
+
+/* TABELA */
+.tabela-wrap{background:white;border-radius:var(--r);box-shadow:var(--sombra);overflow:hidden;margin-bottom:20px;width:100%;}
+.tabela-header{padding:14px 20px;border-bottom:1px solid var(--border-lt);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.tabela-header h3{font-size:1rem;font-weight:600;color:var(--brown);}
+table{width:100%;border-collapse:collapse;}
+th{background:var(--gold-faint);padding:10px 14px;text-align:left;font-size:0.72rem;font-weight:700;
+  color:var(--brown-lt);text-transform:uppercase;letter-spacing:0.08em;font-family:'Raleway',sans-serif;border-bottom:1px solid var(--border-lt);}
+td{padding:11px 14px;border-bottom:1px solid var(--cinza);font-size:0.92rem;color:var(--brown);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--gold-faint);}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
+.form-grupo{display:flex;flex-direction:column;gap:5px;}
+.form-grupo.full{grid-column:1/-1;}
+.form-grupo label{font-size:0.73rem;font-weight:600;color:var(--brown-lt);font-family:'Raleway',sans-serif;letter-spacing:0.08em;text-transform:uppercase;}
+.form-grupo input,.form-grupo select,.form-grupo textarea{
+  padding:9px 12px;border:1.5px solid var(--border-lt);border-radius:var(--r);
+  font-size:0.95rem;outline:none;transition:border 0.2s;color:var(--brown);
+  background:var(--cream);font-family:'EB Garamond',Georgia,serif;}
+.form-grupo input:focus,.form-grupo select:focus,.form-grupo textarea:focus{border-color:var(--gold);background:white;}
+.form-grupo textarea{resize:vertical;min-height:80px;}
+
+/* BUSCA */
+.busca-wrap{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;}
+.busca-input{padding:8px 14px;border:1.5px solid var(--border-lt);border-radius:var(--r);
+  font-size:0.92rem;outline:none;min-width:220px;background:var(--cream);color:var(--brown);font-family:'EB Garamond',Georgia,serif;}
+.busca-input:focus{border-color:var(--gold);background:white;}
+.filtro-linha{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.filtro-linha select,.filtro-linha input{
+  padding:7px 10px;border:1.5px solid var(--border-lt);border-radius:var(--r);
+  font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);font-family:'EB Garamond',Georgia,serif;}
+
+/* BOTÕES */
+.btn{padding:9px 18px;border-radius:var(--r);border:none;font-size:0.82rem;font-weight:600;cursor:pointer;
+  transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;font-family:'Raleway',sans-serif;letter-spacing:0.06em;}
+.btn-primario{background:var(--brown);color:var(--gold-pale);}
+.btn-primario:hover{background:var(--gold);color:var(--brown);}
+.btn-secundario{background:var(--cinza);color:var(--brown);border:1.5px solid var(--border-lt);}
+.btn-secundario:hover{background:var(--parchment);}
+.btn-verde{background:var(--verde);color:white;}
+.btn-verde:hover{background:#145530;}
+.btn-perigo{background:var(--vermelho);color:white;}
+.btn-perigo:hover{background:#6b1212;}
+.btn-whats{background:#25D366;color:white;}
+.btn-whats:hover{background:#1da851;}
+.btn-sm{padding:5px 12px;font-size:0.78rem;}
+.btn-xs{padding:3px 8px;font-size:0.74rem;}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:0.73rem;font-weight:700;font-family:'Raleway',sans-serif;}
+.badge-ativo{background:var(--verde-lt);color:var(--verde);}
+.badge-pendente{background:#fff3cd;color:#856404;}
+.badge-confirmado{background:var(--azul-lt);color:var(--azul);}
+.badge-realizado{background:var(--verde-lt);color:var(--verde);}
+.badge-cancelado{background:var(--vermelho-lt);color:var(--vermelho);}
+.badge-solicitado{background:#ffe8cc;color:#8b4500;}
+.badge-recusado{background:var(--vermelho-lt);color:var(--vermelho);}
+.badge-prof{background:var(--gold-pale);color:var(--brown-mid);}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.aberto{display:flex;}
+.modal{background:white;border-radius:12px;width:100%;max-width:620px;max-height:92vh;overflow-y:auto;box-shadow:var(--sombra-forte);border-top:3px solid var(--gold);}
+.modal-header{padding:18px 22px 14px;border-bottom:1px solid var(--border-lt);display:flex;align-items:center;justify-content:space-between;}
+.modal-header h2{font-size:1.1rem;font-weight:600;color:var(--brown);}
+.modal-fechar{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--brown-lt);line-height:1;padding:0 4px;}
+.modal-body{padding:20px 22px;}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--border-lt);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--brown);color:var(--gold-pale);
+  padding:12px 20px;border-radius:var(--r);font-size:0.88rem;box-shadow:var(--sombra-forte);z-index:999;display:none;font-family:'Raleway',sans-serif;}
+.toast.ok{background:var(--verde);}
+.toast.erro{background:var(--vermelho);}
+
+/* AVISOS */
+.aviso{padding:11px 15px;border-radius:var(--r);font-size:0.87rem;margin-bottom:14px;}
+.aviso-info{background:var(--azul-lt);color:var(--azul);border-left:3px solid var(--azul);}
+.aviso-ok{background:var(--verde-lt);color:var(--verde);border-left:3px solid var(--verde);}
+.aviso-alerta{background:var(--gold-pale);color:var(--brown-mid);border-left:3px solid var(--gold);}
+.aviso-erro{background:var(--vermelho-lt);color:var(--vermelho);border-left:3px solid var(--vermelho);}
+
+/* VAZIO */
+.vazio{text-align:center;padding:44px 20px;color:var(--cinza-txt);}
+.vazio-icone{font-size:2.5rem;margin-bottom:10px;}
+.vazio p{font-size:0.92rem;font-style:italic;}
+
+/* ESTRELAS */
+.estrelas{display:flex;gap:4px;}
+.estrela{font-size:1.1rem;cursor:pointer;color:var(--cinza-med);transition:color 0.15s;}
+.estrela.on{color:var(--gold);}
+
+/* VERSO */
+.verso-inline{font-style:italic;color:var(--brown-mid);border-left:3px solid var(--gold);
+  padding:8px 14px;background:var(--gold-pale);border-radius:0 var(--r) var(--r) 0;margin:16px 0;font-size:0.93rem;line-height:1.7;}
+.verso-ref{display:block;font-style:normal;font-family:'Raleway',sans-serif;font-size:0.69rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-top:4px;}
+
+/* HORÁRIOS GRID */
+.horarios-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:10px;}
+.horario-card{border:1.5px solid var(--border-lt);border-radius:var(--r);padding:12px 14px;cursor:pointer;transition:all 0.2s;background:white;}
+.horario-card:hover{border-color:var(--gold);background:var(--gold-faint);}
+.horario-card.selecionado{border-color:var(--gold);background:var(--gold-pale);box-shadow:0 0 0 2px rgba(184,134,11,0.2);}
+.horario-card.ocupado{opacity:0.45;cursor:not-allowed;background:var(--cinza);}
+.horario-card .hc-dia{font-family:'Raleway',sans-serif;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown-lt);margin-bottom:3px;}
+.horario-card .hc-hora{font-size:1.05rem;font-weight:600;color:var(--brown);}
+.horario-card .hc-vaga{font-size:0.78rem;color:var(--verde);margin-top:2px;}
+.horario-card.ocupado .hc-vaga{color:var(--cinza-txt);}
+
+/* PAINEL SECAO */
+.painel-secao{margin-bottom:28px;}
+.painel-secao-titulo{font-size:0.88rem;font-weight:700;color:var(--brown);margin-bottom:12px;
+  padding-bottom:8px;border-bottom:2px solid var(--border-lt);font-family:'Raleway',sans-serif;letter-spacing:0.05em;text-transform:uppercase;}
+
+/* DETALHE */
+.detalhe-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.detalhe-item label{font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:2px;}
+.detalhe-item span{font-size:0.95rem;color:var(--brown);}
+
+/* CONFIG */
+.config-box{background:white;border-radius:var(--r);padding:24px;box-shadow:var(--sombra);max-width:620px;margin-bottom:20px;}
+.config-box textarea{width:100%;height:140px;font-family:monospace;font-size:0.82rem;resize:vertical;padding:10px;border:1.5px solid var(--border-lt);border-radius:var(--r);background:var(--cream);color:var(--brown);}
+
+/* MOBILE */
+@media(max-width:640px){
+  .topbar{padding:0 12px;height:50px;}
+  .topbar-titulo{font-size:0.88rem;}
+  .topbar-perfil,.badge-perfil{display:none;}
+  .abas{padding:0 6px;}
+  .aba{padding:10px 10px;font-size:0.78rem;}
+  .conteudo{padding:12px 10px;}
+  .cards-resumo{grid-template-columns:1fr 1fr;gap:10px;}
+  .card-resumo{padding:13px 12px;}
+  .card-resumo .numero{font-size:1.6rem;}
+  .form-grid,.form-grid.cols3{grid-template-columns:1fr;}
+  .form-grupo input,.form-grupo select,.form-grupo textarea{font-size:1rem;padding:11px 12px;}
+  .busca-wrap{flex-direction:column;align-items:stretch;}
+  .busca-input{min-width:unset;width:100%;font-size:1rem;}
+  .filtro-linha{flex-direction:column;align-items:stretch;}
+  .tabela-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{min-width:500px;}
+  .modal-overlay{padding:0;align-items:flex-end;}
+  .modal{border-radius:18px 18px 0 0;max-width:100%;max-height:92vh;margin:0;}
+  .modal-footer{flex-direction:column;gap:8px;padding:12px 18px 20px;}
+  .modal-footer .btn{width:100%;justify-content:center;padding:12px;}
+  .btn{min-height:42px;}
+  .btn-sm{min-height:36px;}
+  .toast{bottom:12px;right:10px;left:10px;text-align:center;}
+  .detalhe-grid{grid-template-columns:1fr;}
+  .secao-header{flex-direction:column;align-items:stretch;}
+  .secao-header .btn{width:100%;justify-content:center;padding:12px;}
+  #tela-login{padding:16px;align-items:flex-start;padding-top:36px;}
+  .login-box{padding:28px 18px 22px;}
+  .horarios-grid{grid-template-columns:1fr 1fr;}
+}
+
+/* RELATÓRIO CONSOLIDADO — tela */
+.print-area{background:white;border-radius:var(--r);box-shadow:var(--sombra);padding:0;overflow:hidden;}
+.rc-folha{padding:32px 36px;}
+.rc-cabecalho{text-align:center;border-bottom:2px solid var(--gold);padding-bottom:16px;margin-bottom:20px;}
+.rc-cabecalho .rc-ornamento{color:var(--gold);letter-spacing:0.3em;font-size:1rem;}
+.rc-cabecalho h1{font-size:1.4rem;font-weight:600;color:var(--brown);margin-top:6px;}
+.rc-cabecalho .rc-sub{font-family:'Raleway',sans-serif;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown-lt);margin-top:4px;}
+.rc-cabecalho .rc-periodo{margin-top:10px;font-size:0.95rem;color:var(--brown-mid);font-style:italic;}
+.rc-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:26px;}
+.rc-card{border:1.5px solid var(--border-lt);border-radius:var(--r);padding:14px;text-align:center;}
+.rc-card .rc-num{font-size:1.7rem;font-weight:700;color:var(--brown);line-height:1;}
+.rc-card .rc-label{font-size:0.7rem;color:var(--cinza-txt);margin-top:4px;font-family:'Raleway',sans-serif;letter-spacing:0.05em;text-transform:uppercase;}
+.rc-bloco{margin-bottom:26px;}
+.rc-bloco h3{font-size:0.92rem;font-weight:700;color:var(--brown);margin-bottom:10px;padding-bottom:6px;border-bottom:1.5px solid var(--border-lt);font-family:'Raleway',sans-serif;letter-spacing:0.04em;text-transform:uppercase;}
+.rc-bloco table{width:100%;border-collapse:collapse;}
+.rc-bloco th{background:var(--gold-faint);padding:8px 12px;text-align:left;font-size:0.7rem;font-weight:700;color:var(--brown-lt);text-transform:uppercase;letter-spacing:0.06em;font-family:'Raleway',sans-serif;border-bottom:1px solid var(--border-lt);}
+.rc-bloco td{padding:8px 12px;border-bottom:1px solid var(--cinza);font-size:0.88rem;color:var(--brown);}
+.rc-rodape{margin-top:30px;padding-top:14px;border-top:1px solid var(--border-lt);font-size:0.76rem;color:var(--cinza-txt);text-align:center;font-family:'Raleway',sans-serif;}
+.rc-assinaturas{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:50px;}
+.rc-assinatura{text-align:center;border-top:1px solid var(--brown-lt);padding-top:6px;font-size:0.82rem;color:var(--brown-mid);}
+
+/* IMPRESSÃO: só o relatório consolidado, limpo, sem chrome do app */
+@media print{
+  body *{visibility:hidden;}
+  .print-area, .print-area *{visibility:visible;}
+  .print-area{position:absolute;top:0;left:0;width:100%;box-shadow:none;border-radius:0;}
+  .no-print{display:none !important;}
+  .topbar,.abas{display:none !important;}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="tela-login">
+  <div class="login-box">
+    <span class="login-ornamento">✦ · ✦ · ✦</span>
+    <div style="background:#8B1A1A;color:white;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;padding:5px 10px;border-radius:6px;display:inline-block;margin-bottom:10px;text-transform:uppercase;">⚠️ Versão de Teste — Autenticação Nova (não é a versão em produção)</div>
+    <div class="login-titulo">Projeto Salus</div>
+    <div class="login-sub">Cáritas Diocesana de Franca</div>
+    <input type="text" id="login-email" placeholder="E-mail, nome da conta ou nome cadastrado" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('login-senha').focus()">
+    <div class="senha-wrap">
+      <input type="password" id="login-senha" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLogin()">
+      <button type="button" class="btn-olho" onclick="toggleSenha()">
+        <svg id="icone-olho" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
+    <button class="btn-login" onclick="fazerLogin()">Entrar</button>
+    <div style="text-align:right;margin-top:-6px;">
+      <a href="#" onclick="abrirEsqueciSenha();return false;" style="font-size:0.78rem;color:var(--brown-lt);font-family:'Raleway',sans-serif;">Esqueci minha senha</a>
+    </div>
+    <div class="login-erro" id="login-erro"></div>
+    <div id="aviso-file-protocol" style="display:none;margin-top:14px;padding:12px 14px;background:#F8D7DA;border-radius:8px;font-size:0.8rem;color:#8B1A1A;line-height:1.6;text-align:left;">
+      ⚠️ <strong>Este arquivo foi aberto direto do computador.</strong> Nesse modo, os dados não sincronizam com o Firebase — você só vê informações de demonstração salvas neste navegador.
+      <div style="margin-top:8px;">Abra pelo site publicado para usar os dados reais:</div>
+      <button type="button" class="btn-login" style="margin-top:8px;padding:8px;font-size:0.82rem;" onclick="abrirSitePublicado()">Abrir site publicado</button>
+    </div>
+    <div class="login-verso">"Vai e faze tu o mesmo."
+      <div style="font-family:'Raleway',sans-serif;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-top:4px;">Lucas 10, 37</div>
+    </div>
+    <div style="text-align:center;margin-top:14px;">
+      <a href="#" onclick="forcarRecarregarApp();return false;" style="font-size:0.72rem;color:var(--brown-lt);font-family:'Raleway',sans-serif;">⟳ Buscar versão mais recente do app</a>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="tela-app">
+  <div class="topbar">
+    <div class="topbar-esq">
+      <span class="topbar-ornamento">✦</span>
+      <div>
+        <div class="topbar-titulo">Projeto Salus <span style="background:#8B1A1A;color:white;font-size:0.62rem;font-weight:700;letter-spacing:0.05em;padding:2px 7px;border-radius:5px;text-transform:uppercase;vertical-align:middle;">⚠️ Teste</span></div>
+        <div class="topbar-perfil" id="topbar-perfil-nome"></div>
+      </div>
+    </div>
+    <div class="topbar-dir">
+      <span class="badge-perfil" id="topbar-nivel"></span>
+      <button class="btn-sair" id="btn-atualizar-dados" onclick="atualizarManual()" title="Recarregar dados mais recentes">🔄 Atualizar</button>
+      <button class="btn-sair" onclick="confirmarForcarAtualizacao()" title="Recarrega a página buscando a versão mais recente do app, ignorando o cache do navegador">⟳ Nova Versão do App</button>
+      <button class="btn-sair" onclick="abrirMeuPerfil()">Minha Conta</button>
+      <button class="btn-sair" onclick="sair()">Sair</button>
+    </div>
+  </div>
+
+  <div class="abas" id="abas-container">
+    <button class="aba ativa" onclick="mudarAba('painel')" id="aba-painel">📊 Painel</button>
+    <button class="aba" onclick="mudarAba('minha-agenda')" id="aba-minha-agenda">🗓️ Minha Agenda<span class="notif-badge" id="badge-minha-agenda"></span></button>
+    <button class="aba" onclick="mudarAba('agendar')" id="aba-agendar">📅 Solicitar Consulta</button>
+    <button class="aba" onclick="mudarAba('profissionais')" id="aba-profissionais">🩺 Profissionais</button>
+    <button class="aba" onclick="mudarAba('beneficiarios')" id="aba-beneficiarios">🙏 Beneficiários</button>
+    <button class="aba" onclick="mudarAba('necessidades')" id="aba-necessidades">🔎 Necessidades<span class="notif-badge" id="badge-necessidades"></span></button>
+    <button class="aba" onclick="mudarAba('agendamentos')" id="aba-agendamentos">📋 Todos os Agendamentos<span class="notif-badge" id="badge-agendamentos"></span></button>
+    <button class="aba" onclick="mudarAba('relatorios')" id="aba-relatorios">📝 Relatórios</button>
+    <button class="aba" onclick="mudarAba('consolidado')" id="aba-consolidado">🖨️ Relatório Consolidado</button>
+    <button class="aba" onclick="mudarAba('usuarios')" id="aba-usuarios">🔑 Usuários</button>
+    <button class="aba" onclick="mudarAba('config')" id="aba-config">⚙️ Config</button>
+  </div>
+
+  <div class="conteudo">
+
+    <!-- PAINEL -->
+    <div class="secao ativa" id="secao-painel">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Visão Geral</h2>
+        <button class="btn btn-secundario btn-sm" onclick="exportarCSV()">⬇ Exportar CSV</button>
+      </div>
+      <div class="cards-resumo">
+        <div class="card-resumo"><div class="numero" id="cnt-prof">—</div><div class="label">Profissionais</div></div>
+        <div class="card-resumo"><div class="numero" id="cnt-benef">—</div><div class="label">Beneficiários</div></div>
+        <div class="card-resumo destaque"><div class="numero" id="cnt-aguardando">—</div><div class="label">Aguardando confirmação</div></div>
+        <div class="card-resumo"><div class="numero" id="cnt-confirmados">—</div><div class="label">Confirmados</div></div>
+        <div class="card-resumo"><div class="numero" id="cnt-realizados">—</div><div class="label">Realizados</div></div>
+      </div>
+      <div class="painel-secao">
+        <div class="painel-secao-titulo">⏳ Solicitações aguardando confirmação do profissional</div>
+        <div class="tabela-wrap"><table>
+          <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Especialidade</th><th>Profissional</th><th>Solicitado por</th><th>Ações</th></tr></thead>
+          <tbody id="painel-solicitacoes"></tbody>
+        </table></div>
+      </div>
+      <div class="painel-secao">
+        <div class="painel-secao-titulo">✅ Confirmados aguardando ciência da pastoral</div>
+        <div class="tabela-wrap"><table>
+          <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Profissional</th><th>Local</th><th>Status pastoral</th><th>Ações</th></tr></thead>
+          <tbody id="painel-confirmados"></tbody>
+        </table></div>
+      </div>
+      <div class="painel-secao">
+        <div class="painel-secao-titulo">❌ Recusados aguardando ciência da pastoral</div>
+        <div class="tabela-wrap"><table>
+          <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Profissional</th><th>Motivo</th><th>Ações</th></tr></thead>
+          <tbody id="painel-recusados"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- MINHA AGENDA (profissional) -->
+    <div class="secao" id="secao-minha-agenda">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Minha Agenda</h2>
+        <button class="btn btn-primario" onclick="abrirModalHorario()">+ Oferecer Horário</button>
+      </div>
+
+      <!-- Solicitações pendentes -->
+      <div id="bloco-solicitacoes-prof" style="display:none;">
+        <div class="aviso aviso-alerta" style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:1.2rem;">🔔</span>
+          <span>Você tem solicitações aguardando sua confirmação.</span>
+        </div>
+        <div class="painel-secao-titulo" style="margin-top:16px;">Solicitações de Consulta</div>
+        <div id="lista-solicitacoes-prof"></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:8px;">Meus Horários Disponíveis</div>
+      <div id="lista-horarios-prof">
+        <div class="vazio"><div class="vazio-icone">🗓️</div><p>Nenhum horário cadastrado ainda.</p></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:24px;">Meus Agendamentos</div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Local</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-meus-agendamentos"></tbody>
+      </table></div>
+    </div>
+
+    <!-- SOLICITAR CONSULTA (pastoral) -->
+    <div class="secao" id="secao-agendar">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Solicitar Consulta</h2>
+      </div>
+      <div class="aviso aviso-info">
+        Escolha a especialidade e o beneficiário, depois selecione um dos horários disponíveis oferecidos pelos voluntários.
+      </div>
+
+      <!-- Passo 1 -->
+      <div class="painel-secao">
+        <div class="painel-secao-titulo">Passo 1 — Beneficiário e Especialidade</div>
+        <div class="tabela-wrap" style="padding:18px 20px;">
+          <div class="form-grid">
+            <div class="form-grupo">
+              <label>Beneficiário *</label>
+              <select id="sol-beneficiario" onchange="atualizarEspecialidadeSugerida()">
+                <option value="">Selecione</option>
+              </select>
+            </div>
+            <div class="form-grupo">
+              <label>Especialidade desejada *</label>
+              <select id="sol-especialidade" onchange="carregarHorariosDisponiveis()">
+                <option value="">Selecione</option>
+                <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
+                <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
+                <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+              </select>
+            </div>
+            <div class="form-grupo full">
+              <label>Observações para o profissional (opcional)</label>
+              <textarea id="sol-obs" placeholder="Contexto relevante para o atendimento..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 2 -->
+      <div class="painel-secao" id="bloco-horarios-disponiveis" style="display:none;">
+        <div class="painel-secao-titulo">Passo 2 — Escolha um Horário</div>
+        <div id="grade-horarios-disponiveis" class="horarios-grid"></div>
+      </div>
+
+      <!-- Passo 3 -->
+      <div id="bloco-confirmar-solicitacao" style="display:none;">
+        <div class="painel-secao-titulo">Passo 3 — Confirmar Solicitação</div>
+        <div class="tabela-wrap" style="padding:18px 20px;">
+          <div id="resumo-solicitacao"></div>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primario" onclick="enviarSolicitacao()">Enviar Solicitação ao Profissional</button>
+            <button class="btn btn-secundario" onclick="cancelarSelecaoHorario()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFISSIONAIS -->
+    <div class="secao" id="secao-profissionais">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Profissionais Voluntários</h2>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-secundario" onclick="abrirImportarCSV('profissional')">📥 Importar CSV</button>
+          <button class="btn btn-primario" onclick="abrirModalProfissional()">+ Novo Profissional</button>
+        </div>
+      </div>
+      <div class="busca-wrap">
+        <input class="busca-input" type="text" id="busca-prof" placeholder="Buscar por nome ou especialidade..." oninput="renderProfissionais()">
+        <select id="filtro-prof-area" onchange="renderProfissionais()" style="padding:8px 12px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="">Todas as áreas</option>
+          <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
+          <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
+          <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+        </select>
+        <select id="filtro-prof-status" onchange="renderProfissionais()" style="padding:8px 12px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="">Todos os status</option>
+          <option value="ativo">Ativos</option>
+          <option value="pendente">⏳ Pendentes do Forms <span id="badge-forms-pendentes" class="notif-badge"></span></option>
+          <option value="inativo">Inativos</option>
+        </select>
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Nome</th><th>Especialidade</th><th>Telefone</th><th>Horários ofertados</th><th>Atendimentos</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-profissionais"></tbody>
+      </table></div>
+    </div>
+
+    <!-- BENEFICIÁRIOS -->
+    <div class="secao" id="secao-beneficiarios">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Beneficiários</h2>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-secundario" onclick="abrirImportarCSV('beneficiario')">📥 Importar CSV</button>
+          <button class="btn btn-primario" id="btn-novo-benef" onclick="abrirModalBeneficiario()">+ Novo Beneficiário</button>
+        </div>
+      </div>
+      <div class="busca-wrap">
+        <input class="busca-input" type="text" id="busca-benef" placeholder="Buscar por nome ou código..." oninput="renderBeneficiarios()">
+        <select id="filtro-benef-revisao" onchange="renderBeneficiarios()" style="padding:8px 12px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="">Todos</option>
+          <option value="pendente">⏳ Revisão pendente (Forms) <span id="badge-benef-pendentes" class="notif-badge"></span></option>
+        </select>
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Código</th><th>Nome</th><th>Pastoral</th><th>Necessidade</th><th>Consultas</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-beneficiarios"></tbody>
+      </table></div>
+    </div>
+
+    <!-- NECESSIDADES LATENTES -->
+    <div class="secao" id="secao-necessidades">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Necessidades Latentes</h2>
+      </div>
+      <div class="aviso aviso-alerta">Aqui aparecem beneficiários que precisam de uma especialidade sem nenhum profissional ativo com horário livre no momento — seja no cadastro, seja na hora de tentar marcar a consulta. Use pra saber qual especialidade recrutar com prioridade.</div>
+      <div class="cards-resumo">
+        <div class="card-resumo destaque"><div class="numero" id="nec-cnt-abertas">—</div><div class="label">Necessidades em aberto</div></div>
+        <div class="card-resumo"><div class="numero" id="nec-cnt-benef">—</div><div class="label">Beneficiários afetados</div></div>
+      </div>
+      <div class="painel-secao-titulo">Por Especialidade</div>
+      <div id="nec-por-especialidade" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;"></div>
+      <div class="filtro-linha">
+        <select id="filtro-nec-status" onchange="renderNecessidades()" style="padding:7px 10px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="aberta">Em aberto</option>
+          <option value="resolvida">Resolvidas</option>
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Beneficiário</th><th>Necessidade</th><th>Paróquia</th><th>Tentativas</th><th>Última tentativa</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-necessidades"></tbody>
+      </table></div>
+    </div>
+
+    <!-- TODOS OS AGENDAMENTOS -->
+    <div class="secao" id="secao-agendamentos">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Todos os Agendamentos</h2>
+      </div>
+      <div class="filtro-linha">
+        <input type="month" id="filtro-ag-mes" onchange="renderAgendamentos()">
+        <select id="filtro-ag-status" onchange="renderAgendamentos()" style="padding:7px 10px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="">Todos os status</option>
+          <option value="solicitado">Solicitado</option>
+          <option value="confirmado">Confirmado</option>
+          <option value="pastoral_ciente">Pastoral ciente</option>
+          <option value="realizado">Realizado</option>
+          <option value="recusado">Recusado</option>
+          <option value="cancelado">Cancelado</option>
+        </select>
+        <input class="busca-input" type="text" id="busca-ag" placeholder="Buscar..." oninput="renderAgendamentos()" style="min-width:180px;">
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Data/Hora</th><th>Beneficiário</th><th>Especialidade</th><th>Profissional</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-agendamentos"></tbody>
+      </table></div>
+    </div>
+
+    <!-- RELATÓRIOS -->
+    <div class="secao" id="secao-relatorios">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Relatórios de Atendimento</h2>
+        <button class="btn btn-primario" onclick="abrirModalRelatorio()">+ Registrar Atendimento</button>
+      </div>
+      <div class="filtro-linha">
+        <input type="month" id="filtro-rel-mes" onchange="renderRelatorios()">
+        <input class="busca-input" type="text" id="busca-rel" placeholder="Buscar..." oninput="renderRelatorios()" style="min-width:180px;">
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Protocolo</th><th>Data</th><th>Beneficiário</th><th>Profissional</th><th>Especialidade</th><th>Retorno?</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-relatorios"></tbody>
+      </table></div>
+    </div>
+
+    <!-- RELATÓRIO CONSOLIDADO -->
+    <div class="secao" id="secao-consolidado">
+      <div class="secao-header no-print">
+        <h2 class="secao-titulo">Relatório Consolidado</h2>
+      </div>
+      <div class="aviso aviso-info no-print">
+        Gere um documento para prestação de contas (bispo, coordenação da Diocese, financiadores). Escolha o período, filtre se quiser, e use "Imprimir / Salvar PDF".
+      </div>
+
+      <div class="tabela-wrap no-print" style="padding:18px 20px;">
+        <div class="form-grid cols3">
+          <div class="form-grupo"><label>Mês inicial *</label><input type="month" id="cons-mes-de"></div>
+          <div class="form-grupo"><label>Mês final *</label><input type="month" id="cons-mes-ate"></div>
+          <div class="form-grupo"><label>Pastoral / Paróquia (opcional)</label><input type="text" id="cons-pastoral" placeholder="Ex.: Sé, São Pedro..."></div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primario" onclick="renderConsolidado()">Gerar Relatório</button>
+          <button class="btn btn-verde" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+        </div>
+      </div>
+
+      <div id="area-consolidado" class="print-area"></div>
+    </div>
+
+    <!-- USUÁRIOS -->
+    <div class="secao" id="secao-usuarios">
+      <div class="secao-header">
+        <h2 class="secao-titulo">Usuários do Sistema</h2>
+        <button class="btn btn-primario" onclick="abrirEscolherTipoUsuario()">+ Novo Usuário</button>
+      </div>
+      <div class="aviso aviso-info">Visão consolidada de todas as contas com acesso ao sistema — Administradores, Agentes Pastorais e Profissionais Voluntários. Para editar dados específicos do voluntariado (especialidade, horários), use a aba Profissionais; aqui o foco é acesso e credenciais.</div>
+      <div class="busca-wrap">
+        <input class="busca-input" type="text" id="busca-usuarios" placeholder="Buscar por nome ou e-mail..." oninput="renderUsuarios()">
+        <select id="filtro-usuarios-perfil" onchange="renderUsuarios()" style="padding:8px 12px;border:1.5px solid var(--border-lt);border-radius:var(--r);font-size:0.88rem;outline:none;background:var(--cream);color:var(--brown);">
+          <option value="">Todos os perfis</option>
+          <option value="admin">Administrador</option>
+          <option value="paroquia">Responsável Paróquia</option>
+          <option value="pastoral">Agente Pastoral</option>
+          <option value="responsavel_pastoral">Responsável Pastoral</option>
+          <option value="profissional">Profissional</option>
+        </select>
+      </div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Nome</th><th>Identificador</th><th>Perfil</th><th>Segurança</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody id="tabela-usuarios"></tbody>
+      </table></div>
+    </div>
+
+    <!-- CONFIG -->
+    <div class="secao" id="secao-config">
+      <h2 class="secao-titulo" style="margin-bottom:18px;">Configurações</h2>
+
+      <!-- Firebase -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">Conexão Firebase</h3>
+        <div id="status-firebase" class="aviso aviso-info" style="margin:12px 0;">Modo local — dados salvos neste navegador.</div>
+        <div class="form-grupo" style="margin-bottom:14px;">
+          <label>JSON de configuração do Firebase</label>
+          <textarea id="firebase-json" style="height:130px;font-family:monospace;font-size:0.82rem;resize:vertical;padding:10px;border:1.5px solid var(--border-lt);border-radius:var(--r);background:var(--cream);color:var(--brown);width:100%);" placeholder='{"apiKey":"..."}' value='{"apiKey":"AIzaSyDogE0n1-nnNo-FO_XYl7iqf2nSpYQyupI","authDomain":"projeto-salus-87d5b.firebaseapp.com","databaseURL":"https://projeto-salus-87d5b-default-rtdb.firebaseio.com","projectId":"projeto-salus-87d5b","storageBucket":"projeto-salus-87d5b.firebasestorage.app","messagingSenderId":"275581893939","appId":"1:275581893939:web:31b544fabde803ca955246"}'></textarea>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primario" onclick="conectarFirebase()">Conectar ao Firebase</button>
+          <button class="btn btn-secundario" onclick="atualizarStatusFirebase(false)">Usar apenas local</button>
+          <button class="btn btn-secundario" onclick="rodarDiagnostico()">🔍 Diagnóstico de Sincronização</button>
+        </div>
+        <div id="area-diagnostico" style="margin-top:14px;"></div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border-lt);font-size:0.82rem;color:var(--cinza-txt);line-height:1.8;">
+          <strong>Integração com Google Forms:</strong><br>
+          Os voluntários que se cadastrarem pelo Forms entram no Firebase com <code>status: "pendente"</code>.<br>
+          Acesse a aba <strong>Profissionais</strong> e use o filtro "Pendentes do Forms" para aprovar cada um.
+        </div>
+      </div>
+
+      <!-- Migração para Autenticação Segura -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">🔒 Migração para Login Seguro (Firebase Authentication)</h3>
+        <div class="aviso aviso-info" style="margin:12px 0;font-size:0.85rem;">
+          Cada pessoa é migrada automaticamente no primeiro acesso dela depois da virada. Use o botão abaixo só se quiser migrar todo mundo de uma vez agora (recomendado antes de fechar as regras do banco).
+        </div>
+        <button class="btn btn-primario" onclick="rodarMigracaoEmLote()">Migrar Todas as Contas Pendentes Agora</button>
+        <div id="area-migracao" style="margin-top:14px;"></div>
+      </div>
+
+      <!-- Contas de Acesso -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:14px;font-weight:600;color:var(--brown);">Contas de Acesso</h3>
+        <div class="aviso aviso-info">Admin e coordenadores(as) pastorais têm e-mail e senha próprios. Cada profissional gerencia a própria senha pelo botão <strong>"Minha Conta"</strong>, no topo do app, após fazer login.</div>
+        <div class="tabela-wrap"><table>
+          <thead><tr><th>Nome</th><th>E-mail</th><th>Nome da Conta</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead>
+          <tbody id="tabela-contas"></tbody>
+        </table></div>
+        <div style="margin-top:14px;"><button class="btn btn-primario" onclick="abrirModalConta()">+ Nova Conta</button></div>
+      </div>
+
+      <!-- E-mail de recuperação: agora nativo do Firebase -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">Envio de E-mail (Esqueci Minha Senha)</h3>
+        <div class="aviso aviso-ok">✓ Nesta versão, o link de redefinição de senha é enviado direto pelo Firebase Authentication — não é mais preciso configurar o EmailJS. Essa caixa fica aqui só de referência, pode ignorar.</div>
+      </div>
+
+      <!-- Regra de segurança recomendada para o banco de dados -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">🔐 Regra do Banco de Dados (só aplicar depois de tudo migrado e testado)</h3>
+        <div class="aviso aviso-alerta" style="font-size:0.85rem;">Ainda NÃO aplique isso na regra atual do Firebase. Enquanto o app antigo (produção) ainda estiver no ar, ele precisa continuar com <code>.read/.write: true</code>. Essa regra abaixo só deve ser colada no Console do Firebase no dia da virada — quando o app novo substituir o antigo de vez.</div>
+        <div style="margin-top:10px;background:var(--brown);color:#e8dcc4;padding:14px 16px;border-radius:var(--r);font-family:monospace;font-size:0.85rem;white-space:pre;overflow-x:auto;">{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  }
+}</div>
+        <p style="font-size:0.8rem;color:var(--brown-lt);margin-top:10px;">Isso exige que qualquer leitura/escrita venha de alguém autenticado pelo Firebase — some com o acesso público total que existe hoje.</p>
+      </div>
+    </div>
+
+  </div><!-- /conteudo -->
+</div><!-- /tela-app -->
+
+<!-- MODAIS -->
+
+<!-- Modal Profissional -->
+<div class="modal-overlay" id="modal-profissional">
+  <div class="modal">
+    <div class="modal-header"><h2 id="modal-prof-titulo">Novo Profissional</h2><button class="modal-fechar" onclick="fecharModal('modal-profissional')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-grupo full"><label>Nome Completo *</label><input type="text" id="p-nome" placeholder="Nome do voluntário"></div>
+        <div class="form-grupo"><label>Especialidade *</label>
+          <select id="p-especialidade"><option value="">Selecione</option>
+            <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
+            <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
+            <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+          </select></div>
+        <div class="form-grupo"><label>Registro</label><input type="text" id="p-registro" placeholder="CRM, CRO, CRP..."></div>
+        <div class="form-grupo"><label>Telefone / WhatsApp *</label><input type="tel" id="p-telefone" placeholder="(16) 99000-0000"></div>
+        <div class="form-grupo" id="grupo-p-email"><label>E-mail (login do profissional) *</label><input type="email" id="p-email" placeholder="email@exemplo.com"></div>
+        <div class="form-grupo"><label>Nome da Conta (opcional)</label><input type="text" id="p-nome-conta" placeholder="Alternativa ao e-mail para login"></div>
+        <div class="form-grupo" id="grupo-p-senha"><label>Senha de Acesso Inicial</label><input type="text" id="p-senha" placeholder="salus123"></div>
+        <div class="aviso aviso-info full" id="aviso-p-migrado" style="display:none;font-size:0.82rem;">🔒 Este profissional já usa login seguro (Firebase Authentication). Pra trocar a senha, use "Enviar redefinição de senha" na aba Usuários.</div>
+        <div class="form-grupo"><label>Local de Atendimento</label><input type="text" id="p-local" placeholder="Ex.: Consultório próprio, Online..."></div>
+        <div class="form-grupo full"><label>Observações</label><textarea id="p-obs" placeholder="Informações complementares..."></textarea></div>
+        <div class="form-grupo"><label>Status</label><select id="p-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div>
+      </div>
+      <input type="hidden" id="p-id">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-profissional')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarProfissional()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Oferecer Horário -->
+<div class="modal-overlay" id="modal-horario">
+  <div class="modal">
+    <div class="modal-header"><h2>Oferecer Horário Disponível</h2><button class="modal-fechar" onclick="fecharModal('modal-horario')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-info">Cadastre os horários em que você estará disponível para atender. A pastoral escolherá um deles para o beneficiário.</div>
+      <div class="form-grid">
+        <div class="form-grupo"><label>Data *</label><input type="date" id="h-data"></div>
+        <div class="form-grupo"><label>Horário *</label><input type="time" id="h-hora"></div>
+        <div class="form-grupo full"><label>Local do Atendimento *</label><input type="text" id="h-local" placeholder="Endereço completo, online, etc."></div>
+        <div class="form-grupo full"><label>Observações (opcional)</label><input type="text" id="h-obs" placeholder="Duração estimada, documentos necessários..."></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-horario')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarHorario()">Oferecer Horário</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Beneficiário -->
+<div class="modal-overlay" id="modal-beneficiario">
+  <div class="modal">
+    <div class="modal-header"><h2 id="modal-benef-titulo">Novo Beneficiário</h2><button class="modal-fechar" onclick="fecharModal('modal-beneficiario')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-alerta">⚠️ <strong>Sigilo:</strong> Use apenas nome parcial. O código protege a identidade.</div>
+
+      <div class="painel-secao-titulo" style="margin-top:4px;">Quem está encaminhando</div>
+      <div class="form-grid">
+        <div class="form-grupo"><label>Pastoral / Paróquia *</label><input type="text" id="b-pastoral" placeholder="Pastoral da Criança — Paróquia X"></div>
+        <div class="form-grupo"><label>Nome de quem preencheu</label><input type="text" id="b-agente-nome" placeholder="Nome do agente da pastoral"></div>
+        <div class="form-grupo"><label>Telefone / WhatsApp do agente</label><input type="tel" id="b-agente-telefone" placeholder="(00) 00000-0000"></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:18px;">Sobre a pessoa a ser atendida</div>
+      <div class="form-grid">
+        <div class="form-grupo"><label>Código</label><input type="text" id="b-codigo" readonly style="background:var(--parchment);font-family:'Raleway',sans-serif;letter-spacing:0.1em;"></div>
+        <div class="form-grupo"><label>Nome (parcial) *</label><input type="text" id="b-nome" placeholder="Ex.: Maria S."></div>
+        <div class="form-grupo"><label>Idade</label><input type="number" id="b-idade" min="0" max="120" placeholder="Ex.: 34" onchange="sugerirFaixaPorIdade()"></div>
+        <div class="form-grupo"><label>Faixa etária</label>
+          <select id="b-faixa"><option value="">Selecione</option>
+            <option>Criança (0–12)</option><option>Adolescente (13–17)</option><option>Adulto (18–59)</option><option>Idoso (60+)</option>
+          </select></div>
+        <div class="form-grupo"><label>Nome do responsável (se menor)</label><input type="text" id="b-responsavel" placeholder="Se a pessoa for menor de idade"></div>
+        <div class="form-grupo"><label>Telefone de contato</label><input type="tel" id="b-telefone" placeholder="(00) 00000-0000"></div>
+        <div class="form-grupo full"><label>Endereço</label><input type="text" id="b-endereco" placeholder="Rua, número, bairro..."></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:18px;">Necessidade a ser atendida</div>
+      <div class="form-grid">
+        <div class="form-grupo"><label>Necessidade principal *</label>
+          <select id="b-necessidade"><option value="">Selecione</option>
+            <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
+            <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
+            <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+            <option>Não sei dizer</option>
+          </select></div>
+        <div class="form-grupo"><label>Existe urgência?</label>
+          <select id="b-urgencia"><option value="">Selecione</option><option>Sim</option><option>Não</option><option>Não sei dizer</option></select></div>
+        <div class="form-grupo"><label>Já acompanhado por serviço público?</label>
+          <select id="b-acompanhamento"><option value="">Selecione</option><option>CRAS</option><option>CREAS</option><option>UBS</option><option>Não sei dizer</option><option>Outros</option></select></div>
+        <div class="form-grupo"><label>Pode se deslocar até o local do atendimento?</label>
+          <select id="b-desloca"><option value="">Selecione</option><option>Sim</option><option>Não</option></select></div>
+        <div class="form-grupo full"><label>Descrição da Necessidade</label><textarea id="b-descricao" placeholder="Descreva resumidamente..."></textarea></div>
+        <div class="form-grupo full">
+          <label>Família está ciente e autoriza o compartilhamento dos dados com a Cáritas? *</label>
+          <select id="b-consentimento" onchange="aoMudarConsentimento()"><option value="">Selecione</option><option>Sim</option><option>Não</option></select>
+          <div id="b-consentimento-aviso" class="aviso aviso-erro" style="display:none;margin-top:8px;">⚠️ Sem autorização, evite compartilhar detalhes da necessidade com o profissional até regularizar com a família.</div>
+        </div>
+      </div>
+      <input type="hidden" id="b-id">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-beneficiario')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarBeneficiario()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ver Beneficiário (somente leitura) -->
+<div class="modal-overlay" id="modal-ver-beneficiario">
+  <div class="modal">
+    <div class="modal-header"><h2 id="ver-benef-titulo">Beneficiário</h2><button class="modal-fechar" onclick="fecharModal('modal-ver-beneficiario')">×</button></div>
+    <div class="modal-body">
+      <div class="painel-secao-titulo" style="margin-top:0;">Quem encaminhou</div>
+      <div class="detalhe-grid">
+        <div class="detalhe-item"><label>Pastoral / Paróquia</label><span id="vb-pastoral">—</span></div>
+        <div class="detalhe-item"><label>Agente</label><span id="vb-agente-nome">—</span></div>
+        <div class="detalhe-item"><label>Telefone do agente</label><span id="vb-agente-telefone">—</span></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:18px;">Pessoa atendida</div>
+      <div class="detalhe-grid">
+        <div class="detalhe-item"><label>Código</label><span id="vb-codigo">—</span></div>
+        <div class="detalhe-item"><label>Nome</label><span id="vb-nome">—</span></div>
+        <div class="detalhe-item"><label>Idade</label><span id="vb-idade">—</span></div>
+        <div class="detalhe-item"><label>Faixa Etária</label><span id="vb-faixa">—</span></div>
+        <div class="detalhe-item"><label>Responsável</label><span id="vb-responsavel">—</span></div>
+        <div class="detalhe-item"><label>Telefone</label><span id="vb-telefone">—</span></div>
+        <div class="detalhe-item"><label>Endereço</label><span id="vb-endereco">—</span></div>
+      </div>
+
+      <div class="painel-secao-titulo" style="margin-top:18px;">Necessidade</div>
+      <div class="detalhe-grid">
+        <div class="detalhe-item"><label>Necessidade Principal</label><span id="vb-necessidade">—</span></div>
+        <div class="detalhe-item"><label>Urgência</label><span id="vb-urgencia">—</span></div>
+        <div class="detalhe-item"><label>Acompanhado por</label><span id="vb-acompanhamento">—</span></div>
+        <div class="detalhe-item"><label>Pode se deslocar</label><span id="vb-desloca">—</span></div>
+        <div class="detalhe-item"><label>Consentimento da família</label><span id="vb-consentimento">—</span></div>
+      </div>
+      <div class="form-grupo" style="margin-top:6px;">
+        <label>Descrição da Necessidade</label>
+        <div id="vb-descricao" style="font-size:0.95rem;color:var(--brown);line-height:1.6;padding:10px 12px;background:var(--gold-faint);border-radius:var(--r);border:1px solid var(--border-lt);min-height:40px;margin-top:5px;">—</div>
+      </div>
+      <div class="painel-secao-titulo" style="margin-top:20px;">Histórico de Consultas</div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Data/Hora</th><th>Profissional</th><th>Especialidade</th><th>Status</th></tr></thead>
+        <tbody id="vb-agendamentos"></tbody>
+      </table></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-ver-beneficiario')">Fechar</button>
+      <button class="btn btn-primario" id="vb-btn-editar" onclick="editarBeneficiarioDeVer()">Editar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Importar CSV -->
+<div class="modal-overlay" id="modal-importar-csv">
+  <div class="modal">
+    <div class="modal-header"><h2 id="importar-csv-titulo">Importar CSV</h2><button class="modal-fechar" onclick="fecharModal('modal-importar-csv')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-info" id="importar-csv-instrucoes"></div>
+      <div class="form-grupo">
+        <label>Arquivo CSV exportado do Google Sheets vinculado ao formulário</label>
+        <input type="file" id="importar-csv-arquivo" accept=".csv" onchange="processarArquivoCSV(event)">
+      </div>
+      <div id="importar-csv-previa" style="margin-top:16px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-importar-csv')">Cancelar</button>
+      <button class="btn btn-primario" id="btn-confirmar-importacao" style="display:none;" onclick="confirmarImportacaoCSV()">Importar Registros</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar/Recusar (profissional) -->
+<div class="modal-overlay" id="modal-responder">
+  <div class="modal">
+    <div class="modal-header"><h2>Responder Solicitação</h2><button class="modal-fechar" onclick="fecharModal('modal-responder')">×</button></div>
+    <div class="modal-body">
+      <div id="responder-resumo"></div>
+      <div class="form-grupo" style="margin-top:16px;">
+        <label id="responder-msg-label">Mensagem para a pastoral (opcional)</label>
+        <textarea id="responder-msg" placeholder="Ex.: Confirmo. Solicito que o paciente traga documentos de identidade."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-responder')">Cancelar</button>
+      <button class="btn btn-perigo" onclick="responderSolicitacao('recusado')">✕ Recusar</button>
+      <button class="btn btn-verde" onclick="responderSolicitacao('confirmado')">✓ Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal WhatsApp (pastoral confirmar ciência) -->
+<div class="modal-overlay" id="modal-whats">
+  <div class="modal">
+    <div class="modal-header"><h2>✅ Consulta Confirmada!</h2><button class="modal-fechar" onclick="fecharModal('modal-whats')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-ok">O profissional confirmou a consulta. Avise a família pelo WhatsApp.</div>
+      <div id="whats-resumo" style="margin:14px 0;"></div>
+      <div class="form-grupo">
+        <label>Mensagem pronta para WhatsApp</label>
+        <textarea id="whats-msg" style="min-height:130px;font-size:0.88rem;" readonly></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-whats')">Fechar</button>
+      <button class="btn btn-whats" id="btn-whats-link" onclick="abrirWhats()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Abrir WhatsApp
+      </button>
+      <button class="btn btn-verde" onclick="marcarPastoralCiente()">Marcar como: Pastoral ciente</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ciência da Recusa (pastoral) -->
+<div class="modal-overlay" id="modal-recusa-ciente">
+  <div class="modal">
+    <div class="modal-header"><h2>❌ Solicitação Recusada</h2><button class="modal-fechar" onclick="fecharModal('modal-recusa-ciente')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-erro">O profissional não pôde atender esta solicitação. Veja o motivo abaixo.</div>
+      <div id="recusa-resumo" style="margin:14px 0;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-recusa-ciente')">Fechar</button>
+      <button class="btn btn-verde" onclick="marcarRecusaCiente()">Marcar como: Ciente da recusa</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Relatório -->
+<div class="modal-overlay" id="modal-relatorio">
+  <div class="modal">
+    <div class="modal-header"><h2>Relatório de Atendimento</h2><button class="modal-fechar" onclick="fecharModal('modal-relatorio')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-grupo"><label>Protocolo</label><input type="text" id="r-protocolo" readonly style="background:var(--parchment);font-family:'Raleway',sans-serif;letter-spacing:0.08em;"></div>
+        <div class="form-grupo"><label>Data *</label><input type="date" id="r-data"></div>
+        <div class="form-grupo full"><label>Profissional *</label><select id="r-profissional"><option value="">Selecione</option></select></div>
+        <div class="form-grupo full"><label>Beneficiário</label><select id="r-beneficiario"><option value="">Selecione</option></select></div>
+        <div class="form-grupo"><label>Tipo</label>
+          <select id="r-tipo"><option>Consulta</option><option>Retorno</option><option>Orientação</option><option>Encaminhamento</option><option>Procedimento</option></select></div>
+        <div class="form-grupo"><label>Retorno necessário?</label>
+          <select id="r-retorno" onchange="document.getElementById('grupo-r-data').style.display=this.value!=='nao'?'block':'none'">
+            <option value="nao">Não</option><option value="sim">Sim</option><option value="encaminhado">Sim — encaminhado</option>
+          </select></div>
+        <div class="form-grupo full" id="grupo-r-data" style="display:none;"><label>Data do Retorno</label><input type="date" id="r-retorno-data"></div>
+        <div class="form-grupo full"><label>Observações clínicas (sem dados identificatórios)</label><textarea id="r-obs" placeholder="Descreva o atendimento..."></textarea></div>
+        <div class="form-grupo full">
+          <label>Avaliação da organização Cáritas</label>
+          <div class="estrelas" id="estrelas-rel" style="margin-top:6px;">
+            <span class="estrela" onclick="setEstrela(1)">★</span><span class="estrela" onclick="setEstrela(2)">★</span>
+            <span class="estrela" onclick="setEstrela(3)">★</span><span class="estrela" onclick="setEstrela(4)">★</span>
+            <span class="estrela" onclick="setEstrela(5)">★</span>
+          </div>
+          <input type="hidden" id="r-nota" value="0">
+        </div>
+      </div>
+      <input type="hidden" id="r-id">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-relatorio')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarRelatorio()">Salvar Relatório</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Confirmar Genérico -->
+<div class="modal-overlay" id="modal-confirmar">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header"><h2 id="modal-conf-titulo">Confirmar</h2><button class="modal-fechar" onclick="fecharModal('modal-confirmar')">×</button></div>
+    <div class="modal-body"><p id="modal-conf-msg" style="line-height:1.7;"></p></div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-confirmar')">Cancelar</button>
+      <button class="btn btn-perigo" id="modal-conf-btn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Escolher Tipo de Usuário -->
+<div class="modal-overlay" id="modal-tipo-usuario">
+  <div class="modal">
+    <div class="modal-header"><h2>Novo Usuário</h2><button class="modal-fechar" onclick="fecharModal('modal-tipo-usuario')">×</button></div>
+    <div class="modal-body">
+      <p style="font-size:0.9rem;color:var(--brown-mid);margin-bottom:14px;">Qual o tipo do novo usuário?</p>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button class="btn btn-secundario" style="justify-content:flex-start;padding:14px 16px;" onclick="escolherTipoUsuario('admin')">🔑 Administrador</button>
+        <button class="btn btn-secundario" style="justify-content:flex-start;padding:14px 16px;" onclick="escolherTipoUsuario('paroquia')">⛪ Responsável Paróquia</button>
+        <button class="btn btn-secundario" style="justify-content:flex-start;padding:14px 16px;" onclick="escolherTipoUsuario('pastoral')">🤝 Agente Pastoral</button>
+        <button class="btn btn-secundario" style="justify-content:flex-start;padding:14px 16px;" onclick="escolherTipoUsuario('responsavel_pastoral')">📋 Responsável Pastoral</button>
+        <button class="btn btn-secundario" style="justify-content:flex-start;padding:14px 16px;" onclick="escolherTipoUsuario('profissional')">🩺 Profissional Voluntário</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-tipo-usuario')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Conta (admin/pastoral) -->
+<div class="modal-overlay" id="modal-conta">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header"><h2 id="modal-conta-titulo">Nova Conta</h2><button class="modal-fechar" onclick="fecharModal('modal-conta')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Nome *</label><input type="text" id="c-nome" placeholder="Nome do coordenador(a)"></div>
+      <div class="form-grupo" style="margin-bottom:10px;" id="grupo-c-email"><label>E-mail *</label><input type="email" id="c-email" placeholder="email@exemplo.com"></div>
+      <div class="form-grupo" style="margin-bottom:10px;">
+        <label>Nome da Conta (opcional)</label>
+        <input type="text" id="c-nome-conta" placeholder="Ex.: admin, coordenador...">
+        <p style="font-size:0.78rem;color:var(--brown-lt);font-style:italic;margin-top:4px;">Pode ser usado para entrar no lugar do e-mail — a senha continua a mesma. Deixe em branco pra manter só o login por e-mail.</p>
+      </div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Perfil</label>
+        <select id="c-perfil">
+          <option value="admin">Administrador</option>
+          <option value="paroquia">Responsável Paróquia</option>
+          <option value="pastoral">Agente Pastoral</option>
+          <option value="responsavel_pastoral">Responsável Pastoral</option>
+        </select>
+      </div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Status</label>
+        <select id="c-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select>
+      </div>
+      <div class="form-grupo" id="grupo-c-senha"><label>Senha inicial *</label><input type="text" id="c-senha" placeholder="Senha inicial"></div>
+      <div class="aviso aviso-info" id="aviso-c-migrado" style="display:none;font-size:0.82rem;">🔒 Esta conta já usa login seguro (Firebase Authentication). Pra trocar a senha, use "Enviar redefinição de senha" na aba Usuários.</div>
+      <input type="hidden" id="c-id">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-conta')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarConta()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Esqueci Minha Senha -->
+<div class="modal-overlay" id="modal-esqueci-senha">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header"><h2>Esqueci Minha Senha</h2><button class="modal-fechar" onclick="fecharModal('modal-esqueci-senha')">×</button></div>
+    <div class="modal-body">
+      <div class="aviso aviso-info">Informe o e-mail cadastrado. Enviaremos sua senha de acesso para ele.</div>
+      <div class="form-grupo"><label>E-mail cadastrado</label><input type="email" id="rec-email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')enviarRecuperacaoSenha()"></div>
+      <div id="rec-msg" style="font-size:0.87rem;margin-top:8px;display:none;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-esqueci-senha')">Cancelar</button>
+      <button class="btn btn-primario" id="btn-rec-enviar" onclick="enviarRecuperacaoSenha()">Enviar Link de Redefinição</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Minha Conta (trocar senha) -->
+<div class="modal-overlay" id="modal-meu-perfil">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header"><h2>Minha Conta</h2><button class="modal-fechar" onclick="fecharModal('modal-meu-perfil')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Nome</label><input type="text" id="mp-nome" disabled></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>E-mail de acesso</label><input type="email" id="mp-email" placeholder="seu@email.com"></div>
+      <div class="form-grupo" style="margin-bottom:10px;">
+        <label>Nome da Conta (opcional)</label>
+        <input type="text" id="mp-nome-conta" placeholder="Ex.: seu.nome">
+        <p style="font-size:0.78rem;color:var(--brown-lt);font-style:italic;margin-top:4px;">Pode ser usado para entrar no lugar do e-mail — a senha continua a mesma.</p>
+      </div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Senha atual * <span style="font-weight:400;font-style:italic;color:var(--brown-lt);">(necessária para confirmar qualquer alteração aqui)</span></label><input type="password" id="mp-senha-atual" placeholder="Sua senha atual"></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Nova Senha</label><input type="password" id="mp-senha1" placeholder="Deixe em branco para não alterar"></div>
+      <div class="form-grupo"><label>Confirmar Nova Senha</label><input type="password" id="mp-senha2" placeholder="Repita a nova senha"></div>
+      <div id="mp-msg" style="font-size:0.87rem;margin-top:8px;display:none;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secundario" onclick="fecharModal('modal-meu-perfil')">Cancelar</button>
+      <button class="btn btn-primario" onclick="salvarMeuPerfil()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════════════
+let profissionais=[], beneficiarios=[], horarios=[], agendamentos=[], relatorios=[], contas=[], necessidadesLatentes=[];
+let usuarioAtual=null;
+let horarioSelecionado=null;
+let agRespondendoId=null;
+let agWhatsId=null;
+let agRecusaId=null;
+
+// ── LOGIN (por e-mail individual) ──
+function toggleSenha(){
+  const i=document.getElementById('login-senha');
+  i.type=i.type==='password'?'text':'password';
+}
+async function fazerLogin(){
+  const identificador=document.getElementById('login-email').value.trim().toLowerCase();
+  const senha=document.getElementById('login-senha').value.trim();
+  if(!senha){erroLogin('Informe a senha.');return;}
+  if(!identificador){erroLogin('Informe seu e-mail ou nome de acesso.');return;}
+
+  if(!usandoFirebase||!auth){
+    erroLogin('Sem conexão com o Firebase no momento. Tente novamente em instantes.');
+    return;
+  }
+
+  // Descobrir o e-mail de login: aceita e-mail direto, nome da conta ou nome cadastrado
+  let email=identificador.includes('@')?identificador:null;
+  let registroLegado=null; // registro antigo (contas/profissionais) que bate com o identificador, se ainda não migrado
+  if(!email){
+    let c=contas.find(x=>(x.nomeConta||'').toLowerCase()===identificador);
+    let p=!c?profissionais.find(x=>(x.nomeConta||'').toLowerCase()===identificador):null;
+    if(!c&&!p){
+      const cand=[...contas,...profissionais.map(x=>({...x,_prof:true}))].filter(x=>(x.nome||'').trim().toLowerCase()===identificador);
+      if(cand.length===1){ if(cand[0]._prof)p=cand[0]; else c=cand[0]; }
+      else if(cand.length>1){erroLogin('Há mais de um cadastro com esse nome. Entre com seu e-mail ou nome da conta.');return;}
+    }
+    const reg=c||p;
+    if(reg&&reg.email){ email=reg.email.toLowerCase(); registroLegado=reg; }
+    else if(reg&&!reg.email){
+      erroLogin('Esse cadastro ainda não tem e-mail. Peça para um administrador cadastrar um e-mail antes do primeiro acesso.');
+      return;
+    }
+  } else {
+    registroLegado=contas.find(x=>(x.email||'').toLowerCase()===email)||profissionais.find(x=>(x.email||'').toLowerCase()===email);
+  }
+  if(!email){erroLogin('E-mail ou nome não encontrado. Verifique ou fale com a Cáritas.');return;}
+
+  try{
+    const cred=await auth.signInWithEmailAndPassword(email,senha);
+    await entrarComUid(cred.user.uid,email);
+  }catch(e){
+    const codigosPodemSerNaoMigrado=['auth/user-not-found','auth/invalid-credential','auth/invalid-login-credentials'];
+    if(codigosPodemSerNaoMigrado.includes(e.code)&&registroLegado&&!registroLegado.uid&&(registroLegado.senha||'')===senha){
+      // Primeiro acesso depois da migração: cria a conta de autenticação agora, aproveitando a senha antiga
+      try{
+        const cred=await auth.createUserWithEmailAndPassword(email,senha);
+        await vincularUidAoRegistro(registroLegado,cred.user.uid);
+        await entrarComUid(cred.user.uid,email);
+      }catch(e2){
+        erroLogin('Não foi possível migrar sua conta automaticamente: '+traduzErroAuth(e2));
+      }
+      return;
+    }
+    if(registroLegado&&registroLegado.status==='inativo'){erroLogin('Cadastro inativo. Fale com a coordenação da Cáritas.');return;}
+    if(registroLegado&&registroLegado.status==='pendente'){erroLogin('Seu cadastro ainda aguarda aprovação da Cáritas.');return;}
+    erroLogin(traduzErroAuth(e));
+  }
+}
+
+function traduzErroAuth(e){
+  const m={
+    'auth/wrong-password':'Senha incorreta.',
+    'auth/user-not-found':'E-mail ou nome não encontrado. Verifique ou fale com a Cáritas.',
+    'auth/invalid-credential':'E-mail ou senha incorretos.',
+    'auth/invalid-login-credentials':'E-mail ou senha incorretos.',
+    'auth/invalid-email':'E-mail inválido.',
+    'auth/user-disabled':'Conta desativada. Fale com a coordenação da Cáritas.',
+    'auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos e tente de novo.',
+    'auth/email-already-in-use':'Esse e-mail já está em uso em outra conta.',
+    'auth/weak-password':'Senha muito curta (mínimo 6 caracteres).',
+  };
+  return m[e.code]||('Erro: '+e.message);
+}
+
+async function vincularUidAoRegistro(registro,uid){
+  registro.uid=uid;
+  delete registro.senha; // a senha agora é gerenciada pelo Firebase Authentication, não fica mais salva no banco
+  const colecao=contas.includes(registro)?'contas':'profissionais';
+  salvarLocal();
+  if(usandoFirebase)await db.ref(colecao+'/'+registro.id).set(registro);
+}
+
+async function entrarComUid(uid,emailLogin){
+  let conta=contas.find(c=>c.uid===uid);
+  let prof=!conta?profissionais.find(p=>p.uid===uid):null;
+  if(!conta&&!prof){
+    // Compatibilidade: registro já com e-mail mas ainda sem uid vinculado (edge case de migração)
+    conta=contas.find(c=>!c.uid&&(c.email||'').toLowerCase()===emailLogin);
+    if(conta)conta.uid=uid;
+    if(!conta){ prof=profissionais.find(p=>!p.uid&&(p.email||'').toLowerCase()===emailLogin); if(prof)prof.uid=uid; }
+    if(conta||prof)salvarLocal();
+  }
+  if(conta){
+    if(conta.status==='inativo'){await auth.signOut();erroLogin('Conta inativa. Fale com a coordenação da Cáritas.');return;}
+    usuarioAtual={id:conta.id,perfil:conta.perfil,nome:conta.nome,nomeConta:conta.nomeConta||'',email:conta.email};
+    entrar();
+    return;
+  }
+  if(prof){
+    if(prof.status==='pendente'){await auth.signOut();erroLogin('Seu cadastro ainda aguarda aprovação da Cáritas.');return;}
+    if(prof.status==='inativo'){await auth.signOut();erroLogin('Cadastro inativo. Fale com a coordenação da Cáritas.');return;}
+    usuarioAtual={id:prof.id,perfil:'profissional',nome:prof.nome,nomeConta:prof.nomeConta||'',email:prof.email,profissionalId:prof.id};
+    entrar();
+    return;
+  }
+  await auth.signOut();
+  erroLogin('Login validado, mas nenhum cadastro correspondente foi encontrado. Fale com a Cáritas.');
+}
+function erroLogin(m){
+  const el=document.getElementById('login-erro');
+  el.textContent=m;el.style.display='block';
+  setTimeout(()=>el.style.display='none',3000);
+}
+function entrar(){
+  carregarDados();
+  document.getElementById('tela-login').style.display='none';
+  document.getElementById('tela-app').style.display='flex';
+  document.getElementById('topbar-perfil-nome').textContent=usuarioAtual.nome;
+  const niveis={admin:'Administrador',pastoral:'Agente Pastoral',paroquia:'Responsável Paróquia',responsavel_pastoral:'Responsável Pastoral',profissional:'Voluntário'};
+  document.getElementById('topbar-nivel').textContent=niveis[usuarioAtual.perfil]||'';
+
+  // Visibilidade das abas por perfil
+  const perm={
+    admin:['painel','profissionais','beneficiarios','necessidades','agendamentos','relatorios','consolidado','usuarios','config'],
+    pastoral:['painel','agendar','beneficiarios','agendamentos','relatorios','consolidado'],
+    paroquia:['painel','agendar','beneficiarios','agendamentos','relatorios','consolidado'],
+    responsavel_pastoral:['painel','agendar','beneficiarios','agendamentos','relatorios','consolidado'],
+    profissional:['minha-agenda','relatorios']
+  };
+  const p=perm[usuarioAtual.perfil]||[];
+  document.querySelectorAll('.aba').forEach(a=>{
+    const id=a.id.replace('aba-','');
+    a.style.display=p.includes(id)?'':'none';
+  });
+  if(usuarioAtual.perfil==='profissional'){
+    document.getElementById('btn-novo-benef').style.display='none';
+  }
+  mudarAba(p[0]||'painel');
+  atualizarBadges();
+}
+function sair(){
+  usuarioAtual=null;
+  if(auth)auth.signOut().catch(()=>{});
+  document.getElementById('tela-app').style.display='none';
+  document.getElementById('tela-login').style.display='flex';
+  ['login-email','login-senha'].forEach(id=>document.getElementById(id).value='');
+}
+
+// ── ABAS / MODAL / TOAST ──
+const mapaAbas={painel:renderPainel,profissionais:renderProfissionais,beneficiarios:renderBeneficiarios,
+  agendamentos:renderAgendamentos,relatorios:renderRelatorios,'minha-agenda':renderMinhaAgenda,
+  agendar:iniciarAgendar,config:renderContas,necessidades:renderNecessidades,consolidado:iniciarConsolidado,usuarios:renderUsuarios};
+function mudarAba(id){
+  document.querySelectorAll('.aba').forEach(a=>a.classList.remove('ativa'));
+  document.querySelectorAll('.secao').forEach(s=>s.classList.remove('ativa'));
+  const a=document.getElementById('aba-'+id);
+  const s=document.getElementById('secao-'+id);
+  if(a)a.classList.add('ativa');
+  if(s)s.classList.add('ativa');
+  if(mapaAbas[id])mapaAbas[id]();
+}
+function abaAtivaId(){
+  const s=document.querySelector('.secao.ativa');
+  return s?s.id.replace('secao-',''):null;
+}
+function refrescarListaBeneficiariosAgendar(){
+  const sel=document.getElementById('sol-beneficiario');
+  if(!sel)return;
+  const atual=sel.value;
+  sel.innerHTML='<option value="">Selecione</option>'+
+    beneficiarios.map(b=>`<option value="${b.id}">${esc(b.codigo)} — ${esc(b.nome)}</option>`).join('');
+  if(atual&&beneficiarios.some(b=>b.id===atual))sel.value=atual;
+}
+function atualizarAbaAtual(){
+  if(!usuarioAtual)return;
+  const id=abaAtivaId();
+  if(!id)return;
+  if(id==='agendar')refrescarListaBeneficiariosAgendar(); // evita resetar uma solicitação em andamento
+  else if(mapaAbas[id])mapaAbas[id]();
+}
+async function atualizarManual(){
+  const btn=document.getElementById('btn-atualizar-dados');
+  if(btn){btn.disabled=true;const original=btn.textContent;btn.textContent='Atualizando...';
+    setTimeout(()=>{btn.disabled=false;btn.textContent=original;},1200);}
+  if(usandoFirebase&&db){
+    try{
+      const nomes=['profissionais','beneficiarios','horarios','agendamentos','relatorios','necessidadesLatentes','contas'];
+      const leituras=await Promise.all(nomes.map(n=>db.ref(n).once('value')));
+      const [dProf,dBenef,dHor,dAg,dRel,dNec,dContas]=leituras.map(s=>s.val());
+      profissionais=dProf?Object.values(dProf):[];
+      beneficiarios=dBenef?Object.values(dBenef):[];
+      horarios=dHor?Object.values(dHor):[];
+      agendamentos=dAg?Object.values(dAg):[];
+      relatorios=dRel?Object.values(dRel):[];
+      necessidadesLatentes=dNec?Object.values(dNec):[];
+      if(dContas)contas=Object.values(dContas);
+      salvarLocal();
+    }catch(e){
+      toast('Erro ao buscar dados do Firebase: '+e.message,'erro');
+    }
+  } else {
+    carregarDados();
+  }
+  atualizarAbaAtual();
+  atualizarBadges();
+  toast('Dados atualizados!','ok');
+}
+// ── LINK DO SITE PUBLICADO (GitHub Pages) ──
+// Preencher assim que soubermos a URL exata: https://caritasfranca.github.io/Projeto-Salus/salus-app.html
+const SITE_PUBLICADO_URL = 'https://caritasfranca.github.io/Projeto-Salus/salus-app.html';
+function abrirSitePublicado(){
+  if(SITE_PUBLICADO_URL){ location.href = SITE_PUBLICADO_URL; return; }
+  toast('Ainda não configurei o link do site publicado — confira a URL no GitHub Pages (aba Settings → Pages do repositório).','erro');
+}
+function detectarAberturaLocal(){
+  if(location.protocol==='file:'){
+    const el=document.getElementById('aviso-file-protocol');
+    if(el)el.style.display='block';
+  }
+}
+detectarAberturaLocal();
+
+function forcarRecarregarApp(){
+  const base=location.href.split('?')[0].split('#')[0];
+  location.href=base+'?v='+Date.now();
+}
+function confirmarForcarAtualizacao(){
+  document.getElementById('modal-conf-titulo').textContent='Buscar nova versão do app';
+  document.getElementById('modal-conf-msg').textContent='A página vai recarregar buscando a versão mais recente do sistema, ignorando o que está guardado em cache no navegador — equivalente a um Ctrl+Shift+R. Você precisará entrar novamente. Continuar?';
+  document.getElementById('modal-conf-btn').onclick=()=>{forcarRecarregarApp();};
+  abrirModal('modal-confirmar');
+}
+function abrirModal(id){document.getElementById(id).classList.add('aberto');}
+function fecharModal(id){document.getElementById(id).classList.remove('aberto');}
+function toast(msg,tipo=''){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast '+tipo;el.style.display='block';
+  setTimeout(()=>el.style.display='none',3400);
+}
+
+// ── DADOS ──
+function salvarLocal(){
+  localStorage.setItem('salus_prof',JSON.stringify(profissionais));
+  localStorage.setItem('salus_benef',JSON.stringify(beneficiarios));
+  localStorage.setItem('salus_hor',JSON.stringify(horarios));
+  localStorage.setItem('salus_ag',JSON.stringify(agendamentos));
+  localStorage.setItem('salus_rel',JSON.stringify(relatorios));
+  localStorage.setItem('salus_contas',JSON.stringify(contas));
+  localStorage.setItem('salus_nec',JSON.stringify(necessidadesLatentes));
+}
+function carregarDados(){
+  profissionais=JSON.parse(localStorage.getItem('salus_prof')||'[]');
+  beneficiarios=JSON.parse(localStorage.getItem('salus_benef')||'[]');
+  horarios=JSON.parse(localStorage.getItem('salus_hor')||'[]');
+  agendamentos=JSON.parse(localStorage.getItem('salus_ag')||'[]');
+  relatorios=JSON.parse(localStorage.getItem('salus_rel')||'[]');
+  contas=JSON.parse(localStorage.getItem('salus_contas')||'[]');
+  necessidadesLatentes=JSON.parse(localStorage.getItem('salus_nec')||'[]');
+  if(profissionais.length===0)carregarDemo();
+  if(contas.length===0)seedContas();
+}
+function carregarDemo(){
+  profissionais=[
+    {id:'p1',nome:'Dra. Ana Beatriz Costa',especialidade:'Dentista',telefone:'(16) 99111-0001',email:'ana@ex.com',senha:'salus123',local:'Rua das Flores, 100 — sala 5',obs:'',status:'ativo',atendimentos:3},
+    {id:'p2',nome:'Dr. Marcos Evangelista',especialidade:'Psicólogo(a)',telefone:'(16) 99111-0002',email:'marcos@ex.com',senha:'salus123',local:'Online via WhatsApp',obs:'',status:'ativo',atendimentos:5},
+    {id:'p3',nome:'Dra. Lúcia Ferreira',especialidade:'Nutricionista',telefone:'(16) 99111-0003',email:'lucia@ex.com',senha:'salus123',local:'UBS Centro — sala 3',obs:'',status:'ativo',atendimentos:2},
+  ];
+  beneficiarios=[
+    {id:'b1',codigo:'SAL-2025-0001',nome:'Maria S.',pastoral:'Pastoral da Criança — Sé',telefone:'(16) 99222-0001',faixa:'Criança (0–12)',necessidade:'Dentista',descricao:'Avaliação odontológica'},
+    {id:'b2',codigo:'SAL-2025-0002',nome:'João R.',pastoral:'SVP — São Pedro',telefone:'(16) 99222-0002',faixa:'Idoso (60+)',necessidade:'Psicólogo(a)',descricao:'Acompanhamento após luto'},
+  ];
+  const hoje=new Date();
+  const d1=new Date(hoje); d1.setDate(d1.getDate()+5);
+  const d2=new Date(hoje); d2.setDate(d2.getDate()+7);
+  const d3=new Date(hoje); d3.setDate(d3.getDate()+9);
+  horarios=[
+    {id:'h1',profissionalId:'p1',data:d1.toISOString().slice(0,10),hora:'10:00',local:'Rua das Flores, 100 — sala 5',obs:'',ocupado:false},
+    {id:'h2',profissionalId:'p1',data:d2.toISOString().slice(0,10),hora:'14:00',local:'Rua das Flores, 100 — sala 5',obs:'',ocupado:false},
+    {id:'h3',profissionalId:'p2',data:d1.toISOString().slice(0,10),hora:'09:00',local:'Online via WhatsApp',obs:'',ocupado:false},
+    {id:'h4',profissionalId:'p3',data:d3.toISOString().slice(0,10),hora:'15:30',local:'UBS Centro — sala 3',obs:'',ocupado:false},
+  ];
+  agendamentos=[];relatorios=[];
+  salvarLocal();
+}
+
+// ── CONTAS DE ACESSO (admin / pastoral individuais) ──
+function seedContas(){
+  // Migração: reaproveita senha antiga compartilhada, se já existir salva no navegador
+  const legado=JSON.parse(localStorage.getItem('salus_senhas')||'{}');
+  contas=[
+    {id:'admin-1',nome:'Coordenação Cáritas',email:'',senha:legado.admin||'caritas2026',perfil:'admin'},
+    {id:'pastoral-1',nome:'Coordenação Pastoral',email:'',senha:legado.pastoral||'pastoral123',perfil:'pastoral'},
+  ];
+  salvarLocal();
+  // NUNCA gravar essas contas de demonstração no Firebase automaticamente —
+  // isso já causou sobrescrita de contas reais (mesmo ID "admin-1"). Servem
+  // só de fallback local/offline para o primeiro login funcionar.
+}
+function rotuloPerfilConta(perfil){
+  return {admin:'Administrador',pastoral:'Agente Pastoral',paroquia:'Responsável Paróquia',responsavel_pastoral:'Responsável Pastoral'}[perfil]||perfil;
+}
+function renderContas(){
+  const tbody=document.getElementById('tabela-contas');
+  if(!tbody)return;
+  tbody.innerHTML=contas.map(c=>`<tr>
+    <td><strong>${esc(c.nome)}</strong></td>
+    <td>${esc(c.email)||'<em style="color:var(--vermelho);">sem e-mail — recuperação de senha não funciona</em>'}</td>
+    <td>${esc(c.nomeConta)||'—'}</td>
+    <td><span class="badge badge-prof">${rotuloPerfilConta(c.perfil)}</span></td>
+    <td><span class="badge ${c.status==='inativo'?'badge-cancelado':'badge-realizado'}">${c.status==='inativo'?'Inativo':'Ativo'}</span></td>
+    <td style="display:flex;gap:5px;flex-wrap:wrap;">
+      <button class="btn btn-xs btn-primario" onclick="editarConta('${c.id}')">Editar</button>
+      ${contas.filter(x=>x.perfil==='admin').length>1||c.perfil!=='admin'?`<button class="btn btn-xs btn-perigo" onclick="excluirConta('${c.id}')">✕</button>`:''}
+    </td>
+  </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// USUÁRIOS (visão consolidada — admin/pastoral/profissional)
+// ══════════════════════════════════════════════════════
+function renderUsuarios(){
+  const q=(document.getElementById('busca-usuarios')?.value||'').toLowerCase();
+  const filtroPerfil=document.getElementById('filtro-usuarios-perfil')?.value||'';
+  const rotulo={admin:'Administrador',pastoral:'Agente Pastoral',paroquia:'Responsável Paróquia',responsavel_pastoral:'Responsável Pastoral',profissional:'Profissional'};
+
+  let lista=[
+    ...contas.map(c=>({tipo:'conta',id:c.id,nome:c.nome,identificador:c.email||c.nomeConta||'—',
+      perfil:c.perfil,uid:c.uid,email:c.email,status:c.status||'ativo'})),
+    ...profissionais.map(p=>({tipo:'profissional',id:p.id,nome:p.nome,identificador:p.email||p.nomeConta||'—',
+      perfil:'profissional',uid:p.uid,email:p.email,status:p.status||'ativo'})),
+  ];
+  if(filtroPerfil)lista=lista.filter(u=>u.perfil===filtroPerfil);
+  if(q)lista=lista.filter(u=>u.nome.toLowerCase().includes(q)||u.identificador.toLowerCase().includes(q));
+  lista.sort((a,b)=>a.nome.localeCompare(b.nome));
+
+  const tbody=document.getElementById('tabela-usuarios');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="6"><div class="vazio"><div class="vazio-icone">🔑</div><p>Nenhum usuário encontrado.</p></div></td></tr>`
+    :lista.map(u=>`<tr>
+        <td><strong>${esc(u.nome)}</strong></td>
+        <td style="font-size:0.86rem;">${esc(u.identificador)}</td>
+        <td><span class="badge badge-prof">${rotulo[u.perfil]||u.perfil}</span></td>
+        <td>${u.uid
+            ?`<span class="badge badge-realizado" title="Login gerenciado pelo Firebase Authentication">🔒 Seguro</span>`
+            :`<span class="badge badge-pendente" title="Ainda não fez o primeiro acesso no sistema novo">⏳ Aguardando 1º acesso</span>`}</td>
+        <td>${u.status==='pendente'?'<span class="badge badge-pendente">⏳ Pendente</span>':u.status==='inativo'?'<span class="badge badge-cancelado">Inativo</span>':'<span class="badge badge-realizado">Ativo</span>'}</td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap;">
+          <button class="btn btn-xs btn-primario" onclick="editarUsuario('${u.tipo}','${u.id}')">Editar</button>
+          ${u.uid&&u.email?`<button class="btn btn-xs btn-secundario" onclick="enviarRedefinicaoPara('${esc(u.email)}')">🔑 Redefinir senha</button>`:''}
+          ${u.status!=='pendente'?`<button class="btn btn-xs ${u.status==='inativo'?'btn-verde':'btn-secundario'}" onclick="alternarStatusUsuario('${u.tipo}','${u.id}')">${u.status==='inativo'?'Ativar':'Inativar'}</button>`:''}
+          <button class="btn btn-xs btn-perigo" onclick="confirmarExcluirUsuario('${u.tipo}','${u.id}','${esc(u.nome).replace(/'/g,"\\'")}')">✕ Excluir</button>
+        </td>
+      </tr>`).join('');
+}
+async function enviarRedefinicaoPara(email){
+  if(!usandoFirebase||!auth){toast('Sem conexão com o Firebase no momento.','erro');return;}
+  try{
+    await auth.sendPasswordResetEmail(email);
+    toast('Link de redefinição enviado para '+email,'ok');
+  }catch(e){
+    toast('Erro ao enviar: '+traduzErroAuth(e),'erro');
+  }
+}
+function editarUsuario(tipo,id){
+  if(tipo==='conta')editarConta(id);else editarProfissional(id);
+}
+function alternarStatusUsuario(tipo,id){
+  if(tipo==='conta'){
+    const c=contas.find(x=>x.id===id);if(!c)return;
+    const novo=c.status==='inativo'?'ativo':'inativo';
+    if(novo==='inativo'&&c.perfil==='admin'&&contas.filter(x=>x.perfil==='admin'&&x.status!=='inativo'&&x.id!==id).length===0){
+      toast('Não é possível inativar o único administrador ativo.','erro');return;
+    }
+    c.status=novo;
+    salvarLocal();
+    if(usandoFirebase)salvarFirebase('contas',id,c);
+  } else {
+    const p=profissionais.find(x=>x.id===id);if(!p)return;
+    p.status=p.status==='inativo'?'ativo':'inativo';
+    salvarLocal();
+    if(usandoFirebase)salvarFirebase('profissionais',id,p);
+  }
+  renderUsuarios();
+  toast('Status atualizado!','ok');
+}
+function abrirEscolherTipoUsuario(){
+  abrirModal('modal-tipo-usuario');
+}
+function escolherTipoUsuario(tipo){
+  fecharModal('modal-tipo-usuario');
+  if(tipo==='profissional'){
+    abrirModalProfissional();
+    return;
+  }
+  abrirModalConta();
+  document.getElementById('c-perfil').value=tipo;
+}
+function abrirModalConta(){
+  document.getElementById('modal-conta-titulo').textContent='Nova Conta';
+  ['c-id','c-nome','c-email','c-nome-conta','c-senha'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('c-perfil').value='pastoral';
+  document.getElementById('c-status').value='ativo';
+  document.getElementById('grupo-c-senha').style.display='';
+  document.getElementById('grupo-c-email').style.display='';
+  document.getElementById('c-email').disabled=false;
+  document.getElementById('aviso-c-migrado').style.display='none';
+  document.querySelector('#grupo-c-senha label').textContent='Senha inicial *';
+  abrirModal('modal-conta');
+}
+function editarConta(id){
+  const c=contas.find(x=>x.id===id);if(!c)return;
+  document.getElementById('modal-conta-titulo').textContent='Editar Conta';
+  document.getElementById('c-id').value=c.id;
+  document.getElementById('c-nome').value=c.nome||'';
+  document.getElementById('c-email').value=c.email||'';
+  document.getElementById('c-nome-conta').value=c.nomeConta||'';
+  document.getElementById('c-perfil').value=c.perfil||'pastoral';
+  document.getElementById('c-status').value=c.status||'ativo';
+  document.getElementById('c-senha').value='';
+  const migrada=!!c.uid;
+  document.getElementById('grupo-c-senha').style.display=migrada?'none':'';
+  document.getElementById('aviso-c-migrado').style.display=migrada?'block':'none';
+  document.getElementById('c-email').disabled=migrada;
+  abrirModal('modal-conta');
+}
+async function salvarConta(){
+  const nome=document.getElementById('c-nome').value.trim();
+  const email=document.getElementById('c-email').value.trim().toLowerCase();
+  const nomeConta=document.getElementById('c-nome-conta').value.trim().toLowerCase();
+  const senha=document.getElementById('c-senha').value.trim();
+  const perfil=document.getElementById('c-perfil').value;
+  const status=document.getElementById('c-status').value;
+  if(!nome||!email){toast('Preencha nome e e-mail.','erro');return;}
+  const id0=document.getElementById('c-id').value;
+  const existente=id0?contas.find(x=>x.id===id0):null;
+  if(!existente&&!senha){toast('Defina uma senha inicial.','erro');return;}
+  if(emailEmUso(email,id0)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
+  if(nomeConta&&emailEmUso(nomeConta,id0)){toast('Esse nome da conta já está em uso.','erro');return;}
+  if(status==='inativo'&&perfil==='admin'&&contas.filter(x=>x.perfil==='admin'&&x.status!=='inativo'&&x.id!==id0).length===0){
+    toast('Não é possível inativar o único administrador ativo.','erro');return;
+  }
+
+  const btnSalvar=document.querySelector('#modal-conta .btn-primario');
+  if(btnSalvar){btnSalvar.disabled=true;btnSalvar.textContent='Salvando...';}
+
+  try{
+    if(!existente){
+      // Conta nova: cria o login de verdade no Firebase Authentication (num app secundário,
+      // pra não derrubar a sessão de quem está cadastrando) e usa o UID gerado como ID do registro.
+      if(!usandoFirebase){toast('É preciso estar conectado ao Firebase para criar contas novas.','erro');if(btnSalvar){btnSalvar.disabled=false;btnSalvar.textContent='Salvar';}return;}
+      const authSec=getAuthSecundario();
+      const cred=await authSec.createUserWithEmailAndPassword(email,senha);
+      await authSec.signOut();
+      const obj={id:cred.user.uid,uid:cred.user.uid,nome,email,nomeConta,perfil,status};
+      contas.push(obj);
+      salvarLocal();
+      await db.ref('contas/'+obj.id).set(obj);
+    } else {
+      // Conta existente: atualiza só os dados de perfil. E-mail/senha de login não mudam por aqui
+      // (login já migrado usa o Firebase Authentication; peça redefinição de senha se precisar).
+      existente.nome=nome; existente.nomeConta=nomeConta; existente.perfil=perfil; existente.status=status;
+      if(!existente.uid)existente.email=email; // ainda não migrado: pode ajustar o e-mail livremente
+      salvarLocal();
+      if(usandoFirebase)await db.ref('contas/'+existente.id).set(existente);
+    }
+    fecharModal('modal-conta');renderContas();
+    if(document.getElementById('secao-usuarios').classList.contains('ativa'))renderUsuarios();
+    toast('Conta salva!','ok');
+  }catch(e){
+    toast('Erro ao salvar conta: '+traduzErroAuth(e),'erro');
+  }
+  if(btnSalvar){btnSalvar.disabled=false;btnSalvar.textContent='Salvar';}
+}
+function excluirConta(id){
+  const c=contas.find(x=>x.id===id);
+  if(c&&c.perfil==='admin'&&contas.filter(x=>x.perfil==='admin').length<=1){
+    toast('Não é possível excluir o único administrador do sistema.','erro');return;
+  }
+  contas=contas.filter(x=>x.id!==id);
+  salvarLocal();
+  if(usandoFirebase)excluirFirebase('contas',id);
+  renderContas();
+  toast('Conta removida.','ok');
+}
+function confirmarExcluirUsuario(tipo,id,nome){
+  document.getElementById('modal-conf-titulo').textContent='Confirmar exclusão';
+  document.getElementById('modal-conf-msg').textContent=`Excluir definitivamente "${nome}"? Essa ação não pode ser desfeita.`;
+  document.getElementById('modal-conf-btn').onclick=()=>{excluirUsuarioConfirmado(tipo,id);fecharModal('modal-confirmar');};
+  abrirModal('modal-confirmar');
+}
+function excluirUsuarioConfirmado(tipo,id){
+  if(tipo==='conta')excluirConta(id);
+  else{
+    profissionais=profissionais.filter(x=>x.id!==id);
+    salvarLocal();
+    if(usandoFirebase)excluirFirebase('profissionais',id);
+    toast('Profissional removido.','ok');
+  }
+  renderUsuarios();
+}
+function emailEmUso(valor,idIgnorar){
+  const v=(valor||'').toLowerCase();
+  if(!v)return false;
+  const naContas=contas.some(c=>c.id!==idIgnorar&&((c.email||'').toLowerCase()===v||(c.nomeConta||'').toLowerCase()===v));
+  const nosProf=profissionais.some(p=>p.id!==idIgnorar&&((p.email||'').toLowerCase()===v||(p.nomeConta||'').toLowerCase()===v));
+  return naContas||nosProf;
+}
+
+// ── MINHA CONTA (usuário logado troca a própria senha/e-mail) ──
+function abrirMeuPerfil(){
+  if(!usuarioAtual)return;
+  document.getElementById('mp-nome').value=usuarioAtual.nome||'';
+  document.getElementById('mp-email').value=usuarioAtual.email||'';
+  document.getElementById('mp-nome-conta').value=usuarioAtual.nomeConta||'';
+  document.getElementById('mp-senha-atual').value='';
+  document.getElementById('mp-senha1').value='';
+  document.getElementById('mp-senha2').value='';
+  document.getElementById('mp-msg').style.display='none';
+  abrirModal('modal-meu-perfil');
+}
+async function salvarMeuPerfil(){
+  if(!usuarioAtual)return;
+  const email=document.getElementById('mp-email').value.trim().toLowerCase();
+  const nomeConta=document.getElementById('mp-nome-conta').value.trim().toLowerCase();
+  const senhaAtual=document.getElementById('mp-senha-atual').value.trim();
+  const s1=document.getElementById('mp-senha1').value.trim();
+  const s2=document.getElementById('mp-senha2').value.trim();
+  if(!email){mpMsg('Informe um e-mail.','erro');return;}
+  if(emailEmUso(email,usuarioAtual.id)){mpMsg('Esse e-mail já está em uso por outra conta.','erro');return;}
+  if(nomeConta&&emailEmUso(nomeConta,usuarioAtual.id)){mpMsg('Esse nome da conta já está em uso.','erro');return;}
+  if(s1||s2){
+    if(s1!==s2){mpMsg('As senhas não conferem.','erro');return;}
+    if(s1.length<6){mpMsg('A nova senha deve ter ao menos 6 caracteres.','erro');return;}
+  }
+  const trocouEmail=email!==(usuarioAtual.email||'').toLowerCase();
+  if((trocouEmail||s1)&&!senhaAtual){mpMsg('Informe sua senha atual para trocar e-mail ou senha.','erro');return;}
+
+  const btn=document.querySelector('#modal-meu-perfil .btn-primario');
+  if(btn){btn.disabled=true;btn.textContent='Salvando...';}
+
+  try{
+    if((trocouEmail||s1)&&auth&&auth.currentUser){
+      const cred=firebase.auth.EmailAuthProvider.credential(usuarioAtual.email,senhaAtual);
+      await auth.currentUser.reauthenticateWithCredential(cred);
+      if(trocouEmail)await auth.currentUser.updateEmail(email);
+      if(s1)await auth.currentUser.updatePassword(s1);
+    }
+
+    const registro=usuarioAtual.perfil==='profissional'
+      ?profissionais.find(x=>x.id===usuarioAtual.id)
+      :contas.find(x=>x.id===usuarioAtual.id);
+    if(registro){
+      registro.email=email; registro.nomeConta=nomeConta;
+      salvarLocal();
+      if(usandoFirebase)await db.ref((usuarioAtual.perfil==='profissional'?'profissionais':'contas')+'/'+registro.id).set(registro);
+      if(usuarioAtual.perfil==='profissional')renderProfissionais(); else renderContas();
+    }
+    usuarioAtual.email=email;
+    usuarioAtual.nomeConta=nomeConta;
+    mpMsg('Dados atualizados com sucesso!','ok');
+    toast('Conta atualizada!','ok');
+    setTimeout(()=>fecharModal('modal-meu-perfil'),900);
+  }catch(e){
+    mpMsg('Não foi possível salvar: '+traduzErroAuth(e),'erro');
+  }
+  if(btn){btn.disabled=false;btn.textContent='Salvar';}
+}
+function mpMsg(t,tipo){
+  const el=document.getElementById('mp-msg');
+  el.textContent=t;el.style.display='block';
+  el.style.color=tipo==='erro'?'var(--vermelho)':'var(--verde)';
+}
+
+// ── ESQUECI MINHA SENHA (link nativo do Firebase Authentication) ──
+function abrirEsqueciSenha(){
+  document.getElementById('rec-email').value=document.getElementById('login-email').value.trim();
+  document.getElementById('rec-msg').style.display='none';
+  abrirModal('modal-esqueci-senha');
+}
+async function enviarRecuperacaoSenha(){
+  const email=document.getElementById('rec-email').value.trim().toLowerCase();
+  if(!email){recMsg('Informe um e-mail.','erro');return;}
+  if(!email.includes('@')){recMsg('Informe o e-mail cadastrado (login por nome de conta não recebe e-mail).','erro');return;}
+  if(!usandoFirebase||!auth){recMsg('Sem conexão com o Firebase no momento.','erro');return;}
+  const btn=document.getElementById('btn-rec-enviar');
+  btn.disabled=true;btn.textContent='Enviando...';
+  try{
+    await auth.sendPasswordResetEmail(email);
+    recMsg('Link de redefinição enviado! Verifique sua caixa de entrada (e o spam).','ok');
+  }catch(e){
+    if(e.code==='auth/user-not-found'){
+      recMsg('Esse e-mail ainda não fez o primeiro acesso pelo sistema novo. Entre normalmente uma vez com a senha antiga antes de usar "Esqueci minha senha".','erro');
+    } else {
+      recMsg('Não foi possível enviar: '+traduzErroAuth(e),'erro');
+    }
+  }
+  btn.disabled=false;btn.textContent='Enviar Link de Redefinição';
+}
+function recMsg(t,tipo){
+  const el=document.getElementById('rec-msg');
+  el.textContent=t;el.style.display='block';
+  el.style.color=tipo==='erro'?'var(--vermelho)':'var(--verde)';
+}
+
+// ── EMAILJS (envio de e-mail sem servidor próprio) ──
+let emailjsConfigurado=false;
+function carregarConfigEmailJS(){
+  const cfg=JSON.parse(localStorage.getItem('salus_emailjs_cfg')||'null');
+  if(cfg&&cfg.publicKey){
+    const campo1=document.getElementById('ej-service');
+    if(campo1){
+      document.getElementById('ej-service').value=cfg.serviceId||'';
+      document.getElementById('ej-template').value=cfg.templateId||'';
+      document.getElementById('ej-key').value=cfg.publicKey||'';
+    }
+    inicializarEmailJS(cfg);
+  }
+}
+function salvarConfigEmailJS(){
+  const cfg={
+    serviceId:document.getElementById('ej-service').value.trim(),
+    templateId:document.getElementById('ej-template').value.trim(),
+    publicKey:document.getElementById('ej-key').value.trim(),
+  };
+  if(!cfg.serviceId||!cfg.templateId||!cfg.publicKey){toast('Preencha os 3 campos do EmailJS.','erro');return;}
+  localStorage.setItem('salus_emailjs_cfg',JSON.stringify(cfg));
+  inicializarEmailJS(cfg);
+  toast('Configuração de e-mail salva!','ok');
+}
+function inicializarEmailJS(cfg){
+  window._salusEmailCfg=cfg;
+  function tentar(){
+    if(window.emailjs){emailjs.init({publicKey:cfg.publicKey});emailjsConfigurado=true;}
+    else setTimeout(tentar,300);
+  }
+  tentar();
+}
+function enviarEmailComSenha(destEmail,nome,senha){
+  return new Promise((resolve,reject)=>{
+    if(!window.emailjs||!window._salusEmailCfg){reject(new Error('EmailJS não configurado'));return;}
+    const cfg=window._salusEmailCfg;
+    emailjs.send(cfg.serviceId,cfg.templateId,{
+      to_email:destEmail, to_name:nome, password:senha, app_name:'Projeto Salus'
+    }).then(()=>resolve()).catch(err=>reject(new Error(err?.text||err?.message||'falha no envio')));
+  });
+}
+carregarConfigEmailJS();
+
+
+
+// ── UTILITÁRIOS ──
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function gerarCodigo(){return `SAL-${new Date().getFullYear()}-${String(beneficiarios.length+1).padStart(4,'0')}`;}
+function gerarProtocolo(){
+  const d=new Date();
+  return `REL-${d.getFullYear().toString().slice(2)}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${Math.random().toString(36).slice(2,6).toUpperCase()}`;
+}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtData(iso){if(!iso)return'—';const[y,m,d]=iso.split('-');return`${d}/${m}/${y}`;}
+function profNome(id){const p=profissionais.find(x=>x.id===id);return p?p.nome:'—';}
+function benefNome(id){const b=beneficiarios.find(x=>x.id===id);return b?`${b.codigo} — ${b.nome}`:'—';}
+function badgeStatus(s){
+  const m={solicitado:'badge-solicitado',confirmado:'badge-confirmado',pastoral_ciente:'badge-realizado',realizado:'badge-realizado',recusado:'badge-recusado',recusado_ciente:'badge-cancelado',cancelado:'badge-cancelado'};
+  const t={solicitado:'Solicitado',confirmado:'Confirmado ✓',pastoral_ciente:'Pastoral ciente',realizado:'Realizado',recusado:'Recusado',recusado_ciente:'Recusado (ciente)',cancelado:'Cancelado'};
+  return `<span class="badge ${m[s]||''}">${t[s]||s}</span>`;
+}
+
+// ── BADGES DE NOTIFICAÇÃO ──
+function atualizarBadges(){
+  const solicit=agendamentos.filter(a=>a.status==='solicitado').length;
+  const confirmados=agendamentos.filter(a=>a.status==='confirmado').length;
+  const total=solicit+confirmados;
+
+  const bAg=document.getElementById('badge-agendamentos');
+  if(bAg){bAg.textContent=total||'';bAg.style.display=total?'inline':'none';}
+
+  const bMinhaAg=document.getElementById('badge-minha-agenda');
+  if(bMinhaAg&&usuarioAtual?.perfil==='profissional'){
+    const profId=usuarioAtual?.profissionalId||profissionais.find(p=>p.nome===usuarioAtual.nome)?.id;
+    const minhaSol=profId?agendamentos.filter(a=>a.status==='solicitado'&&a.profissionalId===profId).length:solicit;
+    bMinhaAg.textContent=minhaSol||'';
+    bMinhaAg.style.display=minhaSol?'inline':'none';
+  }
+  atualizarBadgeNecessidades();
+}
+
+// ══════════════════════════════════════════════════════
+// PAINEL
+// ══════════════════════════════════════════════════════
+function renderPainel(){
+  document.getElementById('cnt-prof').textContent=profissionais.filter(p=>p.status==='ativo').length;
+  document.getElementById('cnt-benef').textContent=beneficiarios.length;
+  document.getElementById('cnt-aguardando').textContent=agendamentos.filter(a=>a.status==='solicitado').length;
+  document.getElementById('cnt-confirmados').textContent=agendamentos.filter(a=>a.status==='confirmado'||a.status==='pastoral_ciente').length;
+  document.getElementById('cnt-realizados').textContent=agendamentos.filter(a=>a.status==='realizado').length;
+
+  // Solicitações pendentes
+  const solicit=agendamentos.filter(a=>a.status==='solicitado');
+  const tbs=document.getElementById('painel-solicitacoes');
+  tbs.innerHTML=solicit.length===0
+    ?`<tr><td colspan="6"><div class="vazio" style="padding:20px;"><p>Nenhuma solicitação pendente.</p></div></td></tr>`
+    :solicit.map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(benefNome(a.beneficiarioId))}</td>
+        <td><span class="badge badge-prof">${esc(a.especialidade)}</span></td>
+        <td>${esc(profNome(a.profissionalId))}</td>
+        <td style="font-size:0.82rem;">${esc(a.solicitadoPor||'—')}</td>
+        <td><button class="btn btn-xs btn-primario" onclick="abrirResponder('${a.id}')">Responder</button></td>
+      </tr>`).join('');
+
+  // Confirmados aguardando pastoral
+  const conf=agendamentos.filter(a=>a.status==='confirmado');
+  const tbc=document.getElementById('painel-confirmados');
+  tbc.innerHTML=conf.length===0
+    ?`<tr><td colspan="6"><div class="vazio" style="padding:20px;"><p>Nenhum agendamento aguardando ciência.</p></div></td></tr>`
+    :conf.map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(benefNome(a.beneficiarioId))}</td>
+        <td>${esc(profNome(a.profissionalId))}</td>
+        <td style="font-size:0.84rem;">${esc(a.local||'—')}</td>
+        <td>${badgeStatus(a.status)}</td>
+        <td><button class="btn btn-xs btn-whats" onclick="abrirWhatsModal('${a.id}')">📱 Avisar</button></td>
+      </tr>`).join('');
+
+  // Recusados aguardando ciência da pastoral
+  const recus=agendamentos.filter(a=>a.status==='recusado');
+  const tbr=document.getElementById('painel-recusados');
+  tbr.innerHTML=recus.length===0
+    ?`<tr><td colspan="5"><div class="vazio" style="padding:20px;"><p>Nenhuma recusa aguardando ciência.</p></div></td></tr>`
+    :recus.map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(benefNome(a.beneficiarioId))}</td>
+        <td>${esc(profNome(a.profissionalId))}</td>
+        <td style="font-size:0.84rem;max-width:260px;">${esc(a.motivoRecusa||'—')}</td>
+        <td><button class="btn btn-xs btn-perigo" onclick="abrirRecusaModal('${a.id}')">Ver motivo / Ciente</button></td>
+      </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// MINHA AGENDA (profissional)
+// ══════════════════════════════════════════════════════
+function renderMinhaAgenda(){
+  const profId=usuarioAtual?.profissionalId||profissionais.find(p=>p.nome===usuarioAtual?.nome)?.id;
+
+  // Solicitações pendentes para este profissional
+  const solicit=profId
+    ? agendamentos.filter(a=>a.status==='solicitado'&&a.profissionalId===profId)
+    : agendamentos.filter(a=>a.status==='solicitado');
+
+  const bloco=document.getElementById('bloco-solicitacoes-prof');
+  const lista=document.getElementById('lista-solicitacoes-prof');
+  if(solicit.length>0){
+    bloco.style.display='block';
+    lista.innerHTML=solicit.map(a=>{
+      const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
+      return `<div style="background:white;border:1.5px solid var(--border);border-left:4px solid var(--gold);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
+          <div>
+            <div style="font-weight:600;font-size:1rem;color:var(--brown);">${fmtData(a.data)} às ${a.hora||'—'}</div>
+            <div style="font-size:0.85rem;color:var(--brown-lt);margin-top:3px;">Beneficiário: <strong>${esc(b?.codigo||'—')}</strong> · ${esc(b?.faixa||'')} · ${esc(b?.pastoral||'')}</div>
+            ${a.obs?`<div style="font-size:0.84rem;color:var(--cinza-txt);margin-top:4px;font-style:italic;">"${esc(a.obs)}"</div>`:''}
+            <div style="font-size:0.82rem;color:var(--cinza-txt);margin-top:3px;">Local: ${esc(a.local||'—')} · Solicitado por: ${esc(a.solicitadoPor||'—')}</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-sm btn-perigo" onclick="abrirResponder('${a.id}')">✕ Recusar</button>
+            <button class="btn btn-sm btn-verde" onclick="abrirResponder('${a.id}')">✓ Confirmar</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    bloco.style.display='none';
+  }
+
+  // Horários disponíveis
+  const meusHorarios=profId
+    ? horarios.filter(h=>h.profissionalId===profId)
+    : horarios;
+  const lh=document.getElementById('lista-horarios-prof');
+  if(meusHorarios.length===0){
+    lh.innerHTML=`<div class="vazio"><div class="vazio-icone">🗓️</div><p>Nenhum horário cadastrado. Clique em "+ Oferecer Horário" para começar.</p></div>`;
+  } else {
+    lh.innerHTML=`<div class="horarios-grid">${meusHorarios.map(h=>`
+      <div class="horario-card ${h.ocupado?'ocupado':''}" style="cursor:default;">
+        <div class="hc-dia">${fmtData(h.data)}</div>
+        <div class="hc-hora">⏰ ${h.hora||'—'}</div>
+        <div style="font-size:0.78rem;color:var(--cinza-txt);margin-top:3px;">${esc(h.local||'')}</div>
+        <div class="hc-vaga">${h.ocupado?'🔒 Ocupado':'✓ Disponível'}</div>
+        ${!h.ocupado?`<button class="btn btn-xs btn-perigo" style="margin-top:8px;" onclick="excluirHorario('${h.id}')">Remover</button>`:''}
+      </div>`).join('')}</div>`;
+  }
+
+  // Meus agendamentos
+  const meusAg=profId
+    ? agendamentos.filter(a=>a.profissionalId===profId)
+    : agendamentos;
+  const tbody=document.getElementById('tabela-meus-agendamentos');
+  tbody.innerHTML=meusAg.length===0
+    ?`<tr><td colspan="5"><div class="vazio" style="padding:20px;"><p>Nenhum agendamento ainda.</p></div></td></tr>`
+    :meusAg.sort((a,b)=>(a.data||'').localeCompare(b.data||'')).map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(benefNome(a.beneficiarioId))}</td>
+        <td style="font-size:0.84rem;">${esc(a.local||'—')}</td>
+        <td>${badgeStatus(a.status)}</td>
+        <td><button class="btn btn-xs btn-verde" onclick="abrirRelPorAg('${a.id}')">📝 Relatório</button></td>
+      </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// SOLICITAR CONSULTA (pastoral / admin)
+// ══════════════════════════════════════════════════════
+function iniciarAgendar(){
+  horarioSelecionado=null;
+  document.getElementById('bloco-horarios-disponiveis').style.display='none';
+  document.getElementById('bloco-confirmar-solicitacao').style.display='none';
+  // Popular select beneficiários
+  const sel=document.getElementById('sol-beneficiario');
+  sel.innerHTML='<option value="">Selecione</option>'+
+    beneficiarios.map(b=>`<option value="${b.id}">${esc(b.codigo)} — ${esc(b.nome)}</option>`).join('');
+  document.getElementById('sol-especialidade').value='';
+  document.getElementById('sol-obs').value='';
+}
+
+function atualizarEspecialidadeSugerida(){
+  const bId=document.getElementById('sol-beneficiario').value;
+  if(!bId)return;
+  const b=beneficiarios.find(x=>x.id===bId);
+  if(b?.necessidade){
+    document.getElementById('sol-especialidade').value=b.necessidade;
+    carregarHorariosDisponiveis();
+  }
+}
+
+function carregarHorariosDisponiveis(){
+  const esp=document.getElementById('sol-especialidade').value;
+  if(!esp){document.getElementById('bloco-horarios-disponiveis').style.display='none';return;}
+
+  const hoje=new Date().toISOString().slice(0,10);
+  const profEsp=profissionais.filter(p=>p.especialidade===esp&&p.status==='ativo').map(p=>p.id);
+  const disponíveis=horarios.filter(h=>profEsp.includes(h.profissionalId)&&!h.ocupado&&h.data>=hoje);
+
+  const bloco=document.getElementById('bloco-horarios-disponiveis');
+  const grade=document.getElementById('grade-horarios-disponiveis');
+  bloco.style.display='block';
+  horarioSelecionado=null;
+  document.getElementById('bloco-confirmar-solicitacao').style.display='none';
+
+  if(disponíveis.length===0){
+    grade.innerHTML=`<div class="vazio" style="grid-column:1/-1;padding:30px;"><div class="vazio-icone">🗓️</div><p>Nenhum horário disponível para <strong>${esc(esp)}</strong> no momento.<br>Aguarde o profissional ofertar novos horários. A coordenação já foi avisada.</p></div>`;
+    const bId=document.getElementById('sol-beneficiario').value;
+    if(bId)registrarTentativaNecessidade(bId,esp);
+    return;
+  }
+
+  grade.innerHTML=disponíveis.sort((a,b)=>a.data.localeCompare(b.data)).map(h=>{
+    const p=profissionais.find(x=>x.id===h.profissionalId);
+    return `<div class="horario-card" id="hcard-${h.id}" onclick="selecionarHorario('${h.id}')">
+      <div class="hc-dia">${fmtData(h.data)}</div>
+      <div class="hc-hora">⏰ ${h.hora||'—'}</div>
+      <div style="font-size:0.84rem;font-weight:600;color:var(--brown);margin-top:4px;">${esc(p?.nome||'—')}</div>
+      <div style="font-size:0.78rem;color:var(--cinza-txt);margin-top:2px;">${esc(h.local||'')}</div>
+      ${h.obs?`<div style="font-size:0.75rem;color:var(--brown-lt);margin-top:2px;font-style:italic;">${esc(h.obs)}</div>`:''}
+      <div class="hc-vaga">✓ Disponível</div>
+    </div>`;
+  }).join('');
+}
+
+function selecionarHorario(hId){
+  document.querySelectorAll('.horario-card').forEach(c=>c.classList.remove('selecionado'));
+  const card=document.getElementById('hcard-'+hId);
+  if(card)card.classList.add('selecionado');
+  horarioSelecionado=hId;
+
+  const h=horarios.find(x=>x.id===hId);
+  const p=profissionais.find(x=>x.id===h?.profissionalId);
+  const bId=document.getElementById('sol-beneficiario').value;
+  const b=beneficiarios.find(x=>x.id===bId);
+
+  document.getElementById('resumo-solicitacao').innerHTML=`
+    <div style="background:var(--gold-faint);border:1px solid var(--border-lt);border-radius:var(--r);padding:16px 18px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Data e Hora</div>
+          <div style="font-size:1.05rem;font-weight:600;color:var(--brown);">${fmtData(h?.data)} às ${h?.hora||'—'}</div></div>
+        <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Profissional</div>
+          <div style="font-size:1.05rem;color:var(--brown);">${esc(p?.nome||'—')}</div></div>
+        <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Beneficiário</div>
+          <div style="font-size:1.05rem;color:var(--brown);">${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</div></div>
+        <div><div style="font-size:0.72rem;font-weight:700;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">Local</div>
+          <div style="font-size:1rem;color:var(--brown);">${esc(h?.local||'—')}</div></div>
+      </div>
+    </div>`;
+  document.getElementById('bloco-confirmar-solicitacao').style.display='block';
+  document.getElementById('bloco-confirmar-solicitacao').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function cancelarSelecaoHorario(){
+  horarioSelecionado=null;
+  document.querySelectorAll('.horario-card').forEach(c=>c.classList.remove('selecionado'));
+  document.getElementById('bloco-confirmar-solicitacao').style.display='none';
+}
+
+function enviarSolicitacao(){
+  if(!horarioSelecionado){toast('Selecione um horário.','erro');return;}
+  const bId=document.getElementById('sol-beneficiario').value;
+  if(!bId){toast('Selecione o beneficiário.','erro');return;}
+  const h=horarios.find(x=>x.id===horarioSelecionado);
+  if(!h){toast('Horário não encontrado.','erro');return;}
+
+  const ag={
+    id:uid(), horarioId:h.id,
+    data:h.data, hora:h.hora, local:h.local,
+    beneficiarioId:bId,
+    profissionalId:h.profissionalId,
+    especialidade:profissionais.find(p=>p.id===h.profissionalId)?.especialidade||'',
+    obs:document.getElementById('sol-obs').value.trim(),
+    status:'solicitado',
+    solicitadoPor:usuarioAtual.nome,
+    dataSolicitacao:new Date().toISOString(),
+    msgProfissional:'',msgPastoral:''
+  };
+  agendamentos.push(ag);
+  // Marcar horário como ocupado
+  h.ocupado=true;
+  salvarLocal();
+  atualizarBadges();
+  toast('Solicitação enviada! O profissional será notificado ao entrar no sistema.','ok');
+  // Resetar
+  horarioSelecionado=null;
+  document.getElementById('sol-beneficiario').value='';
+  document.getElementById('sol-especialidade').value='';
+  document.getElementById('sol-obs').value='';
+  document.getElementById('bloco-horarios-disponiveis').style.display='none';
+  document.getElementById('bloco-confirmar-solicitacao').style.display='none';
+  mudarAba('agendamentos');
+}
+
+// ══════════════════════════════════════════════════════
+// RESPONDER SOLICITAÇÃO (profissional)
+// ══════════════════════════════════════════════════════
+function abrirResponder(agId){
+  agRespondendoId=agId;
+  const a=agendamentos.find(x=>x.id===agId); if(!a)return;
+  const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
+  const p=profissionais.find(x=>x.id===a.profissionalId);
+  document.getElementById('responder-resumo').innerHTML=`
+    <div style="background:var(--gold-faint);border:1px solid var(--border-lt);border-radius:var(--r);padding:14px 16px;margin-bottom:4px;">
+      <div style="font-weight:600;font-size:1.05rem;color:var(--brown);margin-bottom:8px;">Solicitação de consulta</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.9rem;">
+        <div><span style="color:var(--brown-lt);">Data:</span> <strong>${fmtData(a.data)} às ${a.hora||'—'}</strong></div>
+        <div><span style="color:var(--brown-lt);">Beneficiário:</span> <strong>${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</strong></div>
+        <div><span style="color:var(--brown-lt);">Faixa:</span> ${esc(b?.faixa||'—')}${b?.idade?` (${b.idade} anos)`:''}</div>
+        <div><span style="color:var(--brown-lt);">Pastoral:</span> ${esc(b?.pastoral||'—')}</div>
+        <div style="grid-column:1/-1;"><span style="color:var(--brown-lt);">Local:</span> ${esc(a.local||'—')}</div>
+        ${a.obs?`<div style="grid-column:1/-1;font-style:italic;color:var(--cinza-txt);">"${esc(a.obs)}"</div>`:''}
+      </div>
+    </div>
+    <div style="background:white;border:1.5px solid var(--border-lt);border-radius:var(--r);padding:14px 16px;margin-top:10px;">
+      <div style="font-weight:600;font-size:0.95rem;color:var(--brown);margin-bottom:8px;">📋 Prontuário — necessidade encaminhada pela pastoral</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.88rem;">
+        <div><span style="color:var(--brown-lt);">Necessidade principal:</span> <strong>${esc(b?.necessidade||'—')}</strong></div>
+        <div><span style="color:var(--brown-lt);">Urgência:</span> ${esc(b?.urgencia||'—')}</div>
+        <div><span style="color:var(--brown-lt);">Já acompanhado por:</span> ${esc(b?.acompanhamento||'—')}</div>
+        <div><span style="color:var(--brown-lt);">Pode se deslocar:</span> ${esc(b?.desloca||'—')}</div>
+        <div style="grid-column:1/-1;"><span style="color:var(--brown-lt);">Descrição da necessidade:</span><br>${esc(b?.descricao||'Nenhuma descrição informada.')}</div>
+      </div>
+    </div>`;
+  document.getElementById('responder-msg').value='';
+  document.getElementById('responder-msg-label').textContent='Mensagem para a pastoral (opcional ao confirmar — obrigatório se recusar)';
+  abrirModal('modal-responder');
+}
+
+function resposta(agId, novoStatus){
+  agRespondendoId=agId;
+  responderSolicitacao(novoStatus);
+}
+
+function responderSolicitacao(novoStatus){
+  const a=agendamentos.find(x=>x.id===agRespondendoId); if(!a)return;
+  const msg=document.getElementById('responder-msg')?.value?.trim()||'';
+  if(novoStatus==='recusado'&&!msg){
+    toast('Informe o motivo da recusa para a pastoral.','erro');
+    return;
+  }
+  a.status=novoStatus;
+  a.dataResposta=new Date().toISOString();
+  if(novoStatus==='recusado'){
+    a.motivoRecusa=msg;
+    const h=horarios.find(x=>x.id===a.horarioId);
+    if(h)h.ocupado=false;
+  } else {
+    a.msgProfissional=msg;
+  }
+  salvarLocal(); fecharModal('modal-responder'); atualizarBadges();
+
+  if(novoStatus==='confirmado'){
+    toast('Consulta confirmada! A pastoral será avisada.','ok');
+    setTimeout(()=>abrirWhatsModal(agRespondendoId),600);
+  } else {
+    toast('Solicitação recusada. O horário ficou disponível novamente. A pastoral verá o motivo ao entrar no sistema.','');
+  }
+  renderPainel(); renderMinhaAgenda();
+}
+
+// ══════════════════════════════════════════════════════
+// WHATSAPP — avisar pastoral
+// ══════════════════════════════════════════════════════
+function abrirWhatsModal(agId){
+  agWhatsId=agId;
+  const a=agendamentos.find(x=>x.id===agId); if(!a)return;
+  const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
+  const p=profissionais.find(x=>x.id===a.profissionalId);
+
+  document.getElementById('whats-resumo').innerHTML=`
+    <div style="font-size:0.9rem;line-height:1.7;color:var(--brown);">
+      <strong>${fmtData(a.data)} às ${a.hora||'—'}</strong> · ${esc(p?.nome||'—')} (${esc(a.especialidade||'')})<br>
+      Beneficiário: <strong>${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</strong><br>
+      Local: ${esc(a.local||'—')}<br>
+      ${a.msgProfissional?`Mensagem do profissional: <em>"${esc(a.msgProfissional)}"</em>`:''}
+    </div>`;
+
+  const msg=`✦ *Projeto Salus — Cáritas Diocesana de Franca*
+
+Olá! Temos uma boa notícia: a consulta foi *confirmada* pelo(a) voluntário(a).
+
+📅 *Data:* ${fmtData(a.data)}
+⏰ *Horário:* ${a.hora||'—'}
+👨‍⚕️ *Profissional:* ${p?.nome||'—'} (${a.especialidade||''})
+📍 *Local:* ${a.local||'—'}
+🔖 *Código:* ${b?.codigo||'—'}
+${a.msgProfissional?`\n💬 *Mensagem do profissional:*\n"${a.msgProfissional}"`:''}
+
+Por favor, confirme o recebimento desta mensagem. 🙏
+_Cáritas Diocesana de Franca_`;
+
+  document.getElementById('whats-msg').value=msg;
+  abrirModal('modal-whats');
+}
+
+function abrirWhats(){
+  const b=beneficiarios.find(x=>x.id===agendamentos.find(a=>a.id===agWhatsId)?.beneficiarioId);
+  const tel=(b?.telefone||'').replace(/\D/g,'');
+  const msg=encodeURIComponent(document.getElementById('whats-msg').value);
+  const url=tel?`https://wa.me/55${tel}?text=${msg}`:`https://wa.me/?text=${msg}`;
+  window.open(url,'_blank');
+}
+
+function marcarPastoralCiente(){
+  const a=agendamentos.find(x=>x.id===agWhatsId); if(!a)return;
+  a.status='pastoral_ciente';
+  salvarLocal(); fecharModal('modal-whats'); atualizarBadges();
+  renderPainel(); renderAgendamentos();
+  toast('Pastoral marcada como ciente.','ok');
+}
+
+function abrirRecusaModal(agId){
+  agRecusaId=agId;
+  const a=agendamentos.find(x=>x.id===agId); if(!a)return;
+  const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
+  document.getElementById('recusa-resumo').innerHTML=`
+    <div style="font-size:0.9rem;line-height:1.7;color:var(--brown);">
+      <strong>${fmtData(a.data)} às ${a.hora||'—'}</strong> · ${esc(profNome(a.profissionalId))} (${esc(a.especialidade||'')})<br>
+      Beneficiário: <strong>${esc(b?.codigo||'—')} — ${esc(b?.nome||'—')}</strong><br>
+      <div style="margin-top:8px;padding:10px 12px;background:var(--gold-faint);border-radius:var(--r);border:1px solid var(--border-lt);">
+        <strong>Motivo da recusa:</strong><br>${esc(a.motivoRecusa||'Não informado.')}
+      </div>
+    </div>`;
+  abrirModal('modal-recusa-ciente');
+}
+
+function marcarRecusaCiente(){
+  const a=agendamentos.find(x=>x.id===agRecusaId); if(!a)return;
+  a.status='recusado_ciente';
+  salvarLocal();
+
+  // Registra automaticamente no histórico de Relatórios, já que não haverá atendimento
+  const b=beneficiarios.find(x=>x.id===a.beneficiarioId);
+  const rel={
+    id:uid(), protocolo:gerarProtocolo(), agendamentoId:a.id,
+    profissionalId:a.profissionalId, beneficiarioId:a.beneficiarioId,
+    data:new Date().toISOString().slice(0,10), tipo:'Recusado pelo profissional',
+    retorno:'nao', nota:0,
+    descricao:`Solicitação de ${fmtData(a.data)} às ${a.hora||'—'} recusada pelo profissional. Motivo: ${a.motivoRecusa||'não informado'}.`
+  };
+  relatorios.push(rel);
+
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('relatorios',rel.id,rel);
+  fecharModal('modal-recusa-ciente'); atualizarBadges();
+  renderPainel(); renderAgendamentos();
+  toast('Recusa registrada como ciente e enviada para Relatórios.','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// PROFISSIONAIS
+// ══════════════════════════════════════════════════════
+function renderProfissionais(){
+  const q=(document.getElementById('busca-prof')?.value||'').toLowerCase();
+  const area=document.getElementById('filtro-prof-area')?.value||'';
+  const statusFiltro=document.getElementById('filtro-prof-status')?.value||'';
+  const lista=profissionais.filter(p=>{
+    if(area&&p.especialidade!==area)return false;
+    if(statusFiltro&&p.status!==statusFiltro)return false;
+    if(!statusFiltro&&p.status==='inativo')return false; // ocultar inativos por padrão
+    if(q&&!p.nome.toLowerCase().includes(q)&&!(p.especialidade||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+  atualizarBadgeFormsAdmin();
+  const tbody=document.getElementById('tabela-profissionais');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="7"><div class="vazio"><div class="vazio-icone">🩺</div><p>Nenhum profissional encontrado.</p></div></td></tr>`
+    :lista.map(p=>{
+      const nh=horarios.filter(h=>h.profissionalId===p.id&&!h.ocupado).length;
+      const rels=relatorios.filter(r=>r.profissionalId===p.id).length;
+      const isPendente=p.status==='pendente';
+      return `<tr ${isPendente?'style="background:var(--gold-faint);"':''}>
+        <td><strong>${esc(p.nome)}</strong>${isPendente?` <span class="badge badge-pendente" style="font-size:0.68rem;">Forms</span>`:''}${p.origem==='google_forms'&&!isPendente?` <span style="font-size:0.72rem;color:var(--brown-lt);">via Forms</span>`:''}</td>
+        <td><span class="badge badge-prof">${esc(p.especialidade)}</span></td>
+        <td><a href="tel:${esc(p.telefone)}" style="color:var(--brown);text-decoration:none;">${esc(p.telefone)}</a></td>
+        <td style="text-align:center;">${nh}</td>
+        <td style="text-align:center;">${rels}</td>
+        <td><span class="badge ${p.status==='ativo'?'badge-ativo':isPendente?'badge-pendente':'badge-cancelado'}">${p.status==='ativo'?'Ativo':isPendente?'Pendente':'Inativo'}</span></td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap;">
+          ${isPendente?`<button class="btn btn-xs btn-verde" onclick="aprovarProfissional('${p.id}')">✓ Aprovar</button>`:''}
+          <button class="btn btn-xs btn-primario" onclick="editarProfissional('${p.id}')">Editar</button>
+          <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('profissional','${p.id}')">✕</button>
+        </td>
+      </tr>`;
+    }).join('');
+}
+
+function abrirModalProfissional(){
+  document.getElementById('modal-prof-titulo').textContent='Novo Profissional';
+  ['p-id','p-nome','p-registro','p-telefone','p-email','p-nome-conta','p-local','p-obs'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-especialidade').value='';
+  document.getElementById('p-status').value='ativo';
+  document.getElementById('p-senha').value='salus123';
+  document.getElementById('grupo-p-senha').style.display='';
+  document.getElementById('p-email').disabled=false;
+  document.getElementById('aviso-p-migrado').style.display='none';
+  abrirModal('modal-profissional');
+}
+function editarProfissional(id){
+  const p=profissionais.find(x=>x.id===id);if(!p)return;
+  document.getElementById('modal-prof-titulo').textContent='Editar Profissional';
+  document.getElementById('p-id').value=p.id;
+  document.getElementById('p-nome').value=p.nome||'';
+  document.getElementById('p-especialidade').value=p.especialidade||'';
+  document.getElementById('p-registro').value=p.registro||'';
+  document.getElementById('p-telefone').value=p.telefone||'';
+  document.getElementById('p-email').value=p.email||'';
+  document.getElementById('p-nome-conta').value=p.nomeConta||'';
+  document.getElementById('p-local').value=p.local||'';
+  document.getElementById('p-obs').value=p.obs||'';
+  document.getElementById('p-status').value=p.status||'ativo';
+  document.getElementById('p-senha').value='';
+  const migrado=!!p.uid;
+  document.getElementById('grupo-p-senha').style.display=migrado?'none':'';
+  document.getElementById('aviso-p-migrado').style.display=migrado?'block':'none';
+  document.getElementById('p-email').disabled=migrado;
+  abrirModal('modal-profissional');
+}
+async function salvarProfissional(){
+  const nome=document.getElementById('p-nome').value.trim();
+  const tel=document.getElementById('p-telefone').value.trim();
+  const esp=document.getElementById('p-especialidade').value;
+  const email=document.getElementById('p-email').value.trim().toLowerCase();
+  const nomeConta=document.getElementById('p-nome-conta').value.trim().toLowerCase();
+  const senha=document.getElementById('p-senha').value.trim()||'salus123';
+  if(!nome||!tel||!esp){toast('Preencha nome, especialidade e telefone.','erro');return;}
+  if(!email){toast('Informe o e-mail — é o login do profissional no app.','erro');return;}
+  const id0=document.getElementById('p-id').value;
+  const existente=id0?profissionais.find(x=>x.id===id0):null;
+  if(emailEmUso(email,id0)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
+  if(nomeConta&&emailEmUso(nomeConta,id0)){toast('Esse nome da conta já está em uso.','erro');return;}
+
+  const btnSalvar=document.querySelector('#modal-profissional .btn-primario');
+  if(btnSalvar){btnSalvar.disabled=true;btnSalvar.textContent='Salvando...';}
+
+  const dadosComuns={nome,especialidade:esp,registro:document.getElementById('p-registro').value.trim(),
+    telefone:tel,nomeConta,local:document.getElementById('p-local').value.trim(),
+    obs:document.getElementById('p-obs').value.trim(),
+    status:document.getElementById('p-status').value};
+
+  try{
+    if(!existente){
+      if(!usandoFirebase){toast('É preciso estar conectado ao Firebase para criar profissionais novos.','erro');if(btnSalvar){btnSalvar.disabled=false;btnSalvar.textContent='Salvar';}return;}
+      const authSec=getAuthSecundario();
+      const cred=await authSec.createUserWithEmailAndPassword(email,senha);
+      await authSec.signOut();
+      const obj={id:cred.user.uid,uid:cred.user.uid,email,atendimentos:0,...dadosComuns};
+      profissionais.push(obj);
+      salvarLocal();
+      await db.ref('profissionais/'+obj.id).set(obj);
+    } else {
+      Object.assign(existente,dadosComuns);
+      if(!existente.uid)existente.email=email;
+      salvarLocal();
+      if(usandoFirebase)await db.ref('profissionais/'+existente.id).set(existente);
+    }
+    fecharModal('modal-profissional');renderProfissionais();
+    toast('Profissional salvo!','ok');
+  }catch(e){
+    toast('Erro ao salvar profissional: '+traduzErroAuth(e),'erro');
+  }
+  if(btnSalvar){btnSalvar.disabled=false;btnSalvar.textContent='Salvar';}
+}
+
+
+// ── HORÁRIOS ──
+function abrirModalHorario(){
+  document.getElementById('h-data').value=new Date().toISOString().slice(0,10);
+  document.getElementById('h-hora').value='';
+  document.getElementById('h-local').value='';
+  document.getElementById('h-obs').value='';
+  // Pré-preencher local do profissional logado
+  const p=profissionais.find(x=>x.id===usuarioAtual?.profissionalId)||profissionais.find(x=>x.nome===usuarioAtual?.nome);
+  if(p?.local)document.getElementById('h-local').value=p.local;
+  abrirModal('modal-horario');
+}
+function salvarHorario(){
+  const data=document.getElementById('h-data').value;
+  const hora=document.getElementById('h-hora').value;
+  const local=document.getElementById('h-local').value.trim();
+  if(!data||!hora||!local){toast('Preencha data, horário e local.','erro');return;}
+  // Encontrar profissional logado
+  const p=profissionais.find(x=>x.id===usuarioAtual?.profissionalId)||profissionais.find(x=>x.nome===usuarioAtual?.nome)||profissionais[0];
+  if(!p){toast('Nenhum profissional cadastrado com este nome.','erro');return;}
+  horarios.push({id:uid(),profissionalId:p.id,data,hora,local,obs:document.getElementById('h-obs').value.trim(),ocupado:false});
+  salvarLocal();fecharModal('modal-horario');renderMinhaAgenda();
+  if(p.especialidade)resolverNecessidadesPorEspecialidade(p.especialidade);
+  toast('Horário oferecido!','ok');
+}
+function excluirHorario(hId){
+  const h=horarios.find(x=>x.id===hId);
+  if(h?.ocupado){toast('Este horário já tem uma consulta solicitada.','erro');return;}
+  horarios=horarios.filter(x=>x.id!==hId);
+  salvarLocal();renderMinhaAgenda();toast('Horário removido.','');
+}
+
+// ══════════════════════════════════════════════════════
+// BENEFICIÁRIOS
+// ══════════════════════════════════════════════════════
+function renderBeneficiarios(){
+  const q=(document.getElementById('busca-benef')?.value||'').toLowerCase();
+  const filtroRevisao=document.getElementById('filtro-benef-revisao')?.value||'';
+  const lista=beneficiarios.filter(b=>{
+    if(filtroRevisao==='pendente'&&b.statusRevisao!=='pendente')return false;
+    if(!q)return true;
+    return b.nome.toLowerCase().includes(q)||b.codigo.toLowerCase().includes(q);
+  });
+  atualizarBadgeBenefPendentes();
+  const tbody=document.getElementById('tabela-beneficiarios');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="6"><div class="vazio"><div class="vazio-icone">🙏</div><p>Nenhum beneficiário encontrado.</p></div></td></tr>`
+    :lista.map(b=>{
+      const n=agendamentos.filter(a=>a.beneficiarioId===b.id).length;
+      const pendente=b.statusRevisao==='pendente';
+      return `<tr ${pendente?'style="background:var(--gold-faint);"':''}>
+        <td style="font-family:'Raleway',sans-serif;font-size:0.82rem;letter-spacing:0.06em;color:var(--gold);cursor:pointer;" onclick="verBeneficiario('${b.id}')">${b.urgencia==='Sim'?'🔴 ':''}${esc(b.codigo)}</td>
+        <td style="cursor:pointer;" onclick="verBeneficiario('${b.id}')"><strong>${esc(b.nome)}</strong> <span style="font-size:0.78rem;color:var(--cinza-txt);">${esc(b.faixa||'')}</span>${pendente?` <span class="badge badge-pendente" style="font-size:0.68rem;">Forms</span>`:''}</td>
+        <td style="font-size:0.84rem;">${esc(b.pastoral||'—')}</td>
+        <td><span class="badge badge-prof">${esc(b.necessidade)}</span></td>
+        <td style="text-align:center;">${n}</td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap;">
+          ${pendente?`<button class="btn btn-xs btn-verde" onclick="aprovarBeneficiario('${b.id}')">✓ Revisado</button>`:''}
+          <button class="btn btn-xs btn-secundario" onclick="verBeneficiario('${b.id}')">Ver</button>
+          ${usuarioAtual?.perfil!=='profissional'?`<button class="btn btn-xs btn-primario" onclick="editarBeneficiario('${b.id}')">Editar</button>
+          <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('beneficiario','${b.id}')">✕</button>`:''}
+        </td>
+      </tr>`;
+    }).join('');
+}
+function atualizarBadgeBenefPendentes(){
+  const pendentes=beneficiarios.filter(b=>b.statusRevisao==='pendente').length;
+  const badge=document.getElementById('badge-benef-pendentes');
+  if(badge){badge.textContent=pendentes||'';badge.style.display=pendentes?'inline':'none';}
+}
+function aprovarBeneficiario(id){
+  const b=beneficiarios.find(x=>x.id===id);if(!b)return;
+  delete b.statusRevisao;
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('beneficiarios',id,b);
+  renderBeneficiarios();
+  toast('Cadastro marcado como revisado!','ok');
+}
+function abrirModalBeneficiario(){
+  document.getElementById('modal-benef-titulo').textContent='Novo Beneficiário';
+  ['b-id','b-nome','b-pastoral','b-telefone','b-descricao','b-agente-nome','b-agente-telefone','b-idade','b-responsavel','b-endereco'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('b-codigo').value=gerarCodigo();
+  ['b-faixa','b-necessidade','b-urgencia','b-acompanhamento','b-desloca','b-consentimento'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('b-consentimento-aviso').style.display='none';
+  abrirModal('modal-beneficiario');
+}
+function editarBeneficiario(id){
+  const b=beneficiarios.find(x=>x.id===id);if(!b)return;
+  document.getElementById('modal-benef-titulo').textContent='Editar Beneficiário';
+  document.getElementById('b-id').value=b.id;
+  document.getElementById('b-codigo').value=b.codigo;
+  document.getElementById('b-nome').value=b.nome||'';
+  document.getElementById('b-pastoral').value=b.pastoral||'';
+  document.getElementById('b-agente-nome').value=b.agenteNome||'';
+  document.getElementById('b-agente-telefone').value=b.agenteTelefone||'';
+  document.getElementById('b-telefone').value=b.telefone||'';
+  document.getElementById('b-idade').value=b.idade||'';
+  document.getElementById('b-faixa').value=b.faixa||'';
+  document.getElementById('b-responsavel').value=b.responsavel||'';
+  document.getElementById('b-endereco').value=b.endereco||'';
+  document.getElementById('b-necessidade').value=b.necessidade||'';
+  document.getElementById('b-urgencia').value=b.urgencia||'';
+  document.getElementById('b-acompanhamento').value=b.acompanhamento||'';
+  document.getElementById('b-desloca').value=b.desloca||'';
+  document.getElementById('b-consentimento').value=b.consentimento||'';
+  document.getElementById('b-descricao').value=b.descricao||'';
+  aoMudarConsentimento();
+  abrirModal('modal-beneficiario');
+}
+function sugerirFaixaPorIdade(){
+  const idade=parseInt(document.getElementById('b-idade').value,10);
+  if(isNaN(idade))return;
+  const faixa=document.getElementById('b-faixa');
+  if(idade<=12)faixa.value='Criança (0–12)';
+  else if(idade<=17)faixa.value='Adolescente (13–17)';
+  else if(idade<=59)faixa.value='Adulto (18–59)';
+  else faixa.value='Idoso (60+)';
+}
+function aoMudarConsentimento(){
+  const v=document.getElementById('b-consentimento').value;
+  document.getElementById('b-consentimento-aviso').style.display=v==='Não'?'block':'none';
+}
+let vbId=null;
+function verBeneficiario(id){
+  const b=beneficiarios.find(x=>x.id===id);if(!b)return;
+  vbId=id;
+  document.getElementById('ver-benef-titulo').textContent=b.codigo+' — '+b.nome;
+  document.getElementById('vb-codigo').textContent=b.codigo||'—';
+  document.getElementById('vb-nome').textContent=b.nome||'—';
+  document.getElementById('vb-pastoral').textContent=b.pastoral||'—';
+  document.getElementById('vb-agente-nome').textContent=b.agenteNome||'—';
+  document.getElementById('vb-agente-telefone').textContent=b.agenteTelefone||'—';
+  document.getElementById('vb-telefone').textContent=b.telefone||'—';
+  document.getElementById('vb-idade').textContent=b.idade||'—';
+  document.getElementById('vb-faixa').textContent=b.faixa||'—';
+  document.getElementById('vb-responsavel').textContent=b.responsavel||'—';
+  document.getElementById('vb-endereco').textContent=b.endereco||'—';
+  document.getElementById('vb-necessidade').textContent=b.necessidade||'—';
+  document.getElementById('vb-urgencia').textContent=b.urgencia||'—';
+  document.getElementById('vb-acompanhamento').textContent=b.acompanhamento||'—';
+  document.getElementById('vb-desloca').textContent=b.desloca||'—';
+  document.getElementById('vb-consentimento').textContent=b.consentimento||'—';
+  document.getElementById('vb-descricao').textContent=b.descricao||'Nenhuma descrição informada.';
+  const ags=agendamentos.filter(a=>a.beneficiarioId===id).sort((x,y)=>(y.data||'').localeCompare(x.data||''));
+  const tbody=document.getElementById('vb-agendamentos');
+  tbody.innerHTML=ags.length===0
+    ?`<tr><td colspan="4"><div class="vazio" style="padding:16px;"><p>Nenhuma consulta registrada.</p></div></td></tr>`
+    :ags.map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(profNome(a.profissionalId))}</td>
+        <td><span class="badge badge-prof">${esc(a.especialidade||'')}</span></td>
+        <td>${badgeStatus(a.status)}</td>
+      </tr>`).join('');
+  document.getElementById('vb-btn-editar').style.display=usuarioAtual?.perfil!=='profissional'?'':'none';
+  abrirModal('modal-ver-beneficiario');
+}
+function editarBeneficiarioDeVer(){
+  fecharModal('modal-ver-beneficiario');
+  if(vbId)editarBeneficiario(vbId);
+}
+function salvarBeneficiario(){
+  const nome=document.getElementById('b-nome').value.trim();
+  const pastoral=document.getElementById('b-pastoral').value.trim();
+  const nec=document.getElementById('b-necessidade').value;
+  const consentimento=document.getElementById('b-consentimento').value;
+  if(!nome||!pastoral||!nec){toast('Preencha nome, pastoral e necessidade.','erro');return;}
+  if(!consentimento){toast('Informe se a família autoriza o compartilhamento dos dados.','erro');return;}
+  const id=document.getElementById('b-id').value||uid();
+  const idx=beneficiarios.findIndex(x=>x.id===id);
+  const obj={id,codigo:document.getElementById('b-codigo').value,nome,pastoral,
+    agenteNome:document.getElementById('b-agente-nome').value.trim(),
+    agenteTelefone:document.getElementById('b-agente-telefone').value.trim(),
+    telefone:document.getElementById('b-telefone').value.trim(),
+    idade:document.getElementById('b-idade').value?parseInt(document.getElementById('b-idade').value,10):null,
+    faixa:document.getElementById('b-faixa').value,
+    responsavel:document.getElementById('b-responsavel').value.trim(),
+    endereco:document.getElementById('b-endereco').value.trim(),
+    necessidade:nec,
+    urgencia:document.getElementById('b-urgencia').value,
+    acompanhamento:document.getElementById('b-acompanhamento').value,
+    desloca:document.getElementById('b-desloca').value,
+    consentimento,
+    descricao:document.getElementById('b-descricao').value.trim()};
+  if(idx>=0)beneficiarios[idx]=obj;else beneficiarios.push(obj);
+  salvarLocal();fecharModal('modal-beneficiario');renderBeneficiarios();
+  if(!temEspecialistaLivre(nec))registrarTentativaNecessidade(id,nec);
+  toast('Beneficiário salvo!','ok');
+}
+
+// ══════════════════════════════════════════════════════
+// NECESSIDADES LATENTES
+// ══════════════════════════════════════════════════════
+function temEspecialistaLivre(especialidade){
+  const hoje=new Date().toISOString().slice(0,10);
+  const profEsp=profissionais.filter(p=>p.especialidade===especialidade&&p.status==='ativo').map(p=>p.id);
+  return horarios.some(h=>profEsp.includes(h.profissionalId)&&!h.ocupado&&h.data>=hoje);
+}
+function registrarTentativaNecessidade(beneficiarioId,especialidade){
+  const hoje=new Date().toISOString().slice(0,10);
+  let n=necessidadesLatentes.find(x=>x.beneficiarioId===beneficiarioId&&x.especialidade===especialidade&&x.status==='aberta');
+  if(n){
+    n.tentativas=(n.tentativas||1)+1;
+    n.ultimaTentativa=hoje;
+  }else{
+    n={id:uid(),beneficiarioId,especialidade,tentativas:1,ultimaTentativa:hoje,dataAbertura:hoje,status:'aberta'};
+    necessidadesLatentes.push(n);
+  }
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('necessidadesLatentes',n.id,n);
+  atualizarBadgeNecessidades();
+}
+function resolverNecessidadesPorEspecialidade(especialidade){
+  let mudou=false;
+  necessidadesLatentes.filter(n=>n.especialidade===especialidade&&n.status==='aberta').forEach(n=>{
+    n.status='resolvida';mudou=true;
+    if(usandoFirebase)salvarFirebase('necessidadesLatentes',n.id,n);
+  });
+  if(mudou){salvarLocal();atualizarBadgeNecessidades();}
+}
+function toggleNecessidade(id){
+  const n=necessidadesLatentes.find(x=>x.id===id);if(!n)return;
+  n.status=n.status==='aberta'?'resolvida':'aberta';
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('necessidadesLatentes',id,n);
+  renderNecessidades();atualizarBadgeNecessidades();
+  toast(n.status==='resolvida'?'Marcada como resolvida.':'Reaberta.','ok');
+}
+function atualizarBadgeNecessidades(){
+  const b=document.getElementById('badge-necessidades');
+  if(!b)return;
+  const abertas=necessidadesLatentes.filter(n=>n.status==='aberta').length;
+  b.textContent=abertas||'';
+  b.style.display=abertas?'inline':'none';
+}
+function renderNecessidades(){
+  const filtro=document.getElementById('filtro-nec-status')?.value??'aberta';
+  const abertas=necessidadesLatentes.filter(n=>n.status==='aberta');
+  document.getElementById('nec-cnt-abertas').textContent=abertas.length;
+  document.getElementById('nec-cnt-benef').textContent=new Set(abertas.map(n=>n.beneficiarioId)).size;
+
+  const porEsp={};
+  abertas.forEach(n=>{porEsp[n.especialidade]=(porEsp[n.especialidade]||0)+1;});
+  const wrap=document.getElementById('nec-por-especialidade');
+  const chips=Object.entries(porEsp);
+  wrap.innerHTML=chips.length===0
+    ?`<span style="font-size:0.88rem;color:var(--cinza-txt);font-style:italic;">Nenhuma necessidade em aberto no momento.</span>`
+    :chips.map(([esp,n])=>`<span class="badge badge-prof" style="font-size:0.82rem;padding:5px 12px;">${esc(esp)}: ${n}</span>`).join('');
+
+  const lista=necessidadesLatentes.filter(n=>!filtro||n.status===filtro)
+    .sort((a,b)=>(b.ultimaTentativa||'').localeCompare(a.ultimaTentativa||''));
+  const tbody=document.getElementById('tabela-necessidades');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="7"><div class="vazio"><div class="vazio-icone">🔎</div><p>Nenhuma necessidade encontrada.</p></div></td></tr>`
+    :lista.map(n=>{
+      const b=beneficiarios.find(x=>x.id===n.beneficiarioId);
+      return `<tr>
+        <td style="font-family:'Raleway',sans-serif;font-size:0.82rem;letter-spacing:0.06em;color:var(--gold);cursor:pointer;" onclick="verBeneficiario('${n.beneficiarioId}')">${esc(b?.codigo||'—')}</td>
+        <td><span class="badge badge-prof">${esc(n.especialidade)}</span></td>
+        <td style="font-size:0.84rem;">${esc(b?.pastoral||'—')}</td>
+        <td style="text-align:center;">${n.tentativas||1}</td>
+        <td style="white-space:nowrap;">${fmtData(n.ultimaTentativa)}</td>
+        <td><span class="badge ${n.status==='aberta'?'badge-pendente':'badge-realizado'}">${n.status==='aberta'?'Aberta':'Resolvida'}</span></td>
+        <td>${n.status==='aberta'
+          ?`<button class="btn btn-xs btn-verde" onclick="toggleNecessidade('${n.id}')">✓ Marcar resolvida</button>`
+          :`<button class="btn btn-xs btn-secundario" onclick="toggleNecessidade('${n.id}')">↺ Reabrir</button>`}</td>
+      </tr>`;
+    }).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// TODOS OS AGENDAMENTOS
+// ══════════════════════════════════════════════════════
+function renderAgendamentos(){
+  const mes=document.getElementById('filtro-ag-mes')?.value||'';
+  const status=document.getElementById('filtro-ag-status')?.value||'';
+  const q=(document.getElementById('busca-ag')?.value||'').toLowerCase();
+  const lista=agendamentos.filter(a=>{
+    if(mes&&!(a.data||'').startsWith(mes))return false;
+    if(status&&a.status!==status)return false;
+    if(q){
+      const bn=(beneficiarios.find(b=>b.id===a.beneficiarioId)?.nome||'').toLowerCase();
+      const pn=profNome(a.profissionalId).toLowerCase();
+      if(!bn.includes(q)&&!pn.includes(q))return false;
+    }
+    return true;
+  }).sort((a,b)=>(a.data||'').localeCompare(b.data||''));
+  const tbody=document.getElementById('tabela-agendamentos');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="6"><div class="vazio"><div class="vazio-icone">📅</div><p>Nenhum agendamento encontrado.</p></div></td></tr>`
+    :lista.map(a=>`<tr>
+        <td style="white-space:nowrap;">${fmtData(a.data)} ${a.hora||''}</td>
+        <td>${esc(benefNome(a.beneficiarioId))}</td>
+        <td><span class="badge badge-prof">${esc(a.especialidade)}</span></td>
+        <td>${esc(profNome(a.profissionalId))}</td>
+        <td>${badgeStatus(a.status)}</td>
+        <td style="display:flex;gap:5px;flex-wrap:wrap;">
+          ${a.status==='solicitado'?`<button class="btn btn-xs btn-primario" onclick="abrirResponder('${a.id}')">Responder</button>`:''}
+          ${a.status==='confirmado'?`<button class="btn btn-xs btn-whats" onclick="abrirWhatsModal('${a.id}')">📱 Avisar</button>`:''}
+          ${a.status==='recusado'?`<button class="btn btn-xs btn-perigo" onclick="abrirRecusaModal('${a.id}')">Ver motivo / Ciente</button>`:''}
+          <button class="btn btn-xs btn-verde" onclick="abrirRelPorAg('${a.id}')">📝</button>
+          <button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('agendamento','${a.id}')">✕</button>
+        </td>
+      </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// RELATÓRIOS
+// ══════════════════════════════════════════════════════
+function setEstrela(n){
+  document.getElementById('r-nota').value=n;
+  document.querySelectorAll('#estrelas-rel .estrela').forEach((e,i)=>e.classList.toggle('on',i<n));
+}
+function abrirModalRelatorio(profId,benefId,agId){
+  document.getElementById('r-protocolo').value=gerarProtocolo();
+  document.getElementById('r-data').value=new Date().toISOString().slice(0,10);
+  document.getElementById('r-obs').value='';
+  document.getElementById('r-nota').value=0;
+  document.getElementById('r-id').value='';
+  document.getElementById('r-tipo').value='Consulta';
+  document.getElementById('r-retorno').value='nao';
+  document.getElementById('grupo-r-data').style.display='none';
+  document.querySelectorAll('#estrelas-rel .estrela').forEach(e=>e.classList.remove('on'));
+
+  // Profissional logado só pode registrar atendimento em seu próprio nome
+  const souProfissional=usuarioAtual?.perfil==='profissional';
+  if(souProfissional)profId=usuarioAtual.profissionalId;
+
+  // Popular selects
+  const sel=document.getElementById('r-profissional');
+  sel.innerHTML='<option value="">Selecione</option>'+
+    profissionais.filter(p=>p.status==='ativo'&&(!souProfissional||p.id===profId)).map(p=>`<option value="${p.id}" ${p.id===profId?'selected':''}>${esc(p.nome)} — ${esc(p.especialidade)}</option>`).join('');
+  sel.disabled=souProfissional;
+  const selb=document.getElementById('r-beneficiario');
+  selb.innerHTML='<option value="">Selecione</option>'+
+    beneficiarios.map(b=>`<option value="${b.id}" ${b.id===benefId?'selected':''}>${esc(b.codigo)} — ${esc(b.nome)}</option>`).join('');
+  abrirModal('modal-relatorio');
+}
+function abrirRelPorAg(agId){
+  const a=agendamentos.find(x=>x.id===agId);if(!a)return;
+  abrirModalRelatorio(a.profissionalId,a.beneficiarioId,agId);
+}
+function salvarRelatorio(){
+  const profId=(usuarioAtual?.perfil==='profissional')?usuarioAtual.profissionalId:document.getElementById('r-profissional').value;
+  const data=document.getElementById('r-data').value;
+  if(!profId||!data){toast('Preencha profissional e data.','erro');return;}
+  const id=document.getElementById('r-id').value||uid();
+  const idx=relatorios.findIndex(x=>x.id===id);
+  const obj={id,protocolo:document.getElementById('r-protocolo').value,data,
+    profissionalId:profId,beneficiarioId:document.getElementById('r-beneficiario').value,
+    tipo:document.getElementById('r-tipo').value,
+    obs:document.getElementById('r-obs').value.trim(),
+    retorno:document.getElementById('r-retorno').value,
+    retornoData:document.getElementById('r-retorno-data')?.value||'',
+    nota:parseInt(document.getElementById('r-nota').value)||0};
+  if(idx>=0)relatorios[idx]=obj;else relatorios.push(obj);
+  const p=profissionais.find(x=>x.id===profId);
+  if(p&&idx<0)p.atendimentos=(p.atendimentos||0)+1;
+  salvarLocal();
+  if(usandoFirebase){salvarFirebase('relatorios',id,obj);if(p)salvarFirebase('profissionais',p.id,p);}
+  fecharModal('modal-relatorio');renderRelatorios();
+  toast('Relatório salvo!','ok');
+}
+function renderRelatorios(){
+  const mes=document.getElementById('filtro-rel-mes')?.value||'';
+  const q=(document.getElementById('busca-rel')?.value||'').toLowerCase();
+  const lista=relatorios.filter(r=>{
+    if(mes&&!(r.data||'').startsWith(mes))return false;
+    if(q&&!r.protocolo.toLowerCase().includes(q)){
+      const bn=(beneficiarios.find(b=>b.id===r.beneficiarioId)?.nome||'').toLowerCase();
+      if(!bn.includes(q))return false;
+    }
+    return true;
+  }).sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+  const tbody=document.getElementById('tabela-relatorios');
+  tbody.innerHTML=lista.length===0
+    ?`<tr><td colspan="7"><div class="vazio"><div class="vazio-icone">📝</div><p>Nenhum relatório encontrado.</p></div></td></tr>`
+    :lista.map(r=>{
+      const p=profissionais.find(x=>x.id===r.profissionalId);
+      return `<tr>
+        <td style="font-family:'Raleway',sans-serif;font-size:0.78rem;letter-spacing:0.06em;color:var(--gold);">${esc(r.protocolo)}</td>
+        <td>${fmtData(r.data)}</td>
+        <td>${esc(benefNome(r.beneficiarioId))}</td>
+        <td>${esc(p?.nome||'—')}</td>
+        <td><span class="badge badge-prof">${esc(p?.especialidade||'—')}</span></td>
+        <td><span class="badge ${r.retorno==='nao'?'badge-cancelado':r.retorno==='encaminhado'?'badge-realizado':'badge-pendente'}">${r.retorno==='nao'?'Não':r.retorno==='encaminhado'?'Encaminhado':'Sim'}</span></td>
+        <td><button class="btn btn-xs btn-perigo" onclick="confirmarExcluir('relatorio','${r.id}')">✕</button></td>
+      </tr>`;
+    }).join('');
+}
+
+// ══════════════════════════════════════════════════════
+// RELATÓRIO CONSOLIDADO (prestação de contas — período)
+// ══════════════════════════════════════════════════════
+function iniciarConsolidado(){
+  const hoje=new Date().toISOString().slice(0,7);
+  if(!document.getElementById('cons-mes-de').value)document.getElementById('cons-mes-de').value=hoje;
+  if(!document.getElementById('cons-mes-ate').value)document.getElementById('cons-mes-ate').value=hoje;
+  renderConsolidado();
+}
+function renderConsolidado(){
+  const de=document.getElementById('cons-mes-de').value;
+  const ate=document.getElementById('cons-mes-ate').value;
+  const pastoralFiltro=(document.getElementById('cons-pastoral').value||'').trim().toLowerCase();
+  const area=document.getElementById('area-consolidado');
+  if(!de||!ate){area.innerHTML='';return;}
+
+  // Relatórios de atendimento dentro do período (YYYY-MM)
+  const relsPeriodo=relatorios.filter(r=>{
+    const m=(r.data||'').slice(0,7);
+    if(!m||m<de||m>ate)return false;
+    if(pastoralFiltro){
+      const b=beneficiarios.find(x=>x.id===r.beneficiarioId);
+      if(!(b?.pastoral||'').toLowerCase().includes(pastoralFiltro))return false;
+    }
+    return true;
+  });
+
+  const beneficiariosAtendidos=new Set(relsPeriodo.map(r=>r.beneficiarioId).filter(Boolean));
+  const profissionaisAtuantes=new Set(relsPeriodo.map(r=>r.profissionalId).filter(Boolean));
+  const retornos=relsPeriodo.filter(r=>r.retorno&&r.retorno!=='nao').length;
+  const notas=relsPeriodo.map(r=>r.nota).filter(n=>n>0);
+  const notaMedia=notas.length?(notas.reduce((a,b)=>a+b,0)/notas.length).toFixed(1):'—';
+
+  // Agrupar por especialidade
+  const porEspecialidade={};
+  relsPeriodo.forEach(r=>{
+    const p=profissionais.find(x=>x.id===r.profissionalId);
+    const esp=p?.especialidade||'Não informado';
+    porEspecialidade[esp]=(porEspecialidade[esp]||0)+1;
+  });
+
+  // Agrupar por pastoral/paróquia (a partir do beneficiário)
+  const porPastoral={};
+  relsPeriodo.forEach(r=>{
+    const b=beneficiarios.find(x=>x.id===r.beneficiarioId);
+    const past=b?.pastoral||'Não informado';
+    porPastoral[past]=porPastoral[past]||{atendimentos:0,beneficiarios:new Set()};
+    porPastoral[past].atendimentos++;
+    if(b)porPastoral[past].beneficiarios.add(b.id);
+  });
+
+  const linhaEsp=Object.entries(porEspecialidade).sort((a,b)=>b[1]-a[1])
+    .map(([esp,qtd])=>`<tr><td>${esc(esp)}</td><td style="text-align:center;">${qtd}</td></tr>`).join('')
+    ||'<tr><td colspan="2" style="text-align:center;color:var(--cinza-txt);">Nenhum atendimento no período</td></tr>';
+
+  const linhaPast=Object.entries(porPastoral).sort((a,b)=>b[1].atendimentos-a[1].atendimentos)
+    .map(([past,d])=>`<tr><td>${esc(past)}</td><td style="text-align:center;">${d.beneficiarios.size}</td><td style="text-align:center;">${d.atendimentos}</td></tr>`).join('')
+    ||'<tr><td colspan="3" style="text-align:center;color:var(--cinza-txt);">Nenhum atendimento no período</td></tr>';
+
+  // Detalhe individual, sempre anonimizado (código do beneficiário, nunca nome)
+  const linhaDetalhe=relsPeriodo.sort((a,b)=>(a.data||'').localeCompare(b.data||''))
+    .map(r=>{
+      const b=beneficiarios.find(x=>x.id===r.beneficiarioId);
+      const p=profissionais.find(x=>x.id===r.profissionalId);
+      return `<tr>
+        <td>${fmtData(r.data)}</td>
+        <td>${esc(b?.codigo||'—')}</td>
+        <td>${esc(p?.especialidade||'—')}</td>
+        <td>${esc(b?.pastoral||'—')}</td>
+        <td>${esc(r.tipo||'—')}</td>
+        <td>${r.retorno==='nao'?'Não':r.retorno==='encaminhado'?'Encaminhado':'Sim'}</td>
+      </tr>`;
+    }).join('')
+    ||'<tr><td colspan="6" style="text-align:center;color:var(--cinza-txt);">Nenhum atendimento no período</td></tr>';
+
+  const periodoLabel=de===ate?fmtMesAno(de):`${fmtMesAno(de)} a ${fmtMesAno(ate)}`;
+  const geradoEm=new Date().toLocaleDateString('pt-BR');
+
+  area.innerHTML=`
+    <div class="rc-folha">
+      <div class="rc-cabecalho">
+        <span class="rc-ornamento">✦ · ✦ · ✦</span>
+        <h1>Relatório de Atendimentos — Projeto Salus</h1>
+        <div class="rc-sub">Cáritas Diocesana de Franca</div>
+        <div class="rc-periodo">Período: ${periodoLabel}${pastoralFiltro?` · Filtro: ${esc(document.getElementById('cons-pastoral').value)}`:''}</div>
+      </div>
+
+      <div class="rc-cards">
+        <div class="rc-card"><div class="rc-num">${relsPeriodo.length}</div><div class="rc-label">Atendimentos</div></div>
+        <div class="rc-card"><div class="rc-num">${beneficiariosAtendidos.size}</div><div class="rc-label">Beneficiários</div></div>
+        <div class="rc-card"><div class="rc-num">${profissionaisAtuantes.size}</div><div class="rc-label">Profissionais atuantes</div></div>
+        <div class="rc-card"><div class="rc-num">${retornos}</div><div class="rc-label">Com retorno</div></div>
+        <div class="rc-card"><div class="rc-num">${notaMedia}</div><div class="rc-label">Nota média Cáritas</div></div>
+      </div>
+
+      <div class="rc-bloco">
+        <h3>Atendimentos por Especialidade</h3>
+        <table><thead><tr><th>Especialidade</th><th style="text-align:center;">Atendimentos</th></tr></thead>
+        <tbody>${linhaEsp}</tbody></table>
+      </div>
+
+      <div class="rc-bloco">
+        <h3>Atendimentos por Pastoral / Paróquia</h3>
+        <table><thead><tr><th>Pastoral / Paróquia</th><th style="text-align:center;">Beneficiários</th><th style="text-align:center;">Atendimentos</th></tr></thead>
+        <tbody>${linhaPast}</tbody></table>
+      </div>
+
+      <div class="rc-bloco">
+        <h3>Detalhamento (identificação apenas por código, conforme sigilo)</h3>
+        <table><thead><tr><th>Data</th><th>Código</th><th>Especialidade</th><th>Pastoral</th><th>Tipo</th><th>Retorno</th></tr></thead>
+        <tbody>${linhaDetalhe}</tbody></table>
+      </div>
+
+      <div class="rc-assinaturas">
+        <div class="rc-assinatura">Coordenação Cáritas Diocesana de Franca</div>
+        <div class="rc-assinatura">Mariana Beatriz — Coordenação Pastoral</div>
+      </div>
+
+      <div class="rc-rodape">Documento gerado pelo Projeto Salus em ${geradoEm} · "Não nos cansemos de fazer o bem" — Gálatas 6, 9</div>
+    </div>`;
+}
+function fmtMesAno(m){
+  if(!m)return'—';
+  const[y,mm]=m.split('-');
+  const nomes=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  return `${nomes[parseInt(mm,10)-1]}/${y}`;
+}
+
+// ══════════════════════════════════════════════════════
+// IMPORTAR CSV (respostas do Google Forms via planilha exportada)
+// ══════════════════════════════════════════════════════
+let importarCSVDestino=null;
+let importarCSVRegistrosProntos=[];
+
+function normalizarTexto(s){
+  return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+}
+function acharColuna(headersNorm,candidatos,usados){
+  for(let i=0;i<headersNorm.length;i++){
+    if(usados.includes(i))continue;
+    for(const cand of candidatos){
+      if(headersNorm[i].includes(cand))return i;
+    }
+  }
+  return -1;
+}
+function parseCSV(texto){
+  const rows=[];
+  let row=[],field='',inQuotes=false;
+  const t=texto.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  for(let i=0;i<t.length;i++){
+    const c=t[i];
+    if(inQuotes){
+      if(c==='"'){ if(t[i+1]==='"'){field+='"';i++;} else inQuotes=false; }
+      else field+=c;
+    } else {
+      if(c==='"')inQuotes=true;
+      else if(c===','){row.push(field);field='';}
+      else if(c==='\n'){row.push(field);rows.push(row);row=[];field='';}
+      else field+=c;
+    }
+  }
+  if(field.length||row.length){row.push(field);rows.push(row);}
+  return rows.filter(r=>r.some(v=>(v||'').trim()!==''));
+}
+function abreviarNomeImportado(nomeCompleto){
+  const partes=(nomeCompleto||'').trim().split(/\s+/).filter(Boolean);
+  if(partes.length===0)return'';
+  if(partes.length===1)return partes[0];
+  return partes[0]+' '+partes[partes.length-1].charAt(0).toUpperCase()+'.';
+}
+function apenasDigitos(s){return(s||'').replace(/\D/g,'');}
+
+function abrirImportarCSV(destino){
+  importarCSVDestino=destino;
+  importarCSVRegistrosProntos=[];
+  document.getElementById('importar-csv-arquivo').value='';
+  document.getElementById('importar-csv-previa').innerHTML='';
+  document.getElementById('btn-confirmar-importacao').style.display='none';
+  if(destino==='beneficiario'){
+    document.getElementById('importar-csv-titulo').textContent='Importar Beneficiários do Forms';
+    document.getElementById('importar-csv-instrucoes').innerHTML='Exporte a planilha vinculada ao <strong>Formulário para demandas</strong> como CSV (Arquivo → Fazer download → Valores separados por vírgula) e selecione o arquivo abaixo. Os registros entram como <strong>pendentes de revisão</strong> — ninguém vira beneficiário oficial sem alguém conferir antes.';
+  } else {
+    document.getElementById('importar-csv-titulo').textContent='Importar Profissionais do Forms';
+    document.getElementById('importar-csv-instrucoes').innerHTML='Exporte a planilha vinculada ao <strong>Formulário de voluntariado profissional</strong> como CSV e selecione o arquivo abaixo. Os registros entram com status <strong>pendente</strong>, igual já acontece com o formulário que grava direto no Firebase.';
+  }
+  abrirModal('modal-importar-csv');
+}
+
+const MAPA_NECESSIDADE_IMPORT={
+  'psicologo':'Psicólogo(a)','jurídico':'Advogado(a)','juridico':'Advogado(a)',
+  'servico social':'Assistente Social','orientacao pedagogica':'Psicopedagogo(a)',
+  'dentista':'Dentista','outros':'Outro','nao sei dizer':'Não sei dizer'
+};
+function mapearNecessidade(bruto){
+  const n=normalizarTexto(bruto);
+  for(const chave in MAPA_NECESSIDADE_IMPORT){if(n.includes(normalizarTexto(chave)))return MAPA_NECESSIDADE_IMPORT[chave];}
+  return null; // não mapeado — cai em "Outro" com nota na descrição
+}
+function mapearEspecialidade(bruto){
+  const n=normalizarTexto(bruto);
+  const pares=[['dentist','Dentista'],['psicolog','Psicólogo(a)'],['medic','Médico(a)'],['nutri','Nutricionista'],
+    ['fisioterap','Fisioterapeuta'],['enferm','Enfermeiro(a)'],['psicopedag','Psicopedagogo(a)'],
+    ['assistente social','Assistente Social'],['servico social','Assistente Social'],['advogad','Advogado(a)'],['juridic','Advogado(a)']];
+  for(const [k,v] of pares){if(n.includes(k))return v;}
+  return 'Outro';
+}
+
+function processarArquivoCSV(ev){
+  const arquivo=ev.target.files[0];
+  if(!arquivo)return;
+  const leitor=new FileReader();
+  leitor.onload=()=>{
+    try{
+      const linhas=parseCSV(leitor.result);
+      if(linhas.length<2){toast('Arquivo sem dados (só cabeçalho ou vazio).','erro');return;}
+      const headers=linhas[0];
+      const headersNorm=headers.map(normalizarTexto);
+      const dados=linhas.slice(1);
+      if(importarCSVDestino==='beneficiario')montarPreviaBeneficiarios(headersNorm,dados);
+      else montarPreviaProfissionais(headersNorm,dados);
+    }catch(e){
+      toast('Erro ao ler o CSV: '+e.message,'erro');
+    }
+  };
+  leitor.readAsText(arquivo,'UTF-8');
+}
+
+function montarPreviaBeneficiarios(headersNorm,dados){
+  const usados=[];
+  const col=(cands)=>{const i=acharColuna(headersNorm,cands,usados);if(i>=0)usados.push(i);return i;};
+  const iPastoral=col(['pastoral grupo paroquia','pastoral']);
+  const iAgenteNome=col(['quem esta preenchendo']);
+  const iAgenteTel=col(['whats do agente','telefone do agente']);
+  const iNome=col(['nome da pessoa a ser atendida','nome da pessoa']);
+  const iIdade=col(['idade']);
+  const iResponsavel=col(['nome do responsavel','responsavel']);
+  const iTelefone=col(['telefone']);
+  const iEndereco=col(['endereco']);
+  const iDescricao=col(['descricao sobre a necessidade','breve descricao']);
+  const iNecessidade=col(['qual atendimento','poderia ajudar']);
+  const iUrgencia=col(['urgencia']);
+  const iAcompanhamento=col(['acompanhada por algum servico','servico publico']);
+  const iDesloca=col(['deslocar ate o local','pode se deslocar']);
+  const iObs=col(['observacoes']);
+  const iConsent=col(['compartilhamento','ciente','consentimento']);
+
+  const existentesChaves=new Set(beneficiarios.map(b=>normalizarTexto(b.nome)+'|'+apenasDigitos(b.telefone||b.agenteTelefone)));
+  const vistos=new Set();
+  const prontos=[];
+  let ignorados=0;
+
+  dados.forEach(row=>{
+    const nomeBruto=iNome>=0?row[iNome]:'';
+    if(!nomeBruto||!nomeBruto.trim())return;
+    const nome=abreviarNomeImportado(nomeBruto);
+    const telefone=iTelefone>=0?(row[iTelefone]||'').trim():'';
+    const agenteTelefone=iAgenteTel>=0?(row[iAgenteTel]||'').trim():'';
+    const chave=normalizarTexto(nome)+'|'+apenasDigitos(telefone||agenteTelefone);
+    if(existentesChaves.has(chave)||vistos.has(chave)){ignorados++;return;}
+    vistos.add(chave);
+
+    const necessidadeBruta=iNecessidade>=0?row[iNecessidade]:'';
+    let necessidade=mapearNecessidade(necessidadeBruta);
+    let descricao=(iDescricao>=0?row[iDescricao]:'').trim();
+    if(!necessidade){necessidade='Outro';if(necessidadeBruta)descricao=`[${necessidadeBruta.trim()}] ${descricao}`;}
+    if(iObs>=0&&row[iObs]&&row[iObs].trim())descricao+=(descricao?' — ':'')+'Obs.: '+row[iObs].trim();
+
+    const idade=iIdade>=0?parseInt(row[iIdade],10):NaN;
+    let faixa='';
+    if(!isNaN(idade)){
+      if(idade<=12)faixa='Criança (0–12)';else if(idade<=17)faixa='Adolescente (13–17)';
+      else if(idade<=59)faixa='Adulto (18–59)';else faixa='Idoso (60+)';
+    }
+
+    prontos.push({
+      nome, pastoral:iPastoral>=0?(row[iPastoral]||'').trim():'',
+      agenteNome:iAgenteNome>=0?(row[iAgenteNome]||'').trim():'',
+      agenteTelefone, telefone,
+      idade:isNaN(idade)?null:idade, faixa,
+      responsavel:iResponsavel>=0?(row[iResponsavel]||'').trim():'',
+      endereco:iEndereco>=0?(row[iEndereco]||'').trim():'',
+      necessidade, descricao:descricao.trim(),
+      urgencia:iUrgencia>=0?(row[iUrgencia]||'').trim():'',
+      acompanhamento:iAcompanhamento>=0?(row[iAcompanhamento]||'').trim():'',
+      desloca:iDesloca>=0?(row[iDesloca]||'').trim():'',
+      consentimento:iConsent>=0?(row[iConsent]||'').trim():'',
+      origem:'google_forms', statusRevisao:'pendente'
+    });
+  });
+
+  importarCSVRegistrosProntos=prontos;
+  renderPreviaImportacao(prontos.length,ignorados,prontos.map(p=>`${esc(p.nome)} — ${esc(p.necessidade)}${p.urgencia==='Sim'?' 🔴':''}`));
+}
+
+function montarPreviaProfissionais(headersNorm,dados){
+  const usados=[];
+  const col=(cands)=>{const i=acharColuna(headersNorm,cands,usados);if(i>=0)usados.push(i);return i;};
+  const iNome=col(['nome completo']);
+  const iTelefone=col(['telefone']);
+  const iEmail=col(['e mail','email']);
+  const iProfissao=col(['profissao']);
+  const iRegistro=col(['possui registro profissional']);
+  const iPublico=col(['publico que poderia','publico ao qual']);
+  const iHorarios=col(['dias e horarios']);
+  const iPeriodicidade=col(['periodicidade']);
+  const iLocal=col(['pode atender em qual local','local de atendimento']);
+  const iFormacao=col(['orientacao da caritas']);
+
+  const emailsExistentes=new Set(profissionais.map(p=>(p.email||'').toLowerCase()).concat(contas.map(c=>(c.email||'').toLowerCase())));
+  const vistos=new Set();
+  const prontos=[];
+  let ignorados=0;
+
+  dados.forEach(row=>{
+    const nome=(iNome>=0?row[iNome]:'').trim();
+    const email=(iEmail>=0?row[iEmail]:'').trim().toLowerCase();
+    if(!nome||!email)return;
+    if(emailsExistentes.has(email)||vistos.has(email)){ignorados++;return;}
+    vistos.add(email);
+
+    const especialidade=mapearEspecialidade(iProfissao>=0?row[iProfissao]:'');
+    const obsPartes=[];
+    if(iProfissao>=0&&especialidade==='Outro'&&row[iProfissao])obsPartes.push('Profissão informada: '+row[iProfissao].trim());
+    if(iRegistro>=0&&row[iRegistro])obsPartes.push('Registro profissional: '+row[iRegistro].trim());
+    if(iPublico>=0&&row[iPublico])obsPartes.push('Público de atendimento: '+row[iPublico].trim());
+    if(iHorarios>=0&&row[iHorarios])obsPartes.push('Disponibilidade: '+row[iHorarios].trim());
+    if(iPeriodicidade>=0&&row[iPeriodicidade])obsPartes.push('Periodicidade: '+row[iPeriodicidade].trim());
+    if(iFormacao>=0&&row[iFormacao])obsPartes.push('Disponibilidade p/ orientação Cáritas: '+row[iFormacao].trim());
+
+    prontos.push({
+      nome, especialidade, registro:'',
+      telefone:(iTelefone>=0?row[iTelefone]:'').trim(),
+      email, senha:'salus123',
+      local:(iLocal>=0?row[iLocal]:'').trim(),
+      obs:obsPartes.join(' · '),
+      status:'pendente', origem:'google_forms', atendimentos:0
+    });
+  });
+
+  importarCSVRegistrosProntos=prontos;
+  renderPreviaImportacao(prontos.length,ignorados,prontos.map(p=>`${esc(p.nome)} — ${esc(p.especialidade)} (${esc(p.email)})`));
+}
+
+function renderPreviaImportacao(qtdNovos,qtdIgnorados,linhasPreview){
+  const area=document.getElementById('importar-csv-previa');
+  const btn=document.getElementById('btn-confirmar-importacao');
+  if(qtdNovos===0){
+    area.innerHTML=`<div class="aviso aviso-alerta">Nenhum registro novo encontrado. ${qtdIgnorados?`(${qtdIgnorados} já existentes, ignorados)`:''}</div>`;
+    btn.style.display='none';
+    return;
+  }
+  area.innerHTML=`
+    <div class="aviso aviso-ok">${qtdNovos} registro(s) novo(s) encontrado(s)${qtdIgnorados?` · ${qtdIgnorados} já existente(s), ignorado(s)`:''}.</div>
+    <div class="tabela-wrap" style="max-height:220px;overflow-y:auto;margin-top:10px;">
+      <table><tbody>${linhasPreview.map(l=>`<tr><td style="font-size:0.85rem;">${l}</td></tr>`).join('')}</tbody></table>
+    </div>`;
+  btn.style.display='';
+  btn.textContent=`Importar ${qtdNovos} Registro(s)`;
+}
+
+function confirmarImportacaoCSV(){
+  if(importarCSVRegistrosProntos.length===0)return;
+  if(importarCSVDestino==='beneficiario'){
+    importarCSVRegistrosProntos.forEach(reg=>{
+      const id=uid();
+      const obj={id,codigo:gerarCodigo(),...reg};
+      beneficiarios.push(obj);
+      if(usandoFirebase)salvarFirebase('beneficiarios',id,obj);
+    });
+  } else {
+    importarCSVRegistrosProntos.forEach(reg=>{
+      const id=uid();
+      const obj={id,...reg};
+      profissionais.push(obj);
+      if(usandoFirebase)salvarFirebase('profissionais',id,obj);
+    });
+  }
+  salvarLocal();
+  const n=importarCSVRegistrosProntos.length;
+  const destino=importarCSVDestino;
+  importarCSVRegistrosProntos=[];
+  fecharModal('modal-importar-csv');
+  if(destino==='beneficiario'){renderBeneficiarios();}else{renderProfissionais();}
+  toast(`${n} registro(s) importado(s) com sucesso!`,'ok');
+}
+
+// ══════════════════════════════════════════════════════
+// EXCLUIR / CONFIG / EXPORT
+// ══════════════════════════════════════════════════════
+function confirmarExcluir(tipo,id){
+  const msgs={profissional:'Excluir este profissional?',beneficiario:'Excluir este beneficiário?',agendamento:'Excluir este agendamento?',relatorio:'Excluir este relatório?'};
+  document.getElementById('modal-conf-titulo').textContent='Confirmar exclusão';
+  document.getElementById('modal-conf-msg').textContent=msgs[tipo]||'Confirmar?';
+  document.getElementById('modal-conf-btn').onclick=()=>{excluir(tipo,id);fecharModal('modal-confirmar');};
+  abrirModal('modal-confirmar');
+}
+function excluir(tipo,id){
+  const mapas={profissional:[profissionais,renderProfissionais],beneficiario:[beneficiarios,renderBeneficiarios],
+    agendamento:[agendamentos,renderAgendamentos],relatorio:[relatorios,renderRelatorios]};
+  const [arr,render]=mapas[tipo];
+  const idx=arr.findIndex(x=>x.id===id);
+  if(idx>=0)arr.splice(idx,1);
+  // Se agendamento excluído, liberar horário
+  if(tipo==='agendamento'){
+    const ag=agendamentos.find(x=>x.id===id)||{};
+    const h=horarios.find(x=>x.id===ag.horarioId);
+    if(h)h.ocupado=false;
+  }
+  salvarLocal();render();atualizarBadges();
+  toast('Registro excluído.','ok');
+}
+function exportarCSV(){
+  const linhas=[['Protocolo','Data','Profissional','Especialidade','Código Beneficiário','Retorno','Nota']];
+  relatorios.forEach(r=>{
+    const p=profissionais.find(x=>x.id===r.profissionalId);
+    const b=beneficiarios.find(x=>x.id===r.beneficiarioId);
+    linhas.push([r.protocolo,r.data,p?.nome||'',p?.especialidade||'',b?.codigo||'',r.retorno,r.nota||'']);
+  });
+  const csv=linhas.map(l=>l.map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='salus-relatorios.csv';a.click();
+  URL.revokeObjectURL(url);toast('CSV exportado!','ok');
+}
+
+// INIT
+document.getElementById('filtro-ag-mes').value=new Date().toISOString().slice(0,7);
+document.getElementById('filtro-rel-mes').value=new Date().toISOString().slice(0,7);
+
+// ══════════════════════════════════════════════════════
+// INTEGRAÇÃO FIREBASE
+// ══════════════════════════════════════════════════════
+let db = null;
+let auth = null;
+let usandoFirebase = false;
+let firebaseCfgAtual = null;
+let appSecundario = null;
+
+function getAuthSecundario(){
+  // App Firebase separado, só pra criar OUTRAS contas sem trocar a sessão logada do admin.
+  if(!appSecundario){
+    try{
+      appSecundario = firebase.initializeApp(firebaseCfgAtual, 'Secundario');
+    }catch(e){
+      appSecundario = firebase.app('Secundario');
+    }
+  }
+  return appSecundario.auth();
+}
+
+function conectarFirebase() {
+  const json = document.getElementById('firebase-json').value.trim();
+  if (!json) { toast('Cole a configuração do Firebase primeiro.', 'erro'); return; }
+
+  let cfg;
+  try { cfg = JSON.parse(json); }
+  catch(e) { toast('JSON inválido. Verifique o formato.', 'erro'); return; }
+
+  // Carregar SDK Firebase dinamicamente
+  if (!window.firebase) {
+    const scripts = [
+      'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js',
+      'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js',
+      'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js'
+    ];
+    let carregados = 0;
+    scripts.forEach(src => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = () => {
+        carregados++;
+        if (carregados === scripts.length) inicializarFirebase(cfg);
+      };
+      document.head.appendChild(s);
+    });
+  } else {
+    inicializarFirebase(cfg);
+  }
+}
+
+function inicializarFirebase(cfg) {
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(cfg);
+    firebaseCfgAtual = cfg;
+    db = firebase.database();
+    auth = firebase.auth();
+    usandoFirebase = true;
+    localStorage.setItem('salus_firebase_cfg', JSON.stringify(cfg));
+    atualizarStatusFirebase(true);
+    toast('Firebase conectado!', 'ok');
+    // Sincronizar dados do Firebase para o app
+    sincronizarDoFirebase();
+    // Escutar novos profissionais vindos do Forms em tempo real
+    escutarNovosDoForms();
+  } catch(e) {
+    toast('Erro ao conectar: ' + e.message, 'erro');
+  }
+}
+
+async function rodarMigracaoEmLote(){
+  if(!usandoFirebase||!db){toast('Conecte ao Firebase primeiro.','erro');return;}
+  const area=document.getElementById('area-migracao');
+  const pendentes=[
+    ...contas.filter(c=>!c.uid&&c.email&&c.senha).map(c=>({colecao:'contas',registro:c})),
+    ...profissionais.filter(p=>!p.uid&&p.email&&(p.senha||true)).map(p=>({colecao:'profissionais',registro:p})),
+  ];
+  if(pendentes.length===0){
+    area.innerHTML='<div class="aviso aviso-ok">Nenhuma conta pendente de migração — todo mundo já usa o login seguro (ou ainda não tem e-mail cadastrado).</div>';
+    return;
+  }
+  area.innerHTML=`<div class="aviso aviso-info">Migrando ${pendentes.length} conta(s)... não feche esta aba.</div>`;
+  const resultados=[];
+  for(const item of pendentes){
+    const r=item.registro;
+    try{
+      const authSec=getAuthSecundario();
+      const senha=r.senha||'salus123';
+      const cred=await authSec.createUserWithEmailAndPassword(r.email.toLowerCase(),senha);
+      await authSec.signOut();
+      r.uid=cred.user.uid;
+      delete r.senha;
+      await db.ref(item.colecao+'/'+r.id).set(r);
+      resultados.push(`✅ ${esc(r.nome)} (${esc(r.email)}) — migrado com a senha atual.`);
+    }catch(e){
+      if(e.code==='auth/email-already-in-use'){
+        resultados.push(`⚠️ ${esc(r.nome)} (${esc(r.email)}) — já existe uma conta de login com esse e-mail. Verifique manualmente.`);
+      } else {
+        resultados.push(`❌ ${esc(r.nome)} (${esc(r.email)}) — erro: ${traduzErroAuth(e)}`);
+      }
+    }
+  }
+  salvarLocal();
+  area.innerHTML=`<div class="aviso aviso-ok">Migração concluída (${pendentes.length} processada(s)):</div>
+    <div style="font-size:0.85rem;line-height:1.8;margin-top:8px;">${resultados.join('<br>')}</div>`;
+  renderContas(); renderProfissionais();
+  if(document.getElementById('secao-usuarios').classList.contains('ativa'))renderUsuarios();
+}
+
+async function rodarDiagnostico(){
+  const area=document.getElementById('area-diagnostico');
+  area.innerHTML='<div class="aviso aviso-info">Rodando diagnóstico...</div>';
+  const linhas=[];
+  linhas.push(`Conectado ao Firebase (usandoFirebase): <strong>${usandoFirebase}</strong>`);
+  linhas.push(`Contas carregadas em memória: <strong>${contas.length}</strong>`);
+  linhas.push(`Profissionais carregados em memória: <strong>${profissionais.length}</strong>`);
+  if(db){
+    try{
+      linhas.push(`URL do banco conectado: <strong>${db.ref().toString()}</strong>`);
+    }catch(e){
+      linhas.push(`Erro ao ler URL do banco: ${e.message}`);
+    }
+    try{
+      const snap=await db.ref('contas').once('value');
+      const val=snap.val();
+      linhas.push(`Leitura direta de "contas" no banco agora: <strong>${val?Object.keys(val).length:0} registro(s)</strong> — chaves: ${val?Object.keys(val).join(', '):'(nenhuma)'}`);
+    }catch(e){
+      linhas.push(`<span style="color:var(--vermelho);">Erro ao ler "contas" do banco: ${e.message} (código: ${e.code||'?'})</span>`);
+    }
+  } else {
+    linhas.push('<span style="color:var(--vermelho);">Variável db está vazia — não há conexão ativa com o Firebase.</span>');
+  }
+  area.innerHTML=`<div class="aviso aviso-info" style="line-height:1.9;">${linhas.join('<br>')}</div>`;
+}
+function atualizarStatusFirebase(conectado) {
+  const el = document.getElementById('status-firebase');
+  if (!el) return;
+  if (conectado) {
+    el.className = 'aviso aviso-ok';
+    el.textContent = '✓ Firebase conectado. Dados sincronizados em tempo real.';
+  } else {
+    el.className = 'aviso aviso-info';
+    el.textContent = 'Modo local — dados salvos neste navegador.';
+  }
+}
+
+// ── LEITURA DO FIREBASE ──
+function sincronizarDoFirebase() {
+  if (!db) return;
+  const colecoes = {
+    profissionais: (d) => { profissionais = d ? Object.values(d) : []; renderProfissionais(); atualizarBadges(); },
+    beneficiarios: (d) => { beneficiarios = d ? Object.values(d) : []; renderBeneficiarios(); },
+    horarios:      (d) => { horarios = d ? Object.values(d) : []; },
+    agendamentos:  (d) => { agendamentos = d ? Object.values(d) : []; renderPainel(); atualizarBadges(); },
+    relatorios:    (d) => { relatorios = d ? Object.values(d) : []; },
+    necessidadesLatentes: (d) => { necessidadesLatentes = d ? Object.values(d) : []; if(document.getElementById('tabela-necessidades'))renderNecessidades(); atualizarBadgeNecessidades(); },
+    contas:        (d) => {
+      if (d) { contas = Object.values(d); }
+      else if (!contasSeedFirebaseFeito) { contasSeedFirebaseFeito = true; seedContas(); }
+      renderContas();
+    },
+  };
+  Object.entries(colecoes).forEach(([col, fn]) => {
+    db.ref(col).on('value', snap => {
+      fn(snap.val());
+      atualizarAbaAtual();
+    });
+  });
+}
+let contasSeedFirebaseFeito = false;
+
+// ── ESCUTAR NOVOS PROFISSIONAIS DO FORMS (status: pendente) ──
+function escutarNovosDoForms() {
+  if (!db) return;
+  db.ref('profissionais').orderByChild('origem').equalTo('google_forms').on('child_added', snap => {
+    const p = snap.val();
+    if (p && p.status === 'pendente') {
+      // Mostrar notificação para o admin
+      const jaExiste = profissionais.find(x => x.id === p.id);
+      if (!jaExiste) {
+        toast(`Novo voluntário via Forms: ${p.nome}`, 'ok');
+        atualizarBadgeFormsAdmin();
+      }
+    }
+  });
+}
+
+function atualizarBadgeFormsAdmin() {
+  const pendentes = profissionais.filter(p => p.status === 'pendente' && p.origem === 'google_forms').length;
+  const badge = document.getElementById('badge-forms-pendentes');
+  if (badge) {
+    badge.textContent = pendentes || '';
+    badge.style.display = pendentes ? 'inline' : 'none';
+  }
+}
+
+// ── ESCRITA NO FIREBASE (substitui salvarLocal para dados principais) ──
+function salvarFirebase(colecao, id, obj) {
+  if (!db) { salvarLocal(); return; }
+  db.ref(colecao + '/' + id).set(obj)
+    .catch(e => { toast('Erro ao salvar: ' + e.message, 'erro'); salvarLocal(); });
+}
+
+function excluirFirebase(colecao, id) {
+  if (!db) { salvarLocal(); return; }
+  db.ref(colecao + '/' + id).remove()
+    .catch(e => toast('Erro ao excluir: ' + e.message, 'erro'));
+}
+
+// ── APROVAR PROFISSIONAL VINDO DO FORMS ──
+function aprovarProfissional(id) {
+  const p = profissionais.find(x => x.id === id);
+  if (!p) return;
+  p.status = 'ativo';
+  if (usandoFirebase) {
+    salvarFirebase('profissionais', id, p);
+  } else {
+    salvarLocal();
+  }
+  renderProfissionais();
+  atualizarBadgeFormsAdmin();
+  toast(`${p.nome} aprovado como voluntário ativo!`, 'ok');
+}
+
+// ── TENTAR RECONECTAR FIREBASE SALVO ──
+// Carrega dados locais/demo de imediato — permite validar login por e-mail
+// mesmo antes do Firebase responder (ou no modo somente local).
+carregarDados();
+
+// Config Firebase real do projeto Salus
+const FIREBASE_CFG_SALUS = {
+  apiKey: "AIzaSyDogE0n1-nnNo-FO_XYl7iqf2nSpYQyupI",
+  authDomain: "projeto-salus-87d5b.firebaseapp.com",
+  databaseURL: "https://projeto-salus-87d5b-default-rtdb.firebaseio.com",
+  projectId: "projeto-salus-87d5b",
+  storageBucket: "projeto-salus-87d5b.firebasestorage.app",
+  messagingSenderId: "275581893939",
+  appId: "1:275581893939:web:31b544fabde803ca955246",
+  measurementId: "G-3GV5K6D3G9"
+};
+
+// Carregar SDK e conectar automaticamente ao abrir o app
+(function autoConectar() {
+  const scripts = [
+    'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js',
+    'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js',
+    'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js'
+  ];
+  let n = 0;
+  scripts.forEach(src => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = () => { if(++n === scripts.length) inicializarFirebase(FIREBASE_CFG_SALUS); };
+    document.head.appendChild(s);
+  });
+})();
+</script>
+</body>
+</html>
