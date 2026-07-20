@@ -1234,9 +1234,7 @@ function entrar(){
     const id=a.id.replace('aba-','');
     a.style.display=p.includes(id)?'':'none';
   });
-  if(usuarioAtual.perfil==='profissional'){
-    document.getElementById('btn-novo-benef').style.display='none';
-  }
+  document.getElementById('btn-novo-benef').style.display=usuarioAtual.perfil==='profissional'?'none':'';
   mudarAba(p[0]||'painel');
   atualizarBadges();
 }
