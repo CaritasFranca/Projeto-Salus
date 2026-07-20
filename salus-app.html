@@ -317,6 +317,10 @@ tr:hover td{background:var(--gold-faint);}
 
 <!-- APP -->
 <div id="tela-app">
+  <div id="overlay-sincronizando" style="display:none;position:fixed;inset:0;background:var(--cream);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:14px;">
+    <span style="font-size:2rem;color:var(--gold);">✦</span>
+    <div style="font-family:'Raleway',sans-serif;font-size:0.85rem;letter-spacing:0.06em;color:var(--brown-mid);text-transform:uppercase;">Buscando os dados mais recentes...</div>
+  </div>
   <div class="topbar">
     <div class="topbar-esq">
       <span class="topbar-ornamento">✦</span>
@@ -1216,7 +1220,10 @@ function erroLogin(m){
   setTimeout(()=>el.style.display='none',3000);
 }
 function entrar(){
-  carregarDados();
+  // Em modo local (sem Firebase), recarrega do navegador. Com Firebase conectado, os dados
+  // já vêm sendo sincronizados pelos listeners — recarregar do localStorage aqui sobrescreveria
+  // com uma versão desatualizada (foi a causa de itens já excluídos reaparecerem por um instante).
+  if(!usandoFirebase)carregarDados();
   document.getElementById('tela-login').style.display='none';
   document.getElementById('tela-app').style.display='flex';
   document.getElementById('topbar-perfil-nome').textContent=usuarioAtual.nome;
@@ -1237,8 +1244,19 @@ function entrar(){
     a.style.display=p.includes(id)?'':'none';
   });
   document.getElementById('btn-novo-benef').style.display=usuarioAtual.perfil==='profissional'?'none':'';
-  mudarAba(p[0]||'painel');
-  atualizarBadges();
+  aguardarSincronizacaoInicial(p,0);
+}
+function aguardarSincronizacaoInicial(p,tentativas){
+  if(todasColecoesSincronizadas()||tentativas>25){ // ~5s de espera máxima
+    const overlay=document.getElementById('overlay-sincronizando');
+    if(overlay)overlay.style.display='none';
+    mudarAba(p[0]||'painel');
+    atualizarBadges();
+    return;
+  }
+  const overlay=document.getElementById('overlay-sincronizando');
+  if(overlay)overlay.style.display='flex';
+  setTimeout(()=>aguardarSincronizacaoInicial(p,tentativas+1),200);
 }
 function sair(){
   usuarioAtual=null;
@@ -3311,11 +3329,18 @@ function sincronizarDoFirebase() {
   Object.entries(colecoes).forEach(([col, fn]) => {
     db.ref(col).on('value', snap => {
       fn(snap.val());
+      colecoesCarregadas[col]=true;
       atualizarAbaAtual();
     });
   });
 }
 let contasSeedFirebaseFeito = false;
+const colecoesCarregadas = {};
+function todasColecoesSincronizadas(){
+  if(!usandoFirebase)return true;
+  return ['profissionais','beneficiarios','horarios','agendamentos','relatorios','necessidadesLatentes','contas']
+    .every(c=>colecoesCarregadas[c]);
+}
 
 // ── ESCUTAR NOVOS PROFISSIONAIS DO FORMS (status: pendente) ──
 function escutarNovosDoForms() {
