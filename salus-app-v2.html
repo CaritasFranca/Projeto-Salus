@@ -1190,7 +1190,10 @@ async function entrarComUid(uid,emailLogin){
     conta=contas.find(c=>!c.uid&&(c.email||'').toLowerCase()===emailLogin);
     if(conta)conta.uid=uid;
     if(!conta){ prof=profissionais.find(p=>!p.uid&&(p.email||'').toLowerCase()===emailLogin); if(prof)prof.uid=uid; }
-    if(conta||prof)salvarLocal();
+    if(conta||prof){
+      salvarLocal();
+      if(usandoFirebase)await db.ref((conta?'contas':'profissionais')+'/'+(conta||prof).id).set(conta||prof);
+    }
   }
   if(conta){
     if(conta.status==='inativo'){await auth.signOut();erroLogin('Conta inativa. Fale com a coordenação da Cáritas.');return;}
@@ -2022,6 +2025,7 @@ function enviarSolicitacao(){
   // Marcar horário como ocupado
   h.ocupado=true;
   salvarLocal();
+  if(usandoFirebase){salvarFirebase('agendamentos',ag.id,ag);salvarFirebase('horarios',h.id,h);}
   atualizarBadges();
   toast('Solicitação enviada! O profissional será notificado ao entrar no sistema.','ok');
   // Resetar
@@ -2083,14 +2087,16 @@ function responderSolicitacao(novoStatus){
   }
   a.status=novoStatus;
   a.dataResposta=new Date().toISOString();
+  let hLiberado=null;
   if(novoStatus==='recusado'){
     a.motivoRecusa=msg;
     const h=horarios.find(x=>x.id===a.horarioId);
-    if(h)h.ocupado=false;
+    if(h){h.ocupado=false;hLiberado=h;}
   } else {
     a.msgProfissional=msg;
   }
   salvarLocal(); fecharModal('modal-responder'); atualizarBadges();
+  if(usandoFirebase){salvarFirebase('agendamentos',a.id,a);if(hLiberado)salvarFirebase('horarios',hLiberado.id,hLiberado);}
 
   if(novoStatus==='confirmado'){
     toast('Consulta confirmada! A pastoral será avisada.','ok');
@@ -2148,6 +2154,7 @@ function marcarPastoralCiente(){
   const a=agendamentos.find(x=>x.id===agWhatsId); if(!a)return;
   a.status='pastoral_ciente';
   salvarLocal(); fecharModal('modal-whats'); atualizarBadges();
+  if(usandoFirebase)salvarFirebase('agendamentos',a.id,a);
   renderPainel(); renderAgendamentos();
   toast('Pastoral marcada como ciente.','ok');
 }
@@ -2184,7 +2191,7 @@ function marcarRecusaCiente(){
   relatorios.push(rel);
 
   salvarLocal();
-  if(usandoFirebase)salvarFirebase('relatorios',rel.id,rel);
+  if(usandoFirebase){salvarFirebase('relatorios',rel.id,rel);salvarFirebase('agendamentos',a.id,a);}
   fecharModal('modal-recusa-ciente'); atualizarBadges();
   renderPainel(); renderAgendamentos();
   toast('Recusa registrada como ciente e enviada para Relatórios.','ok');
@@ -2325,8 +2332,11 @@ function salvarHorario(){
   // Encontrar profissional logado
   const p=profissionais.find(x=>x.id===usuarioAtual?.profissionalId)||profissionais.find(x=>x.nome===usuarioAtual?.nome)||profissionais[0];
   if(!p){toast('Nenhum profissional cadastrado com este nome.','erro');return;}
-  horarios.push({id:uid(),profissionalId:p.id,data,hora,local,obs:document.getElementById('h-obs').value.trim(),ocupado:false});
-  salvarLocal();fecharModal('modal-horario');renderMinhaAgenda();
+  const novoHorario={id:uid(),profissionalId:p.id,data,hora,local,obs:document.getElementById('h-obs').value.trim(),ocupado:false};
+  horarios.push(novoHorario);
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('horarios',novoHorario.id,novoHorario);
+  fecharModal('modal-horario');renderMinhaAgenda();
   if(p.especialidade)resolverNecessidadesPorEspecialidade(p.especialidade);
   toast('Horário oferecido!','ok');
 }
@@ -2334,7 +2344,9 @@ function excluirHorario(hId){
   const h=horarios.find(x=>x.id===hId);
   if(h?.ocupado){toast('Este horário já tem uma consulta solicitada.','erro');return;}
   horarios=horarios.filter(x=>x.id!==hId);
-  salvarLocal();renderMinhaAgenda();toast('Horário removido.','');
+  salvarLocal();
+  if(usandoFirebase)excluirFirebase('horarios',hId);
+  renderMinhaAgenda();toast('Horário removido.','');
 }
 
 // ══════════════════════════════════════════════════════
@@ -2489,7 +2501,9 @@ function salvarBeneficiario(){
     consentimento,
     descricao:document.getElementById('b-descricao').value.trim()};
   if(idx>=0)beneficiarios[idx]=obj;else beneficiarios.push(obj);
-  salvarLocal();fecharModal('modal-beneficiario');renderBeneficiarios();
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('beneficiarios',id,obj);
+  fecharModal('modal-beneficiario');renderBeneficiarios();
   if(!temEspecialistaLivre(nec))registrarTentativaNecessidade(id,nec);
   toast('Beneficiário salvo!','ok');
 }
@@ -3096,16 +3110,22 @@ function confirmarExcluir(tipo,id){
 function excluir(tipo,id){
   const mapas={profissional:[profissionais,renderProfissionais],beneficiario:[beneficiarios,renderBeneficiarios],
     agendamento:[agendamentos,renderAgendamentos],relatorio:[relatorios,renderRelatorios]};
+  const colecoes={profissional:'profissionais',beneficiario:'beneficiarios',agendamento:'agendamentos',relatorio:'relatorios'};
   const [arr,render]=mapas[tipo];
   const idx=arr.findIndex(x=>x.id===id);
   if(idx>=0)arr.splice(idx,1);
   // Se agendamento excluído, liberar horário
+  let hLiberado=null;
   if(tipo==='agendamento'){
     const ag=agendamentos.find(x=>x.id===id)||{};
     const h=horarios.find(x=>x.id===ag.horarioId);
-    if(h)h.ocupado=false;
+    if(h){h.ocupado=false;hLiberado=h;}
   }
   salvarLocal();render();atualizarBadges();
+  if(usandoFirebase){
+    excluirFirebase(colecoes[tipo],id);
+    if(hLiberado)salvarFirebase('horarios',hLiberado.id,hLiberado);
+  }
   toast('Registro excluído.','ok');
 }
 function exportarCSV(){
