@@ -3185,6 +3185,7 @@ function inicializarFirebase(cfg) {
     firebaseCfgAtual = cfg;
     db = firebase.database();
     auth = firebase.auth();
+    auth.languageCode = 'pt';
     usandoFirebase = true;
     localStorage.setItem('salus_firebase_cfg', JSON.stringify(cfg));
     atualizarStatusFirebase(true);
