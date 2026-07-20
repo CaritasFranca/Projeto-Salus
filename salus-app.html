@@ -631,7 +631,7 @@ tr:hover td{background:var(--gold-faint);}
         </select>
       </div>
       <div class="tabela-wrap"><table>
-        <thead><tr><th>Nome</th><th>Identificador</th><th>Perfil</th><th>Senha</th><th>Status</th><th>Ações</th></tr></thead>
+        <thead><tr><th>Nome</th><th>Identificador</th><th>Perfil</th><th>Segurança</th><th>Status</th><th>Ações</th></tr></thead>
         <tbody id="tabela-usuarios"></tbody>
       </table></div>
     </div>
@@ -661,6 +661,16 @@ tr:hover td{background:var(--gold-faint);}
         </div>
       </div>
 
+      <!-- Migração para Autenticação Segura -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">🔒 Migração para Login Seguro (Firebase Authentication)</h3>
+        <div class="aviso aviso-info" style="margin:12px 0;font-size:0.85rem;">
+          Cada pessoa é migrada automaticamente no primeiro acesso dela depois da virada. Use o botão abaixo só se quiser migrar todo mundo de uma vez agora (recomendado antes de fechar as regras do banco).
+        </div>
+        <button class="btn btn-primario" onclick="rodarMigracaoEmLote()">Migrar Todas as Contas Pendentes Agora</button>
+        <div id="area-migracao" style="margin-top:14px;"></div>
+      </div>
+
       <!-- Contas de Acesso -->
       <div class="config-box">
         <h3 style="font-size:1rem;margin-bottom:14px;font-weight:600;color:var(--brown);">Contas de Acesso</h3>
@@ -672,16 +682,23 @@ tr:hover td{background:var(--gold-faint);}
         <div style="margin-top:14px;"><button class="btn btn-primario" onclick="abrirModalConta()">+ Nova Conta</button></div>
       </div>
 
-      <!-- EmailJS (recuperação de senha) -->
+      <!-- E-mail de recuperação: agora nativo do Firebase -->
       <div class="config-box">
         <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">Envio de E-mail (Esqueci Minha Senha)</h3>
-        <div class="aviso aviso-info">Para o botão "Esqueci minha senha" funcionar, crie uma conta grátis em <strong>emailjs.com</strong>, conecte seu e-mail e crie um template com as variáveis <code>{{to_email}}</code>, <code>{{to_name}}</code>, <code>{{password}}</code> e <code>{{app_name}}</code> — lembre de configurar o campo "To Email" do template como <code>{{to_email}}</code>. Depois cole os 3 dados abaixo.</div>
-        <div class="form-grid">
-          <div class="form-grupo"><label>Service ID</label><input type="text" id="ej-service" placeholder="service_xxxxxxx"></div>
-          <div class="form-grupo"><label>Template ID</label><input type="text" id="ej-template" placeholder="template_xxxxxxx"></div>
-          <div class="form-grupo"><label>Public Key</label><input type="text" id="ej-key" placeholder="chave pública"></div>
-        </div>
-        <div style="margin-top:14px;"><button class="btn btn-verde" onclick="salvarConfigEmailJS()">Salvar Configuração de E-mail</button></div>
+        <div class="aviso aviso-ok">✓ Nesta versão, o link de redefinição de senha é enviado direto pelo Firebase Authentication — não é mais preciso configurar o EmailJS. Essa caixa fica aqui só de referência, pode ignorar.</div>
+      </div>
+
+      <!-- Regra de segurança recomendada para o banco de dados -->
+      <div class="config-box">
+        <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">🔐 Regra do Banco de Dados (só aplicar depois de tudo migrado e testado)</h3>
+        <div class="aviso aviso-alerta" style="font-size:0.85rem;">Esta regra deve ser aplicada no Console do Firebase (Realtime Database → Regras) somente <strong>depois</strong> de confirmar que este arquivo já está publicado no lugar do antigo, e que todo mundo já foi migrado (aba Usuários — todos com 🔒 Seguro).</div>
+        <div style="margin-top:10px;background:var(--brown);color:#e8dcc4;padding:14px 16px;border-radius:var(--r);font-family:monospace;font-size:0.85rem;white-space:pre;overflow-x:auto;">{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  }
+}</div>
+        <p style="font-size:0.8rem;color:var(--brown-lt);margin-top:10px;">Isso exige que qualquer leitura/escrita venha de alguém autenticado pelo Firebase — some com o acesso público total que existe hoje.</p>
       </div>
     </div>
 
@@ -705,9 +722,10 @@ tr:hover td{background:var(--gold-faint);}
           </select></div>
         <div class="form-grupo"><label>Registro</label><input type="text" id="p-registro" placeholder="CRM, CRO, CRP..."></div>
         <div class="form-grupo"><label>Telefone / WhatsApp *</label><input type="tel" id="p-telefone" placeholder="(16) 99000-0000"></div>
-        <div class="form-grupo"><label>E-mail (login do profissional) *</label><input type="email" id="p-email" placeholder="email@exemplo.com"></div>
+        <div class="form-grupo" id="grupo-p-email"><label>E-mail (login do profissional) *</label><input type="email" id="p-email" placeholder="email@exemplo.com"></div>
         <div class="form-grupo"><label>Nome da Conta (opcional)</label><input type="text" id="p-nome-conta" placeholder="Alternativa ao e-mail para login"></div>
-        <div class="form-grupo"><label>Senha de Acesso</label><input type="text" id="p-senha" placeholder="salus123"></div>
+        <div class="form-grupo" id="grupo-p-senha"><label>Senha de Acesso Inicial</label><input type="text" id="p-senha" placeholder="salus123"></div>
+        <div class="aviso aviso-info full" id="aviso-p-migrado" style="display:none;font-size:0.82rem;">🔒 Este profissional já usa login seguro (Firebase Authentication). Pra trocar a senha, use "Enviar redefinição de senha" na aba Usuários.</div>
         <div class="form-grupo"><label>Local de Atendimento</label><input type="text" id="p-local" placeholder="Ex.: Consultório próprio, Online..."></div>
         <div class="form-grupo full"><label>Observações</label><textarea id="p-obs" placeholder="Informações complementares..."></textarea></div>
         <div class="form-grupo"><label>Status</label><select id="p-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></div>
@@ -999,7 +1017,7 @@ tr:hover td{background:var(--gold-faint);}
     <div class="modal-header"><h2 id="modal-conta-titulo">Nova Conta</h2><button class="modal-fechar" onclick="fecharModal('modal-conta')">×</button></div>
     <div class="modal-body">
       <div class="form-grupo" style="margin-bottom:10px;"><label>Nome *</label><input type="text" id="c-nome" placeholder="Nome do coordenador(a)"></div>
-      <div class="form-grupo" style="margin-bottom:10px;"><label>E-mail *</label><input type="email" id="c-email" placeholder="email@exemplo.com"></div>
+      <div class="form-grupo" style="margin-bottom:10px;" id="grupo-c-email"><label>E-mail *</label><input type="email" id="c-email" placeholder="email@exemplo.com"></div>
       <div class="form-grupo" style="margin-bottom:10px;">
         <label>Nome da Conta (opcional)</label>
         <input type="text" id="c-nome-conta" placeholder="Ex.: admin, coordenador...">
@@ -1016,7 +1034,8 @@ tr:hover td{background:var(--gold-faint);}
       <div class="form-grupo" style="margin-bottom:10px;"><label>Status</label>
         <select id="c-status"><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select>
       </div>
-      <div class="form-grupo"><label>Senha *</label><input type="text" id="c-senha" placeholder="Senha inicial"></div>
+      <div class="form-grupo" id="grupo-c-senha"><label>Senha inicial *</label><input type="text" id="c-senha" placeholder="Senha inicial"></div>
+      <div class="aviso aviso-info" id="aviso-c-migrado" style="display:none;font-size:0.82rem;">🔒 Esta conta já usa login seguro (Firebase Authentication). Pra trocar a senha, use "Enviar redefinição de senha" na aba Usuários.</div>
       <input type="hidden" id="c-id">
     </div>
     <div class="modal-footer">
@@ -1037,7 +1056,7 @@ tr:hover td{background:var(--gold-faint);}
     </div>
     <div class="modal-footer">
       <button class="btn btn-secundario" onclick="fecharModal('modal-esqueci-senha')">Cancelar</button>
-      <button class="btn btn-primario" id="btn-rec-enviar" onclick="enviarRecuperacaoSenha()">Enviar Senha por E-mail</button>
+      <button class="btn btn-primario" id="btn-rec-enviar" onclick="enviarRecuperacaoSenha()">Enviar Link de Redefinição</button>
     </div>
   </div>
 </div>
@@ -1054,6 +1073,7 @@ tr:hover td{background:var(--gold-faint);}
         <input type="text" id="mp-nome-conta" placeholder="Ex.: seu.nome">
         <p style="font-size:0.78rem;color:var(--brown-lt);font-style:italic;margin-top:4px;">Pode ser usado para entrar no lugar do e-mail — a senha continua a mesma.</p>
       </div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Senha atual * <span style="font-weight:400;font-style:italic;color:var(--brown-lt);">(necessária para confirmar qualquer alteração aqui)</span></label><input type="password" id="mp-senha-atual" placeholder="Sua senha atual"></div>
       <div class="form-grupo" style="margin-bottom:10px;"><label>Nova Senha</label><input type="password" id="mp-senha1" placeholder="Deixe em branco para não alterar"></div>
       <div class="form-grupo"><label>Confirmar Nova Senha</label><input type="password" id="mp-senha2" placeholder="Repita a nova senha"></div>
       <div id="mp-msg" style="font-size:0.87rem;margin-top:8px;display:none;"></div>
@@ -1083,45 +1103,112 @@ function toggleSenha(){
   const i=document.getElementById('login-senha');
   i.type=i.type==='password'?'text':'password';
 }
-function fazerLogin(){
+async function fazerLogin(){
   const identificador=document.getElementById('login-email').value.trim().toLowerCase();
   const senha=document.getElementById('login-senha').value.trim();
   if(!senha){erroLogin('Informe a senha.');return;}
+  if(!identificador){erroLogin('Informe seu e-mail ou nome de acesso.');return;}
 
-  // Contas individuais (admin / pastoral) — busca por e-mail OU nome da conta
-  let conta=identificador?contas.find(c=>(c.email||'').toLowerCase()===identificador||(c.nomeConta||'').toLowerCase()===identificador):null;
-  // Bootstrap: conta recém-criada, ainda sem e-mail nem nome da conta cadastrados — permite entrar só com a senha
-  let contaBootstrap=false;
-  if(!conta){conta=contas.find(c=>!c.email&&!c.nomeConta&&c.senha===senha);if(conta)contaBootstrap=true;}
+  if(!usandoFirebase||!auth){
+    erroLogin('Sem conexão com o Firebase no momento. Tente novamente em instantes.');
+    return;
+  }
+
+  // Descobrir o e-mail de login: aceita e-mail direto, nome da conta ou nome cadastrado
+  let email=identificador.includes('@')?identificador:null;
+  let registroLegado=null; // registro antigo (contas/profissionais) que bate com o identificador, se ainda não migrado
+  if(!email){
+    let c=contas.find(x=>(x.nomeConta||'').toLowerCase()===identificador);
+    let p=!c?profissionais.find(x=>(x.nomeConta||'').toLowerCase()===identificador):null;
+    if(!c&&!p){
+      const cand=[...contas,...profissionais.map(x=>({...x,_prof:true}))].filter(x=>(x.nome||'').trim().toLowerCase()===identificador);
+      if(cand.length===1){ if(cand[0]._prof)p=cand[0]; else c=cand[0]; }
+      else if(cand.length>1){erroLogin('Há mais de um cadastro com esse nome. Entre com seu e-mail ou nome da conta.');return;}
+    }
+    const reg=c||p;
+    if(reg&&reg.email){ email=reg.email.toLowerCase(); registroLegado=reg; }
+    else if(reg&&!reg.email){
+      erroLogin('Esse cadastro ainda não tem e-mail. Peça para um administrador cadastrar um e-mail antes do primeiro acesso.');
+      return;
+    }
+  } else {
+    registroLegado=contas.find(x=>(x.email||'').toLowerCase()===email)||profissionais.find(x=>(x.email||'').toLowerCase()===email);
+  }
+  if(!email){erroLogin('E-mail ou nome não encontrado. Verifique ou fale com a Cáritas.');return;}
+
+  try{
+    const cred=await auth.signInWithEmailAndPassword(email,senha);
+    await entrarComUid(cred.user.uid,email);
+  }catch(e){
+    const codigosPodemSerNaoMigrado=['auth/user-not-found','auth/invalid-credential','auth/invalid-login-credentials'];
+    if(codigosPodemSerNaoMigrado.includes(e.code)&&registroLegado&&!registroLegado.uid&&(registroLegado.senha||'')===senha){
+      // Primeiro acesso depois da migração: cria a conta de autenticação agora, aproveitando a senha antiga
+      try{
+        const cred=await auth.createUserWithEmailAndPassword(email,senha);
+        await vincularUidAoRegistro(registroLegado,cred.user.uid);
+        await entrarComUid(cred.user.uid,email);
+      }catch(e2){
+        erroLogin('Não foi possível migrar sua conta automaticamente: '+traduzErroAuth(e2));
+      }
+      return;
+    }
+    if(registroLegado&&registroLegado.status==='inativo'){erroLogin('Cadastro inativo. Fale com a coordenação da Cáritas.');return;}
+    if(registroLegado&&registroLegado.status==='pendente'){erroLogin('Seu cadastro ainda aguarda aprovação da Cáritas.');return;}
+    erroLogin(traduzErroAuth(e));
+  }
+}
+
+function traduzErroAuth(e){
+  const m={
+    'auth/wrong-password':'Senha incorreta.',
+    'auth/user-not-found':'E-mail ou nome não encontrado. Verifique ou fale com a Cáritas.',
+    'auth/invalid-credential':'E-mail ou senha incorretos.',
+    'auth/invalid-login-credentials':'E-mail ou senha incorretos.',
+    'auth/invalid-email':'E-mail inválido.',
+    'auth/user-disabled':'Conta desativada. Fale com a coordenação da Cáritas.',
+    'auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos e tente de novo.',
+    'auth/email-already-in-use':'Esse e-mail já está em uso em outra conta.',
+    'auth/weak-password':'Senha muito curta (mínimo 6 caracteres).',
+  };
+  return m[e.code]||('Erro: '+e.message);
+}
+
+async function vincularUidAoRegistro(registro,uid){
+  registro.uid=uid;
+  delete registro.senha; // a senha agora é gerenciada pelo Firebase Authentication, não fica mais salva no banco
+  const colecao=contas.includes(registro)?'contas':'profissionais';
+  salvarLocal();
+  if(usandoFirebase)await db.ref(colecao+'/'+registro.id).set(registro);
+}
+
+async function entrarComUid(uid,emailLogin){
+  let conta=contas.find(c=>c.uid===uid);
+  let prof=!conta?profissionais.find(p=>p.uid===uid):null;
+  if(!conta&&!prof){
+    // Compatibilidade: registro já com e-mail mas ainda sem uid vinculado (edge case de migração)
+    conta=contas.find(c=>!c.uid&&(c.email||'').toLowerCase()===emailLogin);
+    if(conta)conta.uid=uid;
+    if(!conta){ prof=profissionais.find(p=>!p.uid&&(p.email||'').toLowerCase()===emailLogin); if(prof)prof.uid=uid; }
+    if(conta||prof){
+      salvarLocal();
+      if(usandoFirebase)await db.ref((conta?'contas':'profissionais')+'/'+(conta||prof).id).set(conta||prof);
+    }
+  }
   if(conta){
-    if(conta.status==='inativo'){erroLogin('Conta inativa. Fale com a coordenação da Cáritas.');return;}
-    if(!contaBootstrap&&conta.senha!==senha){erroLogin('Senha incorreta.');return;}
+    if(conta.status==='inativo'){await auth.signOut();erroLogin('Conta inativa. Fale com a coordenação da Cáritas.');return;}
     usuarioAtual={id:conta.id,perfil:conta.perfil,nome:conta.nome,nomeConta:conta.nomeConta||'',email:conta.email};
     entrar();
-    if(contaBootstrap)setTimeout(()=>{toast('Cadastre seu e-mail em "Minha Conta" para poder recuperar a senha no futuro.','erro');abrirMeuPerfil();},500);
     return;
   }
-  // Profissionais — busca por e-mail OU nome da conta
-  let prof=identificador?profissionais.find(p=>(p.email||'').toLowerCase()===identificador||(p.nomeConta||'').toLowerCase()===identificador):null;
-  // ...ou pelo nome exato cadastrado, caso não tenha digitado e-mail nem nome da conta
-  if(!prof&&identificador){
-    const candidatos=profissionais.filter(p=>(p.nome||'').trim().toLowerCase()===identificador);
-    if(candidatos.length===1)prof=candidatos[0];
-    else if(candidatos.length>1){erroLogin('Há mais de um cadastro com esse nome. Entre com seu e-mail ou nome da conta.');return;}
-  }
-  let profBootstrap=false;
-  if(!prof){prof=profissionais.find(p=>!p.email&&!p.nomeConta&&(p.senha||'salus123')===senha);if(prof)profBootstrap=true;}
   if(prof){
-    if(prof.status==='pendente'){erroLogin('Seu cadastro ainda aguarda aprovação da Cáritas.');return;}
-    if(prof.status==='inativo'){erroLogin('Cadastro inativo. Fale com a coordenação da Cáritas.');return;}
-    if(!profBootstrap&&(prof.senha||'salus123')!==senha){erroLogin('Senha incorreta.');return;}
+    if(prof.status==='pendente'){await auth.signOut();erroLogin('Seu cadastro ainda aguarda aprovação da Cáritas.');return;}
+    if(prof.status==='inativo'){await auth.signOut();erroLogin('Cadastro inativo. Fale com a coordenação da Cáritas.');return;}
     usuarioAtual={id:prof.id,perfil:'profissional',nome:prof.nome,nomeConta:prof.nomeConta||'',email:prof.email,profissionalId:prof.id};
     entrar();
-    if(profBootstrap)setTimeout(()=>{toast('Cadastre seu e-mail em "Minha Conta" para poder recuperar a senha no futuro.','erro');abrirMeuPerfil();},500);
     return;
   }
-  if(!identificador){erroLogin('Informe seu e-mail ou nome de acesso.');return;}
-  erroLogin('E-mail ou nome não encontrado. Verifique ou fale com a Cáritas.');
+  await auth.signOut();
+  erroLogin('Login validado, mas nenhum cadastro correspondente foi encontrado. Fale com a Cáritas.');
 }
 function erroLogin(m){
   const el=document.getElementById('login-erro');
@@ -1149,14 +1236,13 @@ function entrar(){
     const id=a.id.replace('aba-','');
     a.style.display=p.includes(id)?'':'none';
   });
-  if(usuarioAtual.perfil==='profissional'){
-    document.getElementById('btn-novo-benef').style.display='none';
-  }
+  document.getElementById('btn-novo-benef').style.display=usuarioAtual.perfil==='profissional'?'none':'';
   mudarAba(p[0]||'painel');
   atualizarBadges();
 }
 function sair(){
   usuarioAtual=null;
+  if(auth)auth.signOut().catch(()=>{});
   document.getElementById('tela-app').style.display='none';
   document.getElementById('tela-login').style.display='flex';
   ['login-email','login-senha'].forEach(id=>document.getElementById(id).value='');
@@ -1341,9 +1427,9 @@ function renderUsuarios(){
 
   let lista=[
     ...contas.map(c=>({tipo:'conta',id:c.id,nome:c.nome,identificador:c.email||c.nomeConta||'—',
-      perfil:c.perfil,senha:c.senha,status:c.status||'ativo'})),
+      perfil:c.perfil,uid:c.uid,email:c.email,status:c.status||'ativo'})),
     ...profissionais.map(p=>({tipo:'profissional',id:p.id,nome:p.nome,identificador:p.email||p.nomeConta||'—',
-      perfil:'profissional',senha:p.senha||'salus123',status:p.status||'ativo'})),
+      perfil:'profissional',uid:p.uid,email:p.email,status:p.status||'ativo'})),
   ];
   if(filtroPerfil)lista=lista.filter(u=>u.perfil===filtroPerfil);
   if(q)lista=lista.filter(u=>u.nome.toLowerCase().includes(q)||u.identificador.toLowerCase().includes(q));
@@ -1356,18 +1442,26 @@ function renderUsuarios(){
         <td><strong>${esc(u.nome)}</strong></td>
         <td style="font-size:0.86rem;">${esc(u.identificador)}</td>
         <td><span class="badge badge-prof">${rotulo[u.perfil]||u.perfil}</span></td>
-        <td><span class="senha-mascarada" data-senha="${esc(u.senha)}" onclick="alternarSenhaVisivel(this)" style="cursor:pointer;font-family:monospace;" title="Clique para mostrar/ocultar">••••••</span></td>
+        <td>${u.uid
+            ?`<span class="badge badge-realizado" title="Login gerenciado pelo Firebase Authentication">🔒 Seguro</span>`
+            :`<span class="badge badge-pendente" title="Ainda não fez o primeiro acesso no sistema novo">⏳ Aguardando 1º acesso</span>`}</td>
         <td>${u.status==='pendente'?'<span class="badge badge-pendente">⏳ Pendente</span>':u.status==='inativo'?'<span class="badge badge-cancelado">Inativo</span>':'<span class="badge badge-realizado">Ativo</span>'}</td>
         <td style="display:flex;gap:5px;flex-wrap:wrap;">
           <button class="btn btn-xs btn-primario" onclick="editarUsuario('${u.tipo}','${u.id}')">Editar</button>
+          ${u.uid&&u.email?`<button class="btn btn-xs btn-secundario" onclick="enviarRedefinicaoPara('${esc(u.email)}')">🔑 Redefinir senha</button>`:''}
           ${u.status!=='pendente'?`<button class="btn btn-xs ${u.status==='inativo'?'btn-verde':'btn-secundario'}" onclick="alternarStatusUsuario('${u.tipo}','${u.id}')">${u.status==='inativo'?'Ativar':'Inativar'}</button>`:''}
           <button class="btn btn-xs btn-perigo" onclick="confirmarExcluirUsuario('${u.tipo}','${u.id}','${esc(u.nome).replace(/'/g,"\\'")}')">✕ Excluir</button>
         </td>
       </tr>`).join('');
 }
-function alternarSenhaVisivel(el){
-  if(el.textContent==='••••••')el.textContent=el.dataset.senha||'—';
-  else el.textContent='••••••';
+async function enviarRedefinicaoPara(email){
+  if(!usandoFirebase||!auth){toast('Sem conexão com o Firebase no momento.','erro');return;}
+  try{
+    await auth.sendPasswordResetEmail(email);
+    toast('Link de redefinição enviado para '+email,'ok');
+  }catch(e){
+    toast('Erro ao enviar: '+traduzErroAuth(e),'erro');
+  }
 }
 function editarUsuario(tipo,id){
   if(tipo==='conta')editarConta(id);else editarProfissional(id);
@@ -1408,6 +1502,11 @@ function abrirModalConta(){
   ['c-id','c-nome','c-email','c-nome-conta','c-senha'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('c-perfil').value='pastoral';
   document.getElementById('c-status').value='ativo';
+  document.getElementById('grupo-c-senha').style.display='';
+  document.getElementById('grupo-c-email').style.display='';
+  document.getElementById('c-email').disabled=false;
+  document.getElementById('aviso-c-migrado').style.display='none';
+  document.querySelector('#grupo-c-senha label').textContent='Senha inicial *';
   abrirModal('modal-conta');
 }
 function editarConta(id){
@@ -1419,32 +1518,60 @@ function editarConta(id){
   document.getElementById('c-nome-conta').value=c.nomeConta||'';
   document.getElementById('c-perfil').value=c.perfil||'pastoral';
   document.getElementById('c-status').value=c.status||'ativo';
-  document.getElementById('c-senha').value=c.senha||'';
+  document.getElementById('c-senha').value='';
+  const migrada=!!c.uid;
+  document.getElementById('grupo-c-senha').style.display=migrada?'none':'';
+  document.getElementById('aviso-c-migrado').style.display=migrada?'block':'none';
+  document.getElementById('c-email').disabled=migrada;
   abrirModal('modal-conta');
 }
-function salvarConta(){
+async function salvarConta(){
   const nome=document.getElementById('c-nome').value.trim();
   const email=document.getElementById('c-email').value.trim().toLowerCase();
   const nomeConta=document.getElementById('c-nome-conta').value.trim().toLowerCase();
   const senha=document.getElementById('c-senha').value.trim();
   const perfil=document.getElementById('c-perfil').value;
   const status=document.getElementById('c-status').value;
-  if(!nome||!email||!senha){toast('Preencha nome, e-mail e senha.','erro');return;}
+  if(!nome||!email){toast('Preencha nome e e-mail.','erro');return;}
   const id0=document.getElementById('c-id').value;
+  const existente=id0?contas.find(x=>x.id===id0):null;
+  if(!existente&&!senha){toast('Defina uma senha inicial.','erro');return;}
   if(emailEmUso(email,id0)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
   if(nomeConta&&emailEmUso(nomeConta,id0)){toast('Esse nome da conta já está em uso.','erro');return;}
   if(status==='inativo'&&perfil==='admin'&&contas.filter(x=>x.perfil==='admin'&&x.status!=='inativo'&&x.id!==id0).length===0){
     toast('Não é possível inativar o único administrador ativo.','erro');return;
   }
-  const id=id0||uid();
-  const idx=contas.findIndex(x=>x.id===id);
-  const obj={id,nome,email,nomeConta,senha,perfil,status};
-  if(idx>=0)contas[idx]=obj;else contas.push(obj);
-  salvarLocal();
-  if(usandoFirebase)salvarFirebase('contas',id,obj);
-  fecharModal('modal-conta');renderContas();
-  if(document.getElementById('secao-usuarios').classList.contains('ativa'))renderUsuarios();
-  toast('Conta salva!','ok');
+
+  const btnSalvar=document.querySelector('#modal-conta .btn-primario');
+  if(btnSalvar){btnSalvar.disabled=true;btnSalvar.textContent='Salvando...';}
+
+  try{
+    if(!existente){
+      // Conta nova: cria o login de verdade no Firebase Authentication (num app secundário,
+      // pra não derrubar a sessão de quem está cadastrando) e usa o UID gerado como ID do registro.
+      if(!usandoFirebase){toast('É preciso estar conectado ao Firebase para criar contas novas.','erro');if(btnSalvar){btnSalvar.disabled=false;btnSalvar.textContent='Salvar';}return;}
+      const authSec=getAuthSecundario();
+      const cred=await authSec.createUserWithEmailAndPassword(email,senha);
+      await authSec.signOut();
+      const obj={id:cred.user.uid,uid:cred.user.uid,nome,email,nomeConta,perfil,status};
+      contas.push(obj);
+      salvarLocal();
+      await db.ref('contas/'+obj.id).set(obj);
+    } else {
+      // Conta existente: atualiza só os dados de perfil. E-mail/senha de login não mudam por aqui
+      // (login já migrado usa o Firebase Authentication; peça redefinição de senha se precisar).
+      existente.nome=nome; existente.nomeConta=nomeConta; existente.perfil=perfil; existente.status=status;
+      if(!existente.uid)existente.email=email; // ainda não migrado: pode ajustar o e-mail livremente
+      salvarLocal();
+      if(usandoFirebase)await db.ref('contas/'+existente.id).set(existente);
+    }
+    fecharModal('modal-conta');renderContas();
+    if(document.getElementById('secao-usuarios').classList.contains('ativa'))renderUsuarios();
+    toast('Conta salva!','ok');
+  }catch(e){
+    toast('Erro ao salvar conta: '+traduzErroAuth(e),'erro');
+  }
+  if(btnSalvar){btnSalvar.disabled=false;btnSalvar.textContent='Salvar';}
 }
 function excluirConta(id){
   const c=contas.find(x=>x.id===id);
@@ -1487,41 +1614,58 @@ function abrirMeuPerfil(){
   document.getElementById('mp-nome').value=usuarioAtual.nome||'';
   document.getElementById('mp-email').value=usuarioAtual.email||'';
   document.getElementById('mp-nome-conta').value=usuarioAtual.nomeConta||'';
+  document.getElementById('mp-senha-atual').value='';
   document.getElementById('mp-senha1').value='';
   document.getElementById('mp-senha2').value='';
   document.getElementById('mp-msg').style.display='none';
   abrirModal('modal-meu-perfil');
 }
-function salvarMeuPerfil(){
+async function salvarMeuPerfil(){
   if(!usuarioAtual)return;
   const email=document.getElementById('mp-email').value.trim().toLowerCase();
   const nomeConta=document.getElementById('mp-nome-conta').value.trim().toLowerCase();
+  const senhaAtual=document.getElementById('mp-senha-atual').value.trim();
   const s1=document.getElementById('mp-senha1').value.trim();
   const s2=document.getElementById('mp-senha2').value.trim();
-  const msg=document.getElementById('mp-msg');
   if(!email){mpMsg('Informe um e-mail.','erro');return;}
   if(emailEmUso(email,usuarioAtual.id)){mpMsg('Esse e-mail já está em uso por outra conta.','erro');return;}
   if(nomeConta&&emailEmUso(nomeConta,usuarioAtual.id)){mpMsg('Esse nome da conta já está em uso.','erro');return;}
   if(s1||s2){
     if(s1!==s2){mpMsg('As senhas não conferem.','erro');return;}
-    if(s1.length<4){mpMsg('A senha deve ter ao menos 4 caracteres.','erro');return;}
+    if(s1.length<6){mpMsg('A nova senha deve ter ao menos 6 caracteres.','erro');return;}
   }
-  if(usuarioAtual.perfil==='profissional'){
-    const p=profissionais.find(x=>x.id===usuarioAtual.id);if(!p)return;
-    p.email=email; p.nomeConta=nomeConta; if(s1)p.senha=s1;
-    salvarLocal(); if(usandoFirebase)salvarFirebase('profissionais',p.id,p);
-    renderProfissionais();
-  }else{
-    const c=contas.find(x=>x.id===usuarioAtual.id);if(!c)return;
-    c.email=email; c.nomeConta=nomeConta; if(s1)c.senha=s1;
-    salvarLocal(); if(usandoFirebase)salvarFirebase('contas',c.id,c);
-    renderContas();
+  const trocouEmail=email!==(usuarioAtual.email||'').toLowerCase();
+  if((trocouEmail||s1)&&!senhaAtual){mpMsg('Informe sua senha atual para trocar e-mail ou senha.','erro');return;}
+
+  const btn=document.querySelector('#modal-meu-perfil .btn-primario');
+  if(btn){btn.disabled=true;btn.textContent='Salvando...';}
+
+  try{
+    if((trocouEmail||s1)&&auth&&auth.currentUser){
+      const cred=firebase.auth.EmailAuthProvider.credential(usuarioAtual.email,senhaAtual);
+      await auth.currentUser.reauthenticateWithCredential(cred);
+      if(trocouEmail)await auth.currentUser.updateEmail(email);
+      if(s1)await auth.currentUser.updatePassword(s1);
+    }
+
+    const registro=usuarioAtual.perfil==='profissional'
+      ?profissionais.find(x=>x.id===usuarioAtual.id)
+      :contas.find(x=>x.id===usuarioAtual.id);
+    if(registro){
+      registro.email=email; registro.nomeConta=nomeConta;
+      salvarLocal();
+      if(usandoFirebase)await db.ref((usuarioAtual.perfil==='profissional'?'profissionais':'contas')+'/'+registro.id).set(registro);
+      if(usuarioAtual.perfil==='profissional')renderProfissionais(); else renderContas();
+    }
+    usuarioAtual.email=email;
+    usuarioAtual.nomeConta=nomeConta;
+    mpMsg('Dados atualizados com sucesso!','ok');
+    toast('Conta atualizada!','ok');
+    setTimeout(()=>fecharModal('modal-meu-perfil'),900);
+  }catch(e){
+    mpMsg('Não foi possível salvar: '+traduzErroAuth(e),'erro');
   }
-  usuarioAtual.email=email;
-  usuarioAtual.nomeConta=nomeConta;
-  mpMsg('Dados atualizados com sucesso!','ok');
-  toast('Conta atualizada!','ok');
-  setTimeout(()=>fecharModal('modal-meu-perfil'),900);
+  if(btn){btn.disabled=false;btn.textContent='Salvar';}
 }
 function mpMsg(t,tipo){
   const el=document.getElementById('mp-msg');
@@ -1529,31 +1673,30 @@ function mpMsg(t,tipo){
   el.style.color=tipo==='erro'?'var(--vermelho)':'var(--verde)';
 }
 
-// ── ESQUECI MINHA SENHA (envio por e-mail via EmailJS) ──
+// ── ESQUECI MINHA SENHA (link nativo do Firebase Authentication) ──
 function abrirEsqueciSenha(){
   document.getElementById('rec-email').value=document.getElementById('login-email').value.trim();
   document.getElementById('rec-msg').style.display='none';
   abrirModal('modal-esqueci-senha');
 }
-function enviarRecuperacaoSenha(){
+async function enviarRecuperacaoSenha(){
   const email=document.getElementById('rec-email').value.trim().toLowerCase();
   if(!email){recMsg('Informe um e-mail.','erro');return;}
-  const conta=contas.find(c=>(c.email||'').toLowerCase()===email);
-  const prof=!conta?profissionais.find(p=>(p.email||'').toLowerCase()===email):null;
-  const alvo=conta||prof;
-  if(!alvo){recMsg('E-mail não encontrado.','erro');return;}
-  const nome=alvo.nome, senha=alvo.senha||'salus123';
+  if(!email.includes('@')){recMsg('Informe o e-mail cadastrado (login por nome de conta não recebe e-mail).','erro');return;}
+  if(!usandoFirebase||!auth){recMsg('Sem conexão com o Firebase no momento.','erro');return;}
   const btn=document.getElementById('btn-rec-enviar');
   btn.disabled=true;btn.textContent='Enviando...';
-  enviarEmailComSenha(email,nome,senha)
-    .then(()=>{
-      recMsg('Senha enviada! Verifique sua caixa de entrada (e o spam).','ok');
-      btn.disabled=false;btn.textContent='Enviar Senha por E-mail';
-    })
-    .catch(e=>{
-      recMsg('Não foi possível enviar o e-mail: '+e.message+'. Configure o EmailJS na aba Config.','erro');
-      btn.disabled=false;btn.textContent='Enviar Senha por E-mail';
-    });
+  try{
+    await auth.sendPasswordResetEmail(email);
+    recMsg('Link de redefinição enviado! Verifique sua caixa de entrada (e o spam).','ok');
+  }catch(e){
+    if(e.code==='auth/user-not-found'){
+      recMsg('Esse e-mail ainda não fez o primeiro acesso pelo sistema novo. Entre normalmente uma vez com a senha antiga antes de usar "Esqueci minha senha".','erro');
+    } else {
+      recMsg('Não foi possível enviar: '+traduzErroAuth(e),'erro');
+    }
+  }
+  btn.disabled=false;btn.textContent='Enviar Link de Redefinição';
 }
 function recMsg(t,tipo){
   const el=document.getElementById('rec-msg');
@@ -1881,6 +2024,7 @@ function enviarSolicitacao(){
   // Marcar horário como ocupado
   h.ocupado=true;
   salvarLocal();
+  if(usandoFirebase){salvarFirebase('agendamentos',ag.id,ag);salvarFirebase('horarios',h.id,h);}
   atualizarBadges();
   toast('Solicitação enviada! O profissional será notificado ao entrar no sistema.','ok');
   // Resetar
@@ -1942,14 +2086,16 @@ function responderSolicitacao(novoStatus){
   }
   a.status=novoStatus;
   a.dataResposta=new Date().toISOString();
+  let hLiberado=null;
   if(novoStatus==='recusado'){
     a.motivoRecusa=msg;
     const h=horarios.find(x=>x.id===a.horarioId);
-    if(h)h.ocupado=false;
+    if(h){h.ocupado=false;hLiberado=h;}
   } else {
     a.msgProfissional=msg;
   }
   salvarLocal(); fecharModal('modal-responder'); atualizarBadges();
+  if(usandoFirebase){salvarFirebase('agendamentos',a.id,a);if(hLiberado)salvarFirebase('horarios',hLiberado.id,hLiberado);}
 
   if(novoStatus==='confirmado'){
     toast('Consulta confirmada! A pastoral será avisada.','ok');
@@ -2007,6 +2153,7 @@ function marcarPastoralCiente(){
   const a=agendamentos.find(x=>x.id===agWhatsId); if(!a)return;
   a.status='pastoral_ciente';
   salvarLocal(); fecharModal('modal-whats'); atualizarBadges();
+  if(usandoFirebase)salvarFirebase('agendamentos',a.id,a);
   renderPainel(); renderAgendamentos();
   toast('Pastoral marcada como ciente.','ok');
 }
@@ -2043,7 +2190,7 @@ function marcarRecusaCiente(){
   relatorios.push(rel);
 
   salvarLocal();
-  if(usandoFirebase)salvarFirebase('relatorios',rel.id,rel);
+  if(usandoFirebase){salvarFirebase('relatorios',rel.id,rel);salvarFirebase('agendamentos',a.id,a);}
   fecharModal('modal-recusa-ciente'); atualizarBadges();
   renderPainel(); renderAgendamentos();
   toast('Recusa registrada como ciente e enviada para Relatórios.','ok');
@@ -2093,6 +2240,9 @@ function abrirModalProfissional(){
   document.getElementById('p-especialidade').value='';
   document.getElementById('p-status').value='ativo';
   document.getElementById('p-senha').value='salus123';
+  document.getElementById('grupo-p-senha').style.display='';
+  document.getElementById('p-email').disabled=false;
+  document.getElementById('aviso-p-migrado').style.display='none';
   abrirModal('modal-profissional');
 }
 function editarProfissional(id){
@@ -2108,10 +2258,14 @@ function editarProfissional(id){
   document.getElementById('p-local').value=p.local||'';
   document.getElementById('p-obs').value=p.obs||'';
   document.getElementById('p-status').value=p.status||'ativo';
-  document.getElementById('p-senha').value=p.senha||'salus123';
+  document.getElementById('p-senha').value='';
+  const migrado=!!p.uid;
+  document.getElementById('grupo-p-senha').style.display=migrado?'none':'';
+  document.getElementById('aviso-p-migrado').style.display=migrado?'block':'none';
+  document.getElementById('p-email').disabled=migrado;
   abrirModal('modal-profissional');
 }
-function salvarProfissional(){
+async function salvarProfissional(){
   const nome=document.getElementById('p-nome').value.trim();
   const tel=document.getElementById('p-telefone').value.trim();
   const esp=document.getElementById('p-especialidade').value;
@@ -2120,21 +2274,41 @@ function salvarProfissional(){
   const senha=document.getElementById('p-senha').value.trim()||'salus123';
   if(!nome||!tel||!esp){toast('Preencha nome, especialidade e telefone.','erro');return;}
   if(!email){toast('Informe o e-mail — é o login do profissional no app.','erro');return;}
-  const id=document.getElementById('p-id').value||uid();
-  if(emailEmUso(email,id)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
-  if(nomeConta&&emailEmUso(nomeConta,id)){toast('Esse nome da conta já está em uso.','erro');return;}
-  const idx=profissionais.findIndex(x=>x.id===id);
-  const obj={id,nome,especialidade:esp,registro:document.getElementById('p-registro').value.trim(),
-    telefone:tel,email,nomeConta,senha,
-    local:document.getElementById('p-local').value.trim(),
+  const id0=document.getElementById('p-id').value;
+  const existente=id0?profissionais.find(x=>x.id===id0):null;
+  if(emailEmUso(email,id0)){toast('Esse e-mail já está em uso por outra conta.','erro');return;}
+  if(nomeConta&&emailEmUso(nomeConta,id0)){toast('Esse nome da conta já está em uso.','erro');return;}
+
+  const btnSalvar=document.querySelector('#modal-profissional .btn-primario');
+  if(btnSalvar){btnSalvar.disabled=true;btnSalvar.textContent='Salvando...';}
+
+  const dadosComuns={nome,especialidade:esp,registro:document.getElementById('p-registro').value.trim(),
+    telefone:tel,nomeConta,local:document.getElementById('p-local').value.trim(),
     obs:document.getElementById('p-obs').value.trim(),
-    status:document.getElementById('p-status').value,
-    atendimentos:idx>=0?(profissionais[idx].atendimentos||0):0};
-  if(idx>=0)profissionais[idx]=obj;else profissionais.push(obj);
-  salvarLocal();
-  if(usandoFirebase)salvarFirebase('profissionais',id,obj);
-  fecharModal('modal-profissional');renderProfissionais();
-  toast('Profissional salvo!','ok');
+    status:document.getElementById('p-status').value};
+
+  try{
+    if(!existente){
+      if(!usandoFirebase){toast('É preciso estar conectado ao Firebase para criar profissionais novos.','erro');if(btnSalvar){btnSalvar.disabled=false;btnSalvar.textContent='Salvar';}return;}
+      const authSec=getAuthSecundario();
+      const cred=await authSec.createUserWithEmailAndPassword(email,senha);
+      await authSec.signOut();
+      const obj={id:cred.user.uid,uid:cred.user.uid,email,atendimentos:0,...dadosComuns};
+      profissionais.push(obj);
+      salvarLocal();
+      await db.ref('profissionais/'+obj.id).set(obj);
+    } else {
+      Object.assign(existente,dadosComuns);
+      if(!existente.uid)existente.email=email;
+      salvarLocal();
+      if(usandoFirebase)await db.ref('profissionais/'+existente.id).set(existente);
+    }
+    fecharModal('modal-profissional');renderProfissionais();
+    toast('Profissional salvo!','ok');
+  }catch(e){
+    toast('Erro ao salvar profissional: '+traduzErroAuth(e),'erro');
+  }
+  if(btnSalvar){btnSalvar.disabled=false;btnSalvar.textContent='Salvar';}
 }
 
 
@@ -2157,8 +2331,11 @@ function salvarHorario(){
   // Encontrar profissional logado
   const p=profissionais.find(x=>x.id===usuarioAtual?.profissionalId)||profissionais.find(x=>x.nome===usuarioAtual?.nome)||profissionais[0];
   if(!p){toast('Nenhum profissional cadastrado com este nome.','erro');return;}
-  horarios.push({id:uid(),profissionalId:p.id,data,hora,local,obs:document.getElementById('h-obs').value.trim(),ocupado:false});
-  salvarLocal();fecharModal('modal-horario');renderMinhaAgenda();
+  const novoHorario={id:uid(),profissionalId:p.id,data,hora,local,obs:document.getElementById('h-obs').value.trim(),ocupado:false};
+  horarios.push(novoHorario);
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('horarios',novoHorario.id,novoHorario);
+  fecharModal('modal-horario');renderMinhaAgenda();
   if(p.especialidade)resolverNecessidadesPorEspecialidade(p.especialidade);
   toast('Horário oferecido!','ok');
 }
@@ -2166,7 +2343,9 @@ function excluirHorario(hId){
   const h=horarios.find(x=>x.id===hId);
   if(h?.ocupado){toast('Este horário já tem uma consulta solicitada.','erro');return;}
   horarios=horarios.filter(x=>x.id!==hId);
-  salvarLocal();renderMinhaAgenda();toast('Horário removido.','');
+  salvarLocal();
+  if(usandoFirebase)excluirFirebase('horarios',hId);
+  renderMinhaAgenda();toast('Horário removido.','');
 }
 
 // ══════════════════════════════════════════════════════
@@ -2321,7 +2500,9 @@ function salvarBeneficiario(){
     consentimento,
     descricao:document.getElementById('b-descricao').value.trim()};
   if(idx>=0)beneficiarios[idx]=obj;else beneficiarios.push(obj);
-  salvarLocal();fecharModal('modal-beneficiario');renderBeneficiarios();
+  salvarLocal();
+  if(usandoFirebase)salvarFirebase('beneficiarios',id,obj);
+  fecharModal('modal-beneficiario');renderBeneficiarios();
   if(!temEspecialistaLivre(nec))registrarTentativaNecessidade(id,nec);
   toast('Beneficiário salvo!','ok');
 }
@@ -2928,16 +3109,22 @@ function confirmarExcluir(tipo,id){
 function excluir(tipo,id){
   const mapas={profissional:[profissionais,renderProfissionais],beneficiario:[beneficiarios,renderBeneficiarios],
     agendamento:[agendamentos,renderAgendamentos],relatorio:[relatorios,renderRelatorios]};
+  const colecoes={profissional:'profissionais',beneficiario:'beneficiarios',agendamento:'agendamentos',relatorio:'relatorios'};
   const [arr,render]=mapas[tipo];
   const idx=arr.findIndex(x=>x.id===id);
   if(idx>=0)arr.splice(idx,1);
   // Se agendamento excluído, liberar horário
+  let hLiberado=null;
   if(tipo==='agendamento'){
     const ag=agendamentos.find(x=>x.id===id)||{};
     const h=horarios.find(x=>x.id===ag.horarioId);
-    if(h)h.ocupado=false;
+    if(h){h.ocupado=false;hLiberado=h;}
   }
   salvarLocal();render();atualizarBadges();
+  if(usandoFirebase){
+    excluirFirebase(colecoes[tipo],id);
+    if(hLiberado)salvarFirebase('horarios',hLiberado.id,hLiberado);
+  }
   toast('Registro excluído.','ok');
 }
 function exportarCSV(){
@@ -2962,7 +3149,22 @@ document.getElementById('filtro-rel-mes').value=new Date().toISOString().slice(0
 // INTEGRAÇÃO FIREBASE
 // ══════════════════════════════════════════════════════
 let db = null;
+let auth = null;
 let usandoFirebase = false;
+let firebaseCfgAtual = null;
+let appSecundario = null;
+
+function getAuthSecundario(){
+  // App Firebase separado, só pra criar OUTRAS contas sem trocar a sessão logada do admin.
+  if(!appSecundario){
+    try{
+      appSecundario = firebase.initializeApp(firebaseCfgAtual, 'Secundario');
+    }catch(e){
+      appSecundario = firebase.app('Secundario');
+    }
+  }
+  return appSecundario.auth();
+}
 
 function conectarFirebase() {
   const json = document.getElementById('firebase-json').value.trim();
@@ -2976,7 +3178,8 @@ function conectarFirebase() {
   if (!window.firebase) {
     const scripts = [
       'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js',
-      'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js'
+      'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js',
+      'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js'
     ];
     let carregados = 0;
     scripts.forEach(src => {
@@ -2996,7 +3199,10 @@ function conectarFirebase() {
 function inicializarFirebase(cfg) {
   try {
     if (!firebase.apps.length) firebase.initializeApp(cfg);
+    firebaseCfgAtual = cfg;
     db = firebase.database();
+    auth = firebase.auth();
+    auth.languageCode = 'pt';
     usandoFirebase = true;
     localStorage.setItem('salus_firebase_cfg', JSON.stringify(cfg));
     atualizarStatusFirebase(true);
@@ -3008,6 +3214,45 @@ function inicializarFirebase(cfg) {
   } catch(e) {
     toast('Erro ao conectar: ' + e.message, 'erro');
   }
+}
+
+async function rodarMigracaoEmLote(){
+  if(!usandoFirebase||!db){toast('Conecte ao Firebase primeiro.','erro');return;}
+  const area=document.getElementById('area-migracao');
+  const pendentes=[
+    ...contas.filter(c=>!c.uid&&c.email&&c.senha).map(c=>({colecao:'contas',registro:c})),
+    ...profissionais.filter(p=>!p.uid&&p.email&&(p.senha||true)).map(p=>({colecao:'profissionais',registro:p})),
+  ];
+  if(pendentes.length===0){
+    area.innerHTML='<div class="aviso aviso-ok">Nenhuma conta pendente de migração — todo mundo já usa o login seguro (ou ainda não tem e-mail cadastrado).</div>';
+    return;
+  }
+  area.innerHTML=`<div class="aviso aviso-info">Migrando ${pendentes.length} conta(s)... não feche esta aba.</div>`;
+  const resultados=[];
+  for(const item of pendentes){
+    const r=item.registro;
+    try{
+      const authSec=getAuthSecundario();
+      const senha=r.senha||'salus123';
+      const cred=await authSec.createUserWithEmailAndPassword(r.email.toLowerCase(),senha);
+      await authSec.signOut();
+      r.uid=cred.user.uid;
+      delete r.senha;
+      await db.ref(item.colecao+'/'+r.id).set(r);
+      resultados.push(`✅ ${esc(r.nome)} (${esc(r.email)}) — migrado com a senha atual.`);
+    }catch(e){
+      if(e.code==='auth/email-already-in-use'){
+        resultados.push(`⚠️ ${esc(r.nome)} (${esc(r.email)}) — já existe uma conta de login com esse e-mail. Verifique manualmente.`);
+      } else {
+        resultados.push(`❌ ${esc(r.nome)} (${esc(r.email)}) — erro: ${traduzErroAuth(e)}`);
+      }
+    }
+  }
+  salvarLocal();
+  area.innerHTML=`<div class="aviso aviso-ok">Migração concluída (${pendentes.length} processada(s)):</div>
+    <div style="font-size:0.85rem;line-height:1.8;margin-top:8px;">${resultados.join('<br>')}</div>`;
+  renderContas(); renderProfissionais();
+  if(document.getElementById('secao-usuarios').classList.contains('ativa'))renderUsuarios();
 }
 
 async function rodarDiagnostico(){
@@ -3146,7 +3391,8 @@ const FIREBASE_CFG_SALUS = {
 (function autoConectar() {
   const scripts = [
     'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js',
-    'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js'
+    'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js',
+    'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js'
   ];
   let n = 0;
   scripts.forEach(src => {
