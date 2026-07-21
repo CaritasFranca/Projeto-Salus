@@ -26,6 +26,8 @@ body{background:var(--cream);color:var(--brown);min-height:100vh;}
 /* LOGIN */
 #tela-login{min-height:100vh;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(150deg,var(--dark) 0%,var(--dark2) 60%,#1a1200 100%);}
+#tela-cadastro-voluntario{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 0;
+  background:linear-gradient(150deg,var(--dark) 0%,var(--dark2) 60%,#1a1200 100%);}
 .login-box{background:white;border-radius:14px;padding:44px 36px 36px;width:100%;max-width:400px;
   box-shadow:var(--sombra-forte);text-align:center;border-top:3px solid var(--gold);}
 .login-ornamento{font-size:1.4rem;color:var(--gold);letter-spacing:0.4em;display:block;margin-bottom:1rem;}
@@ -243,6 +245,7 @@ tr:hover td{background:var(--gold-faint);}
   .secao-header{flex-direction:column;align-items:stretch;}
   .secao-header .btn{width:100%;justify-content:center;padding:12px;}
   #tela-login{padding:16px;align-items:flex-start;padding-top:36px;}
+  #tela-cadastro-voluntario{padding:16px;align-items:flex-start;padding-top:24px;}
   .login-box{padding:28px 18px 22px;}
   .horarios-grid{grid-template-columns:1fr 1fr;}
 }
@@ -301,6 +304,9 @@ tr:hover td{background:var(--gold-faint);}
       <a href="#" onclick="abrirEsqueciSenha();return false;" style="font-size:0.78rem;color:var(--brown-lt);font-family:'Raleway',sans-serif;">Esqueci minha senha</a>
     </div>
     <div class="login-erro" id="login-erro"></div>
+    <div style="text-align:center;margin-top:10px;">
+      <a href="#" onclick="abrirCadastroProfissional();return false;" style="font-size:0.82rem;color:var(--gold);font-weight:600;font-family:'Raleway',sans-serif;">🩺 Quero ser voluntário(a)</a>
+    </div>
     <div id="aviso-file-protocol" style="display:none;margin-top:14px;padding:12px 14px;background:#F8D7DA;border-radius:8px;font-size:0.8rem;color:#8B1A1A;line-height:1.6;text-align:left;">
       ⚠️ <strong>Este arquivo foi aberto direto do computador.</strong> Nesse modo, os dados não sincronizam com o Firebase — você só vê informações de demonstração salvas neste navegador.
       <div style="margin-top:8px;">Abra pelo site publicado para usar os dados reais:</div>
@@ -311,6 +317,38 @@ tr:hover td{background:var(--gold-faint);}
     </div>
     <div style="text-align:center;margin-top:14px;">
       <a href="#" onclick="forcarRecarregarApp();return false;" style="font-size:0.72rem;color:var(--brown-lt);font-family:'Raleway',sans-serif;">⟳ Buscar versão mais recente do app</a>
+    </div>
+  </div>
+</div>
+
+<!-- AUTO-CADASTRO DE VOLUNTÁRIO (público, sem login) -->
+<div id="tela-cadastro-voluntario" style="display:none;">
+  <div class="login-box" style="max-width:460px;">
+    <span class="login-ornamento">✦ · ✦ · ✦</span>
+    <div class="login-titulo" style="font-size:1.3rem;">Quero ser Voluntário(a)</div>
+    <div class="login-sub">Cáritas Diocesana de Franca</div>
+    <p style="font-size:0.85rem;color:var(--brown-mid);text-align:left;margin:10px 0 16px;line-height:1.6;">Preencha seus dados abaixo. Seu cadastro passa por uma revisão rápida da Cáritas antes de ficar ativo.</p>
+
+    <div style="text-align:left;">
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Nome completo *</label><input type="text" id="cv-nome" placeholder="Seu nome completo"></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Especialidade *</label>
+        <select id="cv-especialidade"><option value="">Selecione</option>
+          <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
+          <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
+          <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+        </select></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Registro Profissional (se houver)</label><input type="text" id="cv-registro" placeholder="CRM, CRO, CRP, OAB..."></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Telefone / WhatsApp *</label><input type="tel" id="cv-telefone" placeholder="(16) 99000-0000"></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>E-mail *</label><input type="email" id="cv-email" placeholder="email@exemplo.com"></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Crie uma senha *</label><input type="password" id="cv-senha" placeholder="Mínimo 6 caracteres"></div>
+      <div class="form-grupo" style="margin-bottom:10px;"><label>Local de Atendimento (opcional)</label><input type="text" id="cv-local" placeholder="Ex.: consultório próprio, online..."></div>
+      <div class="form-grupo"><label>Observações (opcional)</label><textarea id="cv-obs" placeholder="Dias/horários que costuma ter disponibilidade, etc."></textarea></div>
+    </div>
+
+    <div class="login-erro" id="cadastro-voluntario-msg"></div>
+    <button class="btn-login" id="btn-cadastro-voluntario" onclick="enviarCadastroVoluntario()" style="margin-top:14px;">Enviar Cadastro</button>
+    <div style="text-align:center;margin-top:14px;">
+      <a href="#" onclick="fecharCadastroProfissional();return false;" style="font-size:0.82rem;color:var(--brown-lt);font-family:'Raleway',sans-serif;">← Voltar para o login</a>
     </div>
   </div>
 </div>
@@ -1118,6 +1156,11 @@ async function fazerLogin(){
     return;
   }
 
+  const btnEntrar=document.querySelector('.btn-login');
+  const textoOriginal=btnEntrar?btnEntrar.textContent:'';
+  if(btnEntrar){btnEntrar.disabled=true;btnEntrar.textContent='Verificando...';}
+  await aguardarSincronizacaoAntesDeEntrar();
+
   // Descobrir o e-mail de login: aceita e-mail direto, nome da conta ou nome cadastrado
   let email=identificador.includes('@')?identificador:null;
   let registroLegado=null; // registro antigo (contas/profissionais) que bate com o identificador, se ainda não migrado
@@ -1127,18 +1170,20 @@ async function fazerLogin(){
     if(!c&&!p){
       const cand=[...contas,...profissionais.map(x=>({...x,_prof:true}))].filter(x=>(x.nome||'').trim().toLowerCase()===identificador);
       if(cand.length===1){ if(cand[0]._prof)p=cand[0]; else c=cand[0]; }
-      else if(cand.length>1){erroLogin('Há mais de um cadastro com esse nome. Entre com seu e-mail ou nome da conta.');return;}
+      else if(cand.length>1){erroLogin('Há mais de um cadastro com esse nome. Entre com seu e-mail ou nome da conta.');if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}return;}
     }
     const reg=c||p;
     if(reg&&reg.email){ email=reg.email.toLowerCase(); registroLegado=reg; }
     else if(reg&&!reg.email){
       erroLogin('Esse cadastro ainda não tem e-mail. Peça para um administrador cadastrar um e-mail antes do primeiro acesso.');
+      if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}
       return;
     }
   } else {
     registroLegado=contas.find(x=>(x.email||'').toLowerCase()===email)||profissionais.find(x=>(x.email||'').toLowerCase()===email);
   }
-  if(!email){erroLogin('E-mail ou nome não encontrado. Verifique ou fale com a Cáritas.');return;}
+  if(!email){erroLogin('E-mail ou nome não encontrado. Verifique ou fale com a Cáritas.');if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}return;}
+  if(btnEntrar)btnEntrar.textContent='Entrando...';
 
   try{
     const cred=await auth.signInWithEmailAndPassword(email,senha);
@@ -1154,11 +1199,13 @@ async function fazerLogin(){
       }catch(e2){
         erroLogin('Não foi possível migrar sua conta automaticamente: '+traduzErroAuth(e2));
       }
+      if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}
       return;
     }
-    if(registroLegado&&registroLegado.status==='inativo'){erroLogin('Cadastro inativo. Fale com a coordenação da Cáritas.');return;}
-    if(registroLegado&&registroLegado.status==='pendente'){erroLogin('Seu cadastro ainda aguarda aprovação da Cáritas.');return;}
+    if(registroLegado&&registroLegado.status==='inativo'){erroLogin('Cadastro inativo. Fale com a coordenação da Cáritas.');if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}return;}
+    if(registroLegado&&registroLegado.status==='pendente'){erroLogin('Seu cadastro ainda aguarda aprovação da Cáritas.');if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}return;}
     erroLogin(traduzErroAuth(e));
+    if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}
   }
 }
 
@@ -1185,7 +1232,15 @@ async function vincularUidAoRegistro(registro,uid){
   if(usandoFirebase)await db.ref(colecao+'/'+registro.id).set(registro);
 }
 
+async function aguardarSincronizacaoAntesDeEntrar(){
+  if(!usandoFirebase)return;
+  for(let i=0;i<30;i++){ // até ~6s
+    if(todasColecoesSincronizadas())return;
+    await new Promise(r=>setTimeout(r,200));
+  }
+}
 async function entrarComUid(uid,emailLogin){
+  await aguardarSincronizacaoAntesDeEntrar();
   let conta=contas.find(c=>c.uid===uid);
   let prof=!conta?profissionais.find(p=>p.uid===uid):null;
   if(!conta&&!prof){
@@ -1339,6 +1394,15 @@ function detectarAberturaLocal(){
   }
 }
 detectarAberturaLocal();
+
+function detectarLinkCadastro(){
+  const params=new URLSearchParams(location.search);
+  if(params.get('cadastro')==='profissional'){
+    document.getElementById('tela-login').style.display='none';
+    document.getElementById('tela-cadastro-voluntario').style.display='flex';
+  }
+}
+detectarLinkCadastro();
 
 function forcarRecarregarApp(){
   const base=location.href.split('?')[0].split('#')[0];
@@ -1692,6 +1756,61 @@ function mpMsg(t,tipo){
 }
 
 // ── ESQUECI MINHA SENHA (link nativo do Firebase Authentication) ──
+// ── AUTO-CADASTRO DE VOLUNTÁRIO (tela pública, sem login) ──
+function abrirCadastroProfissional(){
+  document.getElementById('tela-login').style.display='none';
+  document.getElementById('tela-cadastro-voluntario').style.display='flex';
+  document.getElementById('cadastro-voluntario-msg').style.display='none';
+}
+function fecharCadastroProfissional(){
+  document.getElementById('tela-cadastro-voluntario').style.display='none';
+  document.getElementById('tela-login').style.display='flex';
+}
+function cadMsg(t,tipo){
+  const el=document.getElementById('cadastro-voluntario-msg');
+  el.textContent=t;
+  el.style.display='block';
+  el.className='aviso '+(tipo==='erro'?'aviso-erro':'aviso-ok');
+  el.style.marginTop='14px';
+  el.style.fontSize='0.85rem';
+  el.style.textAlign='left';
+}
+async function enviarCadastroVoluntario(){
+  const nome=document.getElementById('cv-nome').value.trim();
+  const especialidade=document.getElementById('cv-especialidade').value;
+  const registro=document.getElementById('cv-registro').value.trim();
+  const telefone=document.getElementById('cv-telefone').value.trim();
+  const email=document.getElementById('cv-email').value.trim().toLowerCase();
+  const senha=document.getElementById('cv-senha').value.trim();
+  const local=document.getElementById('cv-local').value.trim();
+  const obs=document.getElementById('cv-obs').value.trim();
+
+  if(!nome||!especialidade||!telefone||!email){cadMsg('Preencha nome, especialidade, telefone e e-mail.','erro');return;}
+  if(senha.length<6){cadMsg('A senha deve ter ao menos 6 caracteres.','erro');return;}
+  if(!usandoFirebase||!auth){cadMsg('Sem conexão com o Firebase no momento. Tente novamente em instantes.','erro');return;}
+  if(typeof emailEmUso==='function'&&emailEmUso(email)){cadMsg('Esse e-mail já está cadastrado no sistema.','erro');return;}
+
+  const btn=document.getElementById('btn-cadastro-voluntario');
+  btn.disabled=true;btn.textContent='Enviando...';
+
+  try{
+    const cred=await auth.createUserWithEmailAndPassword(email,senha);
+    const obj={id:cred.user.uid,uid:cred.user.uid,nome,especialidade,registro,telefone,email,
+      local,obs,status:'pendente',origem:'cadastro_direto',atendimentos:0};
+    await db.ref('profissionais/'+obj.id).set(obj);
+    try{ await cred.user.sendEmailVerification(); }catch(e){ /* não trava o cadastro se o e-mail falhar */ }
+    await auth.signOut();
+    document.querySelectorAll('#tela-cadastro-voluntario input, #tela-cadastro-voluntario select, #tela-cadastro-voluntario textarea').forEach(el=>el.value='');
+    cadMsg('Cadastro enviado com sucesso! Você será contactado(a) pela Cáritas para a confirmação do seu cadastro.','ok');
+    btn.textContent='Enviar Cadastro';
+    btn.disabled=false;
+  }catch(e){
+    cadMsg('Não foi possível enviar: '+(typeof traduzErroAuth==='function'?traduzErroAuth(e):e.message),'erro');
+    btn.textContent='Enviar Cadastro';
+    btn.disabled=false;
+  }
+}
+
 function abrirEsqueciSenha(){
   document.getElementById('rec-email').value=document.getElementById('login-email').value.trim();
   document.getElementById('rec-msg').style.display='none';
