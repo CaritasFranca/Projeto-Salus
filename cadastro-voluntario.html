@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quero ser Voluntário(a) — Projeto Salus</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#b8860b;--gold-lt:#d4a520;--gold-pale:#f5edcf;--gold-faint:#faf5e4;
+  --cream:#faf7f0;--parchment:#f0e8d0;
+  --dark:#0f0f0f;--dark2:#1a1a1a;
+  --brown:#2c1a0e;--brown-mid:#5c3d1e;--brown-lt:#8b6340;
+  --border:#c8a96e;--border-lt:#e0cfa0;
+  --verde:#1a6b3c;--verde-lt:#d4edda;
+  --vermelho:#8b1a1a;--vermelho-lt:#f8d7da;
+  --r:6px;--sombra-forte:0 4px 24px rgba(44,26,14,0.15);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'EB Garamond',Georgia,serif;}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 0;
+  background:linear-gradient(150deg,var(--dark) 0%,var(--dark2) 60%,#1a1200 100%);}
+.caixa{background:white;border-radius:14px;padding:40px 34px 34px;width:100%;max-width:460px;margin:0 16px;
+  box-shadow:var(--sombra-forte);text-align:center;border-top:3px solid var(--gold);}
+.ornamento{color:var(--gold);letter-spacing:0.3em;font-size:1rem;}
+.titulo{font-size:1.3rem;font-weight:600;color:var(--brown);margin-top:14px;}
+.sub{font-family:'Raleway',sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-top:2px;}
+.intro{font-size:0.88rem;color:var(--brown-mid);text-align:left;margin:14px 0 18px;line-height:1.6;}
+.form-grupo{margin-bottom:12px;text-align:left;}
+.form-grupo label{display:block;font-family:'Raleway',sans-serif;font-size:0.74rem;font-weight:600;letter-spacing:0.05em;
+  text-transform:uppercase;color:var(--brown-lt);margin-bottom:4px;}
+.form-grupo input,.form-grupo select,.form-grupo textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border-lt);
+  border-radius:var(--r);font-family:'EB Garamond',serif;font-size:1rem;background:var(--cream);color:var(--brown);outline:none;}
+.form-grupo input:focus,.form-grupo select:focus,.form-grupo textarea:focus{border-color:var(--gold);background:white;}
+.form-grupo textarea{min-height:70px;resize:vertical;}
+.senha-wrap{position:relative;}
+.senha-wrap button{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;
+  cursor:pointer;font-size:1.1rem;color:var(--brown-lt);}
+.btn-enviar{width:100%;padding:14px;background:var(--brown);color:white;border:none;border-radius:var(--r);
+  font-family:'Raleway',sans-serif;font-size:0.95rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+  cursor:pointer;margin-top:6px;}
+.btn-enviar:disabled{opacity:0.6;cursor:not-allowed;}
+.msg{margin-top:14px;padding:12px 14px;border-radius:var(--r);font-size:0.85rem;text-align:left;line-height:1.5;display:none;}
+.msg-ok{background:var(--verde-lt);color:var(--verde);border-left:3px solid var(--verde);}
+.msg-erro{background:var(--vermelho-lt);color:var(--vermelho);border-left:3px solid var(--vermelho);}
+.verso{margin-top:20px;padding-top:16px;border-top:1px solid var(--border-lt);font-size:0.82rem;color:var(--brown-mid);font-style:italic;}
+.verso .ref{font-family:'Raleway',sans-serif;font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-top:4px;font-style:normal;}
+.link-voltar{display:inline-block;margin-top:16px;font-size:0.82rem;color:var(--brown-lt);font-family:'Raleway',sans-serif;text-decoration:none;}
+@media(max-width:480px){
+  .caixa{padding:30px 20px 26px;}
+}
+</style>
+</head>
+<body>
+
+<div class="caixa">
+  <span class="ornamento">✦ · ✦ · ✦</span>
+  <div class="titulo">Quero ser Voluntário(a)</div>
+  <div class="sub">Cáritas Diocesana de Franca — Projeto Salus</div>
+  <p class="intro">Preencha seus dados abaixo para se cadastrar como profissional voluntário. Seu cadastro passa por uma revisão rápida da Cáritas — você será contactado(a) para a confirmação.</p>
+
+  <div class="form-grupo"><label>Nome completo *</label><input type="text" id="cv-nome" placeholder="Seu nome completo"></div>
+  <div class="form-grupo"><label>Especialidade *</label>
+    <select id="cv-especialidade"><option value="">Selecione</option>
+      <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
+      <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
+      <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
+    </select></div>
+  <div class="form-grupo"><label>Registro Profissional (se houver)</label><input type="text" id="cv-registro" placeholder="CRM, CRO, CRP, OAB..."></div>
+  <div class="form-grupo"><label>Telefone / WhatsApp *</label><input type="tel" id="cv-telefone" placeholder="(16) 99000-0000"></div>
+  <div class="form-grupo"><label>E-mail *</label><input type="email" id="cv-email" placeholder="email@exemplo.com"></div>
+  <div class="form-grupo"><label>Crie uma senha *</label>
+    <div class="senha-wrap">
+      <input type="password" id="cv-senha" placeholder="Mínimo 6 caracteres">
+      <button type="button" onclick="alternarSenha()" id="btn-olho">👁</button>
+    </div>
+  </div>
+  <div class="form-grupo"><label>Local de Atendimento (opcional)</label><input type="text" id="cv-local" placeholder="Ex.: consultório próprio, online..."></div>
+  <div class="form-grupo"><label>Observações (opcional)</label><textarea id="cv-obs" placeholder="Dias/horários que costuma ter disponibilidade, etc."></textarea></div>
+
+  <div class="msg" id="cadastro-msg"></div>
+  <button class="btn-enviar" id="btn-enviar" onclick="enviarCadastro()">Enviar Cadastro</button>
+
+  <div class="verso">"Vai e faze tu o mesmo."<div class="ref">Lucas 10, 37</div></div>
+  <a class="link-voltar" href="https://caritasfranca.github.io/Projeto-Salus/salus-app.html">← Já tenho cadastro, ir para o login</a>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script>
+const FIREBASE_CFG_SALUS = {
+  apiKey: "AIzaSyDogE0n1-nnNo-FO_XYl7iqf2nSpYQyupI",
+  authDomain: "projeto-salus-87d5b.firebaseapp.com",
+  databaseURL: "https://projeto-salus-87d5b-default-rtdb.firebaseio.com",
+  projectId: "projeto-salus-87d5b",
+  storageBucket: "projeto-salus-87d5b.firebasestorage.app",
+  messagingSenderId: "275581893939",
+  appId: "1:275581893939:web:31b544fabde803ca955246",
+  measurementId: "G-3GV5K6D3G9"
+};
+firebase.initializeApp(FIREBASE_CFG_SALUS);
+const db = firebase.database();
+const auth = firebase.auth();
+auth.languageCode = 'pt';
+
+function alternarSenha(){
+  const campo=document.getElementById('cv-senha');
+  campo.type = campo.type==='password' ? 'text' : 'password';
+}
+
+function cadMsg(t,tipo){
+  const el=document.getElementById('cadastro-msg');
+  el.textContent=t;
+  el.style.display='block';
+  el.className='msg '+(tipo==='erro'?'msg-erro':'msg-ok');
+}
+
+function traduzErroAuth(e){
+  const m={
+    'auth/email-already-in-use':'Esse e-mail já está cadastrado no sistema.',
+    'auth/invalid-email':'E-mail inválido.',
+    'auth/weak-password':'Senha muito curta (mínimo 6 caracteres).',
+    'auth/network-request-failed':'Falha de conexão. Verifique sua internet e tente de novo.',
+  };
+  return m[e.code]||('Erro: '+e.message);
+}
+
+async function emailJaCadastrado(email){
+  try{
+    const snapProf=await db.ref('profissionais').orderByChild('email').equalTo(email).once('value');
+    if(snapProf.exists())return true;
+    const snapContas=await db.ref('contas').orderByChild('email').equalTo(email).once('value');
+    return snapContas.exists();
+  }catch(e){ return false; }
+}
+
+async function enviarCadastro(){
+  const nome=document.getElementById('cv-nome').value.trim();
+  const especialidade=document.getElementById('cv-especialidade').value;
+  const registro=document.getElementById('cv-registro').value.trim();
+  const telefone=document.getElementById('cv-telefone').value.trim();
+  const email=document.getElementById('cv-email').value.trim().toLowerCase();
+  const senha=document.getElementById('cv-senha').value.trim();
+  const local=document.getElementById('cv-local').value.trim();
+  const obs=document.getElementById('cv-obs').value.trim();
+
+  if(!nome||!especialidade||!telefone||!email){cadMsg('Preencha nome, especialidade, telefone e e-mail.','erro');return;}
+  if(senha.length<6){cadMsg('A senha deve ter ao menos 6 caracteres.','erro');return;}
+
+  const btn=document.getElementById('btn-enviar');
+  btn.disabled=true;btn.textContent='Enviando...';
+
+  try{
+    if(await emailJaCadastrado(email)){
+      cadMsg('Esse e-mail já está cadastrado no sistema.','erro');
+      btn.disabled=false;btn.textContent='Enviar Cadastro';
+      return;
+    }
+    const cred=await auth.createUserWithEmailAndPassword(email,senha);
+    const obj={id:cred.user.uid,uid:cred.user.uid,nome,especialidade,registro,telefone,email,
+      local,obs,status:'pendente',origem:'cadastro_direto',atendimentos:0};
+    await db.ref('profissionais/'+obj.id).set(obj);
+    try{ await cred.user.sendEmailVerification(); }catch(e){ /* não trava o cadastro se o e-mail falhar */ }
+    await auth.signOut();
+    document.querySelectorAll('.caixa input, .caixa select, .caixa textarea').forEach(el=>el.value='');
+    cadMsg('Cadastro enviado com sucesso! Você será contactado(a) pela Cáritas para a confirmação do seu cadastro.','ok');
+    btn.textContent='Enviar Cadastro';
+    btn.disabled=false;
+  }catch(e){
+    cadMsg('Não foi possível enviar: '+traduzErroAuth(e),'erro');
+    btn.textContent='Enviar Cadastro';
+    btn.disabled=false;
+  }
+}
+</script>
+</body>
+</html>
