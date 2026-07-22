@@ -60,12 +60,16 @@ body{min-height:100vh;display:flex;align-items:center;justify-content:center;pad
   <p class="intro">Preencha seus dados abaixo para se cadastrar como profissional voluntário. Seu cadastro passa por uma revisão rápida da Cáritas — você será contactado(a) para a confirmação.</p>
 
   <div class="form-grupo"><label>Nome completo *</label><input type="text" id="cv-nome" placeholder="Seu nome completo"></div>
-  <div class="form-grupo"><label>Especialidade *</label>
-    <select id="cv-especialidade"><option value="">Selecione</option>
+  <div class="form-grupo"><label>Profissão *</label>
+    <select id="cv-especialidade" onchange="atualizarEspecialidadesCascata('cv')"><option value="">Selecione</option>
       <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
       <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
       <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
     </select></div>
+  <div class="form-grupo" id="grupo-cv-especialidade-detalhe" style="display:none;"><label>Especialidade</label>
+    <select id="cv-especialidade-detalhe" onchange="atualizarOutraEspecialidade('cv')"></select></div>
+  <div class="form-grupo" id="grupo-cv-especialidade-outra" style="display:none;"><label>Qual?</label>
+    <input type="text" id="cv-especialidade-outra" placeholder="Digite a especialidade"></div>
   <div class="form-grupo"><label>Registro Profissional (se houver)</label><input type="text" id="cv-registro" placeholder="CRM, CRO, CRP, OAB..."></div>
   <div class="form-grupo"><label>Telefone / WhatsApp *</label><input type="tel" id="cv-telefone" placeholder="(16) 99000-0000"></div>
   <div class="form-grupo"><label>E-mail *</label><input type="email" id="cv-email" placeholder="email@exemplo.com"></div>
@@ -107,6 +111,51 @@ auth.languageCode = 'pt';
 function alternarSenha(){
   const campo=document.getElementById('cv-senha');
   campo.type = campo.type==='password' ? 'text' : 'password';
+}
+
+const ESPECIALIDADES_SUGERIDAS={
+  'Médico(a)':['Clínico Geral','Ginecologia e Obstetrícia','Pediatria','Cardiologia','Dermatologia','Otorrinolaringologia','Ortopedia','Psiquiatria','Geriatria','Endocrinologia','Oftalmologia','Urologia'],
+  'Dentista':['Clínico Geral','Odontopediatria','Ortodontia','Endodontia','Periodontia','Prótese Dentária','Cirurgia Bucomaxilofacial'],
+  'Psicólogo(a)':['Psicologia Clínica','Psicologia Infantil','Terapia de Casal e Família','Neuropsicologia','Psicologia Escolar'],
+  'Fisioterapeuta':['Ortopédica','Neurológica','Respiratória','Pediátrica','Geriátrica'],
+  'Enfermeiro(a)':['Enfermagem Geral','Saúde da Família','Enfermagem Pediátrica','Enfermagem em Saúde Mental'],
+  'Nutricionista':['Nutrição Clínica','Nutrição Infantil','Nutrição Materno-Infantil','Nutrição em Geriatria'],
+  'Psicopedagogo(a)':['Psicopedagogia Clínica','Psicopedagogia Institucional'],
+  'Assistente Social':['Atenção à Família','Atenção ao Idoso','Serviço Social Geral'],
+  'Advogado(a)':['Direito de Família','Direito Previdenciário','Direito do Consumidor','Direito Trabalhista','Direito Civil'],
+};
+function atualizarEspecialidadesCascata(prefixo){
+  const profissao=document.getElementById(prefixo+'-especialidade').value;
+  const grupoDetalhe=document.getElementById('grupo-'+prefixo+'-especialidade-detalhe');
+  const grupoOutra=document.getElementById('grupo-'+prefixo+'-especialidade-outra');
+  const selDetalhe=document.getElementById(prefixo+'-especialidade-detalhe');
+  const lista=ESPECIALIDADES_SUGERIDAS[profissao];
+  document.getElementById(prefixo+'-especialidade-outra').value='';
+  if(!lista){
+    grupoDetalhe.style.display='none';
+    grupoOutra.style.display=(profissao==='Outro'||profissao==='Outra profissão')?'':'none';
+    if(grupoOutra.style.display!=='none')document.getElementById(prefixo+'-especialidade-outra').placeholder='Digite sua profissão';
+    return;
+  }
+  selDetalhe.innerHTML='<option value="">Selecione</option>'+lista.map(e=>`<option>${e}</option>`).join('')+'<option value="Outra">Outra</option>';
+  grupoDetalhe.style.display='';
+  grupoOutra.style.display='none';
+}
+function atualizarOutraEspecialidade(prefixo){
+  const val=document.getElementById(prefixo+'-especialidade-detalhe').value;
+  const grupoOutra=document.getElementById('grupo-'+prefixo+'-especialidade-outra');
+  if(val==='Outra'){
+    grupoOutra.style.display='';
+    document.getElementById(prefixo+'-especialidade-outra').placeholder='Digite a especialidade';
+  } else {
+    grupoOutra.style.display='none';
+  }
+}
+function especialidadeDetalheAtual(prefixo){
+  const grupoOutra=document.getElementById('grupo-'+prefixo+'-especialidade-outra');
+  if(grupoOutra.style.display!=='none')return document.getElementById(prefixo+'-especialidade-outra').value.trim();
+  const val=document.getElementById(prefixo+'-especialidade-detalhe').value;
+  return val&&val!=='Outra'?val:'';
 }
 
 function cadMsg(t,tipo){
@@ -158,12 +207,14 @@ async function enviarCadastro(){
       return;
     }
     const cred=await auth.createUserWithEmailAndPassword(email,senha);
-    const obj={id:cred.user.uid,uid:cred.user.uid,nome,especialidade,registro,telefone,email,
+    const obj={id:cred.user.uid,uid:cred.user.uid,nome,especialidade,especialidadeDetalhe:especialidadeDetalheAtual('cv'),registro,telefone,email,
       local,obs,status:'pendente',origem:'cadastro_direto',atendimentos:0};
     await db.ref('profissionais/'+obj.id).set(obj);
     try{ await cred.user.sendEmailVerification(); }catch(e){ /* não trava o cadastro se o e-mail falhar */ }
     await auth.signOut();
     document.querySelectorAll('.caixa input, .caixa select, .caixa textarea').forEach(el=>el.value='');
+    document.getElementById('grupo-cv-especialidade-detalhe').style.display='none';
+    document.getElementById('grupo-cv-especialidade-outra').style.display='none';
     cadMsg('Cadastro enviado com sucesso! Você será contactado(a) pela Cáritas para a confirmação do seu cadastro.','ok');
     btn.textContent='Enviar Cadastro';
     btn.disabled=false;

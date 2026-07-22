@@ -723,12 +723,16 @@ tr:hover td{background:var(--gold-faint);}
     <div class="modal-body">
       <div class="form-grid">
         <div class="form-grupo full"><label>Nome Completo *</label><input type="text" id="p-nome" placeholder="Nome do voluntário"></div>
-        <div class="form-grupo"><label>Especialidade *</label>
-          <select id="p-especialidade"><option value="">Selecione</option>
+        <div class="form-grupo"><label>Profissão *</label>
+          <select id="p-especialidade" onchange="atualizarEspecialidadesCascata('p')"><option value="">Selecione</option>
             <option>Dentista</option><option>Psicólogo(a)</option><option>Médico(a)</option>
             <option>Nutricionista</option><option>Fisioterapeuta</option><option>Enfermeiro(a)</option>
             <option>Psicopedagogo(a)</option><option>Assistente Social</option><option>Advogado(a)</option><option>Outro</option>
           </select></div>
+        <div class="form-grupo" id="grupo-p-especialidade-detalhe" style="display:none;"><label>Especialidade</label>
+          <select id="p-especialidade-detalhe" onchange="atualizarOutraEspecialidade('p')"></select></div>
+        <div class="form-grupo full" id="grupo-p-especialidade-outra" style="display:none;"><label>Qual?</label>
+          <input type="text" id="p-especialidade-outra" placeholder="Digite a especialidade"></div>
         <div class="form-grupo"><label>Registro</label><input type="text" id="p-registro" placeholder="CRM, CRO, CRP..."></div>
         <div class="form-grupo"><label>Telefone / WhatsApp *</label><input type="tel" id="p-telefone" placeholder="(16) 99000-0000"></div>
         <div class="form-grupo" id="grupo-p-email"><label>E-mail (login do profissional) *</label><input type="email" id="p-email" placeholder="email@exemplo.com"></div>
@@ -2004,6 +2008,7 @@ function carregarHorariosDisponiveis(){
       <div class="hc-dia">${fmtData(h.data)}</div>
       <div class="hc-hora">⏰ ${h.hora||'—'}</div>
       <div style="font-size:0.84rem;font-weight:600;color:var(--brown);margin-top:4px;">${esc(p?.nome||'—')}</div>
+      ${p?.especialidadeDetalhe?`<div style="font-size:0.76rem;color:var(--brown-lt);">${esc(p.especialidadeDetalhe)}</div>`:''}
       <div style="font-size:0.78rem;color:var(--cinza-txt);margin-top:2px;">${esc(h.local||'')}</div>
       ${h.obs?`<div style="font-size:0.75rem;color:var(--brown-lt);margin-top:2px;font-style:italic;">${esc(h.obs)}</div>`:''}
       <div class="hc-vaga">✓ Disponível</div>
@@ -2264,7 +2269,7 @@ function renderProfissionais(){
       const isPendente=p.status==='pendente';
       return `<tr ${isPendente?'style="background:var(--gold-faint);"':''}>
         <td><strong>${esc(p.nome)}</strong>${isPendente?` <span class="badge badge-pendente" style="font-size:0.68rem;">Forms</span>`:''}${p.origem==='google_forms'&&!isPendente?` <span style="font-size:0.72rem;color:var(--brown-lt);">via Forms</span>`:''}</td>
-        <td><span class="badge badge-prof">${esc(p.especialidade)}</span></td>
+        <td><span class="badge badge-prof">${esc(p.especialidade)}</span>${p.especialidadeDetalhe?`<br><span style="font-size:0.74rem;color:var(--brown-lt);">${esc(p.especialidadeDetalhe)}</span>`:''}</td>
         <td><a href="tel:${esc(p.telefone)}" style="color:var(--brown);text-decoration:none;">${esc(p.telefone)}</a></td>
         <td style="text-align:center;">${nh}</td>
         <td style="text-align:center;">${rels}</td>
@@ -2278,10 +2283,56 @@ function renderProfissionais(){
     }).join('');
 }
 
+const ESPECIALIDADES_SUGERIDAS={
+  'Médico(a)':['Clínico Geral','Ginecologia e Obstetrícia','Pediatria','Cardiologia','Dermatologia','Otorrinolaringologia','Ortopedia','Psiquiatria','Geriatria','Endocrinologia','Oftalmologia','Urologia'],
+  'Dentista':['Clínico Geral','Odontopediatria','Ortodontia','Endodontia','Periodontia','Prótese Dentária','Cirurgia Bucomaxilofacial'],
+  'Psicólogo(a)':['Psicologia Clínica','Psicologia Infantil','Terapia de Casal e Família','Neuropsicologia','Psicologia Escolar'],
+  'Fisioterapeuta':['Ortopédica','Neurológica','Respiratória','Pediátrica','Geriátrica'],
+  'Enfermeiro(a)':['Enfermagem Geral','Saúde da Família','Enfermagem Pediátrica','Enfermagem em Saúde Mental'],
+  'Nutricionista':['Nutrição Clínica','Nutrição Infantil','Nutrição Materno-Infantil','Nutrição em Geriatria'],
+  'Psicopedagogo(a)':['Psicopedagogia Clínica','Psicopedagogia Institucional'],
+  'Assistente Social':['Atenção à Família','Atenção ao Idoso','Serviço Social Geral'],
+  'Advogado(a)':['Direito de Família','Direito Previdenciário','Direito do Consumidor','Direito Trabalhista','Direito Civil'],
+};
+function atualizarEspecialidadesCascata(prefixo){
+  const profissao=document.getElementById(prefixo+'-especialidade').value;
+  const grupoDetalhe=document.getElementById('grupo-'+prefixo+'-especialidade-detalhe');
+  const grupoOutra=document.getElementById('grupo-'+prefixo+'-especialidade-outra');
+  const selDetalhe=document.getElementById(prefixo+'-especialidade-detalhe');
+  const lista=ESPECIALIDADES_SUGERIDAS[profissao];
+  document.getElementById(prefixo+'-especialidade-outra').value='';
+  if(!lista){
+    grupoDetalhe.style.display='none';
+    grupoOutra.style.display=(profissao==='Outro'||profissao==='Outra profissão')?'':'none';
+    if(grupoOutra.style.display!=='none')document.getElementById(prefixo+'-especialidade-outra').placeholder='Digite sua profissão';
+    return;
+  }
+  selDetalhe.innerHTML='<option value="">Selecione</option>'+lista.map(e=>`<option>${e}</option>`).join('')+'<option value="Outra">Outra</option>';
+  grupoDetalhe.style.display='';
+  grupoOutra.style.display='none';
+}
+function atualizarOutraEspecialidade(prefixo){
+  const val=document.getElementById(prefixo+'-especialidade-detalhe').value;
+  const grupoOutra=document.getElementById('grupo-'+prefixo+'-especialidade-outra');
+  if(val==='Outra'){
+    grupoOutra.style.display='';
+    document.getElementById(prefixo+'-especialidade-outra').placeholder='Digite a especialidade';
+  } else {
+    grupoOutra.style.display='none';
+  }
+}
+function especialidadeDetalheAtual(prefixo){
+  const grupoOutra=document.getElementById('grupo-'+prefixo+'-especialidade-outra');
+  if(grupoOutra.style.display!=='none')return document.getElementById(prefixo+'-especialidade-outra').value.trim();
+  const val=document.getElementById(prefixo+'-especialidade-detalhe').value;
+  return val&&val!=='Outra'?val:'';
+}
 function abrirModalProfissional(){
   document.getElementById('modal-prof-titulo').textContent='Novo Profissional';
-  ['p-id','p-nome','p-registro','p-telefone','p-email','p-nome-conta','p-local','p-obs'].forEach(id=>document.getElementById(id).value='');
+  ['p-id','p-nome','p-registro','p-telefone','p-email','p-nome-conta','p-local','p-obs','p-especialidade-outra'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('p-especialidade').value='';
+  document.getElementById('grupo-p-especialidade-detalhe').style.display='none';
+  document.getElementById('grupo-p-especialidade-outra').style.display='none';
   document.getElementById('p-status').value='ativo';
   document.getElementById('p-senha').value='salus123';
   document.getElementById('grupo-p-senha').style.display='';
@@ -2295,6 +2346,17 @@ function editarProfissional(id){
   document.getElementById('p-id').value=p.id;
   document.getElementById('p-nome').value=p.nome||'';
   document.getElementById('p-especialidade').value=p.especialidade||'';
+  atualizarEspecialidadesCascata('p');
+  if(p.especialidadeDetalhe){
+    const lista=ESPECIALIDADES_SUGERIDAS[p.especialidade]||[];
+    if(lista.includes(p.especialidadeDetalhe)){
+      document.getElementById('p-especialidade-detalhe').value=p.especialidadeDetalhe;
+    } else {
+      document.getElementById('p-especialidade-detalhe').value='Outra';
+      document.getElementById('grupo-p-especialidade-outra').style.display='';
+      document.getElementById('p-especialidade-outra').value=p.especialidadeDetalhe;
+    }
+  }
   document.getElementById('p-registro').value=p.registro||'';
   document.getElementById('p-telefone').value=p.telefone||'';
   document.getElementById('p-email').value=p.email||'';
@@ -2326,7 +2388,7 @@ async function salvarProfissional(){
   const btnSalvar=document.querySelector('#modal-profissional .btn-primario');
   if(btnSalvar){btnSalvar.disabled=true;btnSalvar.textContent='Salvando...';}
 
-  const dadosComuns={nome,especialidade:esp,registro:document.getElementById('p-registro').value.trim(),
+  const dadosComuns={nome,especialidade:esp,especialidadeDetalhe:especialidadeDetalheAtual('p'),registro:document.getElementById('p-registro').value.trim(),
     telefone:tel,nomeConta,local:document.getElementById('p-local').value.trim(),
     obs:document.getElementById('p-obs').value.trim(),
     status:document.getElementById('p-status').value};
