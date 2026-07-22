@@ -672,6 +672,7 @@ tr:hover td{background:var(--gold-faint);}
           Cada pessoa é migrada automaticamente no primeiro acesso dela depois da virada. Use o botão abaixo só se quiser migrar todo mundo de uma vez agora (recomendado antes de fechar as regras do banco).
         </div>
         <button class="btn btn-primario" onclick="rodarMigracaoEmLote()">Migrar Todas as Contas Pendentes Agora</button>
+        <button class="btn btn-secundario" onclick="reconstruirIndiceNomeConta()">Reconstruir Índice de Login por Nome de Conta</button>
         <div id="area-migracao" style="margin-top:14px;"></div>
       </div>
 
@@ -694,15 +695,19 @@ tr:hover td{background:var(--gold-faint);}
 
       <!-- Regra de segurança recomendada para o banco de dados -->
       <div class="config-box">
-        <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">🔐 Regra do Banco de Dados (só aplicar depois de tudo migrado e testado)</h3>
-        <div class="aviso aviso-alerta" style="font-size:0.85rem;">Esta regra deve ser aplicada no Console do Firebase (Realtime Database → Regras) somente <strong>depois</strong> de confirmar que este arquivo já está publicado no lugar do antigo, e que todo mundo já foi migrado (aba Usuários — todos com 🔒 Seguro).</div>
+        <h3 style="font-size:1rem;margin-bottom:6px;font-weight:600;color:var(--brown);">🔐 Regra do Banco de Dados</h3>
+        <div class="aviso aviso-alerta" style="font-size:0.85rem;">O login por <strong>nome da conta</strong> (não e-mail) depende de uma pequena exceção pública nessa regra — só o "índice" de nome→e-mail fica legível sem estar logado, o resto do banco continua protegido. Se o login por nome de conta estiver dando "não encontrado", confira se essa exceção já está colada no Console do Firebase.</div>
         <div style="margin-top:10px;background:var(--brown);color:#e8dcc4;padding:14px 16px;border-radius:var(--r);font-family:monospace;font-size:0.85rem;white-space:pre;overflow-x:auto;">{
   "rules": {
     ".read": "auth != null",
-    ".write": "auth != null"
+    ".write": "auth != null",
+    "nomeConta_index": {
+      ".read": true,
+      ".write": "auth != null"
+    }
   }
 }</div>
-        <p style="font-size:0.8rem;color:var(--brown-lt);margin-top:10px;">Isso exige que qualquer leitura/escrita venha de alguém autenticado pelo Firebase — some com o acesso público total que existe hoje.</p>
+        <p style="font-size:0.8rem;color:var(--brown-lt);margin-top:10px;">Isso exige que qualquer leitura/escrita venha de alguém autenticado pelo Firebase, com a única exceção do índice de nomes de conta (que não contém senha nem dado sensível — só o nome escolhido e o e-mail correspondente).</p>
       </div>
     </div>
 
@@ -1121,51 +1126,28 @@ async function fazerLogin(){
   const btnEntrar=document.querySelector('.btn-login');
   const textoOriginal=btnEntrar?btnEntrar.textContent:'';
   if(btnEntrar){btnEntrar.disabled=true;btnEntrar.textContent='Verificando...';}
-  await aguardarSincronizacaoAntesDeEntrar();
 
-  // Descobrir o e-mail de login: aceita e-mail direto, nome da conta ou nome cadastrado
+  // Descobrir o e-mail de login: aceita e-mail direto ou nome da conta.
+  // Com as regras do banco exigindo login (auth != null), a única leitura permitida
+  // ANTES de autenticar é esse índice público nomeConta_index (só nome→e-mail, sem senha).
   let email=identificador.includes('@')?identificador:null;
-  let registroLegado=null; // registro antigo (contas/profissionais) que bate com o identificador, se ainda não migrado
   if(!email){
-    let c=contas.find(x=>(x.nomeConta||'').toLowerCase()===identificador);
-    let p=!c?profissionais.find(x=>(x.nomeConta||'').toLowerCase()===identificador):null;
-    if(!c&&!p){
-      const cand=[...contas,...profissionais.map(x=>({...x,_prof:true}))].filter(x=>(x.nome||'').trim().toLowerCase()===identificador);
-      if(cand.length===1){ if(cand[0]._prof)p=cand[0]; else c=cand[0]; }
-      else if(cand.length>1){erroLogin('Há mais de um cadastro com esse nome. Entre com seu e-mail ou nome da conta.');if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}return;}
-    }
-    const reg=c||p;
-    if(reg&&reg.email){ email=reg.email.toLowerCase(); registroLegado=reg; }
-    else if(reg&&!reg.email){
-      erroLogin('Esse cadastro ainda não tem e-mail. Peça para um administrador cadastrar um e-mail antes do primeiro acesso.');
+    try{
+      const snap=await db.ref('nomeConta_index/'+identificador).once('value');
+      if(snap.exists())email=(snap.val()||'').toLowerCase();
+    }catch(e){ /* segue sem e-mail resolvido */ }
+    if(!email){
+      erroLogin('E-mail ou nome de conta não encontrado. Verifique ou fale com a Cáritas.');
       if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}
       return;
     }
-  } else {
-    registroLegado=contas.find(x=>(x.email||'').toLowerCase()===email)||profissionais.find(x=>(x.email||'').toLowerCase()===email);
   }
-  if(!email){erroLogin('E-mail ou nome não encontrado. Verifique ou fale com a Cáritas.');if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}return;}
   if(btnEntrar)btnEntrar.textContent='Entrando...';
 
   try{
     const cred=await auth.signInWithEmailAndPassword(email,senha);
     await entrarComUid(cred.user.uid,email);
   }catch(e){
-    const codigosPodemSerNaoMigrado=['auth/user-not-found','auth/invalid-credential','auth/invalid-login-credentials'];
-    if(codigosPodemSerNaoMigrado.includes(e.code)&&registroLegado&&!registroLegado.uid&&(registroLegado.senha||'')===senha){
-      // Primeiro acesso depois da migração: cria a conta de autenticação agora, aproveitando a senha antiga
-      try{
-        const cred=await auth.createUserWithEmailAndPassword(email,senha);
-        await vincularUidAoRegistro(registroLegado,cred.user.uid);
-        await entrarComUid(cred.user.uid,email);
-      }catch(e2){
-        erroLogin('Não foi possível migrar sua conta automaticamente: '+traduzErroAuth(e2));
-      }
-      if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}
-      return;
-    }
-    if(registroLegado&&registroLegado.status==='inativo'){erroLogin('Cadastro inativo. Fale com a coordenação da Cáritas.');if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}return;}
-    if(registroLegado&&registroLegado.status==='pendente'){erroLogin('Seu cadastro ainda aguarda aprovação da Cáritas.');if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}return;}
     erroLogin(traduzErroAuth(e));
     if(btnEntrar){btnEntrar.disabled=false;btnEntrar.textContent=textoOriginal;}
   }
@@ -1194,11 +1176,33 @@ async function vincularUidAoRegistro(registro,uid){
   if(usandoFirebase)await db.ref(colecao+'/'+registro.id).set(registro);
 }
 
+// Mantém o índice público nomeConta_index em dia (usado pelo login antes de autenticar).
+// nomeContaAntigo pode ser vazio/undefined; passe null se não houver troca a remover.
+async function atualizarIndiceNomeConta(nomeContaAntigo,nomeContaNovo,email){
+  if(!usandoFirebase||!db)return;
+  try{
+    const antigo=(nomeContaAntigo||'').toLowerCase().trim();
+    const novo=(nomeContaNovo||'').toLowerCase().trim();
+    if(antigo&&antigo!==novo)await db.ref('nomeConta_index/'+antigo).remove();
+    if(novo&&email)await db.ref('nomeConta_index/'+novo).set(email.toLowerCase());
+  }catch(e){ /* não trava o cadastro se o índice falhar */ }
+}
 async function aguardarSincronizacaoAntesDeEntrar(){
   if(!usandoFirebase)return;
-  for(let i=0;i<30;i++){ // até ~6s
-    if(todasColecoesSincronizadas())return;
-    await new Promise(r=>setTimeout(r,200));
+  // Busca direta e específica do que o login precisa (contas e profissionais),
+  // em vez de esperar o sistema inteiro (relatórios, agendamentos etc.) sincronizar.
+  // Mais rápido e mais confiável em conexão fraca.
+  try{
+    const [snapContas,snapProf]=await Promise.race([
+      Promise.all([db.ref('contas').once('value'),db.ref('profissionais').once('value')]),
+      new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),12000))
+    ]);
+    if(snapContas.val())contas=Object.values(snapContas.val());
+    if(snapProf.val())profissionais=Object.values(snapProf.val());
+    salvarLocal();
+  }catch(e){
+    // Se a busca direta falhar ou demorar demais, cai no que já estiver em memória
+    // (a escuta em segundo plano pode já ter trazido algo).
   }
 }
 async function entrarComUid(uid,emailLogin){
@@ -1592,13 +1596,16 @@ async function salvarConta(){
       contas.push(obj);
       salvarLocal();
       await db.ref('contas/'+obj.id).set(obj);
+      await atualizarIndiceNomeConta(null,nomeConta,email);
     } else {
       // Conta existente: atualiza só os dados de perfil. E-mail/senha de login não mudam por aqui
       // (login já migrado usa o Firebase Authentication; peça redefinição de senha se precisar).
+      const nomeContaAntigo=existente.nomeConta;
       existente.nome=nome; existente.nomeConta=nomeConta; existente.perfil=perfil; existente.status=status;
       if(!existente.uid)existente.email=email; // ainda não migrado: pode ajustar o e-mail livremente
       salvarLocal();
       if(usandoFirebase)await db.ref('contas/'+existente.id).set(existente);
+      await atualizarIndiceNomeConta(nomeContaAntigo,nomeConta,existente.email);
     }
     fecharModal('modal-conta');renderContas();
     if(document.getElementById('secao-usuarios').classList.contains('ativa'))renderUsuarios();
@@ -1687,9 +1694,11 @@ async function salvarMeuPerfil(){
       ?profissionais.find(x=>x.id===usuarioAtual.id)
       :contas.find(x=>x.id===usuarioAtual.id);
     if(registro){
+      const nomeContaAntigo=registro.nomeConta;
       registro.email=email; registro.nomeConta=nomeConta;
       salvarLocal();
       if(usandoFirebase)await db.ref((usuarioAtual.perfil==='profissional'?'profissionais':'contas')+'/'+registro.id).set(registro);
+      await atualizarIndiceNomeConta(nomeContaAntigo,nomeConta,email);
       if(usuarioAtual.perfil==='profissional')renderProfissionais(); else renderContas();
     }
     usuarioAtual.email=email;
@@ -2332,11 +2341,14 @@ async function salvarProfissional(){
       profissionais.push(obj);
       salvarLocal();
       await db.ref('profissionais/'+obj.id).set(obj);
+      await atualizarIndiceNomeConta(null,nomeConta,email);
     } else {
+      const nomeContaAntigo=existente.nomeConta;
       Object.assign(existente,dadosComuns);
       if(!existente.uid)existente.email=email;
       salvarLocal();
       if(usandoFirebase)await db.ref('profissionais/'+existente.id).set(existente);
+      await atualizarIndiceNomeConta(nomeContaAntigo,nomeConta,existente.email);
     }
     fecharModal('modal-profissional');renderProfissionais();
     toast('Profissional salvo!','ok');
@@ -3251,6 +3263,22 @@ function inicializarFirebase(cfg) {
   }
 }
 
+async function reconstruirIndiceNomeConta(){
+  if(!usandoFirebase||!db){toast('Conecte ao Firebase primeiro.','erro');return;}
+  const area=document.getElementById('area-migracao');
+  const comNomeConta=[...contas,...profissionais].filter(x=>x.nomeConta&&x.email);
+  if(comNomeConta.length===0){
+    area.innerHTML='<div class="aviso aviso-ok">Ninguém usa nome de conta no momento.</div>';
+    return;
+  }
+  area.innerHTML=`<div class="aviso aviso-info">Reconstruindo índice de ${comNomeConta.length} conta(s)...</div>`;
+  let ok=0;
+  for(const r of comNomeConta){
+    try{ await atualizarIndiceNomeConta(null,r.nomeConta,r.email); ok++; }catch(e){}
+  }
+  area.innerHTML=`<div class="aviso aviso-ok">Índice reconstruído! ${ok} nome(s) de conta atualizados — login por nome de conta já deve funcionar pra todos eles.</div>`;
+}
+
 async function rodarMigracaoEmLote(){
   if(!usandoFirebase||!db){toast('Conecte ao Firebase primeiro.','erro');return;}
   const area=document.getElementById('area-migracao');
@@ -3274,6 +3302,7 @@ async function rodarMigracaoEmLote(){
       r.uid=cred.user.uid;
       delete r.senha;
       await db.ref(item.colecao+'/'+r.id).set(r);
+      await atualizarIndiceNomeConta(null,r.nomeConta,r.email);
       resultados.push(`✅ ${esc(r.nome)} (${esc(r.email)}) — migrado com a senha atual.`);
     }catch(e){
       if(e.code==='auth/email-already-in-use'){
